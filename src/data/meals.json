@@ -1,0 +1,2441 @@
+[
+  {
+    "id": "meal_1",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Huevos Revueltos con Pan Tostado (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 586,
+    "protein": 42,
+    "carbs": 88,
+    "sugars": 8,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Huevos (Porción extra/grande)",
+        "Pan integral (Porción extra/grande)",
+        "Aceite de oliva (Porción extra/grande)"
+      ],
+      "steps": [
+        "Batir los huevos.",
+        "Cocinar en sartén con un poco de aceite.",
+        "Tostar el pan y servir juntos."
+      ]
+    }
+  },
+  {
+    "id": "meal_2",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Huevos Revueltos con Pan Tostado (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 343,
+    "protein": 32,
+    "carbs": 29,
+    "sugars": 2,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Huevos (Porción moderada)",
+        "Pan integral (Porción moderada)",
+        "Aceite de oliva (Porción moderada)"
+      ],
+      "steps": [
+        "Batir los huevos.",
+        "Cocinar en sartén con un poco de aceite.",
+        "Tostar el pan y servir juntos."
+      ]
+    }
+  },
+  {
+    "id": "meal_3",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Avena Cocida con Fruta (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 627,
+    "protein": 44,
+    "carbs": 69,
+    "sugars": 7,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Avena en hojuelas (Porción extra/grande)",
+        "Leche (Porción extra/grande)",
+        "Fruta (plátano o manzana) (Porción extra/grande)"
+      ],
+      "steps": [
+        "Hervir la leche con avena hasta espesar.",
+        "Picar la fruta y agregar."
+      ]
+    }
+  },
+  {
+    "id": "meal_4",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Avena Cocida con Fruta (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 386,
+    "protein": 31,
+    "carbs": 22,
+    "sugars": 2,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Avena en hojuelas (Porción moderada)",
+        "Leche (Porción moderada)",
+        "Fruta (plátano o manzana) (Porción moderada)"
+      ],
+      "steps": [
+        "Hervir la leche con avena hasta espesar.",
+        "Picar la fruta y agregar."
+      ]
+    }
+  },
+  {
+    "id": "meal_5",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Omelette de Espinacas (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 590,
+    "protein": 41,
+    "carbs": 68,
+    "sugars": 10,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Huevos (Porción extra/grande)",
+        "Espinacas (Porción extra/grande)",
+        "Queso panela (Porción extra/grande)"
+      ],
+      "steps": [
+        "Batir huevos y verter en sartén.",
+        "Añadir espinacas y queso en el centro.",
+        "Doblar a la mitad."
+      ]
+    }
+  },
+  {
+    "id": "meal_6",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Omelette de Espinacas (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 327,
+    "protein": 33,
+    "carbs": 24,
+    "sugars": 2,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Huevos (Porción moderada)",
+        "Espinacas (Porción moderada)",
+        "Queso panela (Porción moderada)"
+      ],
+      "steps": [
+        "Batir huevos y verter en sartén.",
+        "Añadir espinacas y queso en el centro.",
+        "Doblar a la mitad."
+      ]
+    }
+  },
+  {
+    "id": "meal_7",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Yogur Griego con Nueces (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 645,
+    "protein": 34,
+    "carbs": 73,
+    "sugars": 11,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Yogur griego natural (Porción extra/grande)",
+        "Nueces/Almendras (Porción extra/grande)",
+        "Miel (Porción extra/grande)"
+      ],
+      "steps": [
+        "Servir el yogur.",
+        "Añadir las nueces picadas.",
+        "Rociar con un hilo de miel."
+      ]
+    }
+  },
+  {
+    "id": "meal_8",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Yogur Griego con Nueces (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 309,
+    "protein": 20,
+    "carbs": 15,
+    "sugars": 6,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Yogur griego natural (Porción moderada)",
+        "Nueces/Almendras (Porción moderada)",
+        "Miel (Porción moderada)"
+      ],
+      "steps": [
+        "Servir el yogur.",
+        "Añadir las nueces picadas.",
+        "Rociar con un hilo de miel."
+      ]
+    }
+  },
+  {
+    "id": "meal_9",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Licuado de Proteína y Avena (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 671,
+    "protein": 32,
+    "carbs": 65,
+    "sugars": 7,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Leche (Porción extra/grande)",
+        "Avena (Porción extra/grande)",
+        "Proteína en polvo (Porción extra/grande)",
+        "Crema de cacahuate (Porción extra/grande)"
+      ],
+      "steps": [
+        "Licuar todos los ingredientes hasta que quede suave.",
+        "Servir frío."
+      ]
+    }
+  },
+  {
+    "id": "meal_10",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Licuado de Proteína y Avena (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 298,
+    "protein": 28,
+    "carbs": 15,
+    "sugars": 3,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Leche (Porción moderada)",
+        "Avena (Porción moderada)",
+        "Proteína en polvo (Porción moderada)",
+        "Crema de cacahuate (Porción moderada)"
+      ],
+      "steps": [
+        "Licuar todos los ingredientes hasta que quede suave.",
+        "Servir frío."
+      ]
+    }
+  },
+  {
+    "id": "meal_11",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Tostadas de Aguacate (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 647,
+    "protein": 28,
+    "carbs": 70,
+    "sugars": 13,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Pan integral (Porción extra/grande)",
+        "Aguacate (Porción extra/grande)",
+        "Huevo cocido (Porción extra/grande)"
+      ],
+      "steps": [
+        "Tostar el pan.",
+        "Moler aguacate y untar.",
+        "Colocar huevo cocido en rodajas encima."
+      ]
+    }
+  },
+  {
+    "id": "meal_12",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Tostadas de Aguacate (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 269,
+    "protein": 30,
+    "carbs": 19,
+    "sugars": 2,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Pan integral (Porción moderada)",
+        "Aguacate (Porción moderada)",
+        "Huevo cocido (Porción moderada)"
+      ],
+      "steps": [
+        "Tostar el pan.",
+        "Moler aguacate y untar.",
+        "Colocar huevo cocido en rodajas encima."
+      ]
+    }
+  },
+  {
+    "id": "meal_13",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Hot Cakes de Avena (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 684,
+    "protein": 43,
+    "carbs": 77,
+    "sugars": 10,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Harina de avena (Porción extra/grande)",
+        "Clara de huevo (Porción extra/grande)",
+        "Leche (Porción extra/grande)",
+        "Plátano (Porción extra/grande)"
+      ],
+      "steps": [
+        "Licuar avena, claras, leche y medio plátano.",
+        "Cocinar en sartén en forma de hot cakes."
+      ]
+    }
+  },
+  {
+    "id": "meal_14",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Hot Cakes de Avena (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 348,
+    "protein": 25,
+    "carbs": 32,
+    "sugars": 4,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Harina de avena (Porción moderada)",
+        "Clara de huevo (Porción moderada)",
+        "Leche (Porción moderada)",
+        "Plátano (Porción moderada)"
+      ],
+      "steps": [
+        "Licuar avena, claras, leche y medio plátano.",
+        "Cocinar en sartén en forma de hot cakes."
+      ]
+    }
+  },
+  {
+    "id": "meal_15",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Burrito de Huevo (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 683,
+    "protein": 37,
+    "carbs": 89,
+    "sugars": 7,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Tortilla de harina (integral) (Porción extra/grande)",
+        "Huevos (Porción extra/grande)",
+        "Frijoles refritos (Porción extra/grande)"
+      ],
+      "steps": [
+        "Calentar tortilla y untar frijoles.",
+        "Hacer huevos revueltos y rellenar.",
+        "Enrollar como burrito."
+      ]
+    }
+  },
+  {
+    "id": "meal_16",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Burrito de Huevo (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 345,
+    "protein": 24,
+    "carbs": 17,
+    "sugars": 3,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Tortilla de harina (integral) (Porción moderada)",
+        "Huevos (Porción moderada)",
+        "Frijoles refritos (Porción moderada)"
+      ],
+      "steps": [
+        "Calentar tortilla y untar frijoles.",
+        "Hacer huevos revueltos y rellenar.",
+        "Enrollar como burrito."
+      ]
+    }
+  },
+  {
+    "id": "meal_17",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Cereal Integral con Leche (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 558,
+    "protein": 41,
+    "carbs": 82,
+    "sugars": 8,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Cereal alto en fibra (Porción extra/grande)",
+        "Leche descremada (Porción extra/grande)",
+        "Fruta picada (Porción extra/grande)"
+      ],
+      "steps": [
+        "Servir cereal y leche en un plato hondo.",
+        "Añadir la fruta de temporada."
+      ]
+    }
+  },
+  {
+    "id": "meal_18",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Cereal Integral con Leche (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 304,
+    "protein": 20,
+    "carbs": 29,
+    "sugars": 2,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Cereal alto en fibra (Porción moderada)",
+        "Leche descremada (Porción moderada)",
+        "Fruta picada (Porción moderada)"
+      ],
+      "steps": [
+        "Servir cereal y leche en un plato hondo.",
+        "Añadir la fruta de temporada."
+      ]
+    }
+  },
+  {
+    "id": "meal_19",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Quesadillas Matutinas (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 675,
+    "protein": 41,
+    "carbs": 74,
+    "sugars": 13,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Tortillas de maíz (Porción extra/grande)",
+        "Queso Oaxaca o panela (Porción extra/grande)",
+        "Jamón de pavo (Porción extra/grande)"
+      ],
+      "steps": [
+        "Armar las quesadillas con jamón y queso.",
+        "Calentar en comal hasta derretir el queso."
+      ]
+    }
+  },
+  {
+    "id": "meal_20",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Quesadillas Matutinas (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 298,
+    "protein": 34,
+    "carbs": 22,
+    "sugars": 7,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Tortillas de maíz (Porción moderada)",
+        "Queso Oaxaca o panela (Porción moderada)",
+        "Jamón de pavo (Porción moderada)"
+      ],
+      "steps": [
+        "Armar las quesadillas con jamón y queso.",
+        "Calentar en comal hasta derretir el queso."
+      ]
+    }
+  },
+  {
+    "id": "meal_21",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Muffin Inglés con Pechuga (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 718,
+    "protein": 39,
+    "carbs": 63,
+    "sugars": 5,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Muffin inglés (Porción extra/grande)",
+        "Pechuga de pavo (Porción extra/grande)",
+        "Huevo estrellado (Porción extra/grande)"
+      ],
+      "steps": [
+        "Cortar y tostar el muffin.",
+        "Armar un sándwich con el huevo y la pechuga."
+      ]
+    }
+  },
+  {
+    "id": "meal_22",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Muffin Inglés con Pechuga (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 381,
+    "protein": 32,
+    "carbs": 16,
+    "sugars": 2,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Muffin inglés (Porción moderada)",
+        "Pechuga de pavo (Porción moderada)",
+        "Huevo estrellado (Porción moderada)"
+      ],
+      "steps": [
+        "Cortar y tostar el muffin.",
+        "Armar un sándwich con el huevo y la pechuga."
+      ]
+    }
+  },
+  {
+    "id": "meal_23",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Batido Verde Desintoxicante (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 716,
+    "protein": 37,
+    "carbs": 70,
+    "sugars": 11,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Manzana verde (Porción extra/grande)",
+        "Espinaca (Porción extra/grande)",
+        "Apio (Porción extra/grande)",
+        "Leña de linaza (Porción extra/grande)"
+      ],
+      "steps": [
+        "Licuar todo con agua y hielo.",
+        "Beber inmediatamente."
+      ]
+    }
+  },
+  {
+    "id": "meal_24",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Batido Verde Desintoxicante (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 330,
+    "protein": 27,
+    "carbs": 28,
+    "sugars": 4,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Manzana verde (Porción moderada)",
+        "Espinaca (Porción moderada)",
+        "Apio (Porción moderada)",
+        "Leña de linaza (Porción moderada)"
+      ],
+      "steps": [
+        "Licuar todo con agua y hielo.",
+        "Beber inmediatamente."
+      ]
+    }
+  },
+  {
+    "id": "meal_25",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Pudín de Chía (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 637,
+    "protein": 29,
+    "carbs": 66,
+    "sugars": 6,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Semillas de chía (Porción extra/grande)",
+        "Leche de almendras (Porción extra/grande)",
+        "Vainilla (Porción extra/grande)"
+      ],
+      "steps": [
+        "Mezclar chía, leche y vainilla en un frasco.",
+        "Refrigerar toda la noche."
+      ]
+    }
+  },
+  {
+    "id": "meal_26",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Pudín de Chía (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 337,
+    "protein": 22,
+    "carbs": 33,
+    "sugars": 2,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Semillas de chía (Porción moderada)",
+        "Leche de almendras (Porción moderada)",
+        "Vainilla (Porción moderada)"
+      ],
+      "steps": [
+        "Mezclar chía, leche y vainilla en un frasco.",
+        "Refrigerar toda la noche."
+      ]
+    }
+  },
+  {
+    "id": "meal_27",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Sándwich Clásico de Jamón (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 732,
+    "protein": 32,
+    "carbs": 78,
+    "sugars": 5,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Pan de caja (Porción extra/grande)",
+        "Jamón de pavo (Porción extra/grande)",
+        "Lechuga y jitomate (Porción extra/grande)"
+      ],
+      "steps": [
+        "Untar mostaza o aderezo ligero.",
+        "Colocar jamón y verduras.",
+        "Cerrar y cortar por la mitad."
+      ]
+    }
+  },
+  {
+    "id": "meal_28",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Sándwich Clásico de Jamón (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 288,
+    "protein": 27,
+    "carbs": 19,
+    "sugars": 6,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Pan de caja (Porción moderada)",
+        "Jamón de pavo (Porción moderada)",
+        "Lechuga y jitomate (Porción moderada)"
+      ],
+      "steps": [
+        "Untar mostaza o aderezo ligero.",
+        "Colocar jamón y verduras.",
+        "Cerrar y cortar por la mitad."
+      ]
+    }
+  },
+  {
+    "id": "meal_29",
+    "type": "Desayuno",
+    "objective": "Aumento",
+    "name": "Arepa con Queso (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 611,
+    "protein": 25,
+    "carbs": 65,
+    "sugars": 9,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Harina de maíz precocida (Porción extra/grande)",
+        "Agua (Porción extra/grande)",
+        "Queso blanco rallado (Porción extra/grande)"
+      ],
+      "steps": [
+        "Amasar la harina con agua.",
+        "Formar discos y asar.",
+        "Abrir y rellenar con queso."
+      ]
+    }
+  },
+  {
+    "id": "meal_30",
+    "type": "Desayuno",
+    "objective": "Definición",
+    "name": "Arepa con Queso (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 293,
+    "protein": 26,
+    "carbs": 20,
+    "sugars": 7,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Harina de maíz precocida (Porción moderada)",
+        "Agua (Porción moderada)",
+        "Queso blanco rallado (Porción moderada)"
+      ],
+      "steps": [
+        "Amasar la harina con agua.",
+        "Formar discos y asar.",
+        "Abrir y rellenar con queso."
+      ]
+    }
+  },
+  {
+    "id": "meal_31",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Pechuga de Pollo con Arroz (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 644,
+    "protein": 33,
+    "carbs": 79,
+    "sugars": 11,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Pechuga de pollo (Porción extra/grande)",
+        "Arroz blanco o integral (Porción extra/grande)",
+        "Brócoli (Porción extra/grande)"
+      ],
+      "steps": [
+        "Asar la pechuga sazonada.",
+        "Cocer arroz y brócoli al vapor.",
+        "Servir todo junto."
+      ]
+    }
+  },
+  {
+    "id": "meal_32",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Pechuga de Pollo con Arroz (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 372,
+    "protein": 33,
+    "carbs": 31,
+    "sugars": 4,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Pechuga de pollo (Porción moderada)",
+        "Arroz blanco o integral (Porción moderada)",
+        "Brócoli (Porción moderada)"
+      ],
+      "steps": [
+        "Asar la pechuga sazonada.",
+        "Cocer arroz y brócoli al vapor.",
+        "Servir todo junto."
+      ]
+    }
+  },
+  {
+    "id": "meal_33",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Pasta con Atún (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 697,
+    "protein": 29,
+    "carbs": 86,
+    "sugars": 14,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Pasta de trigo (Porción extra/grande)",
+        "Atún en agua (Porción extra/grande)",
+        "Tomate y cebolla (Porción extra/grande)"
+      ],
+      "steps": [
+        "Hervir pasta.",
+        "Picar tomate y cebolla, mezclar con atún.",
+        "Combinar con pasta escurrida."
+      ]
+    }
+  },
+  {
+    "id": "meal_34",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Pasta con Atún (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 399,
+    "protein": 24,
+    "carbs": 25,
+    "sugars": 5,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Pasta de trigo (Porción moderada)",
+        "Atún en agua (Porción moderada)",
+        "Tomate y cebolla (Porción moderada)"
+      ],
+      "steps": [
+        "Hervir pasta.",
+        "Picar tomate y cebolla, mezclar con atún.",
+        "Combinar con pasta escurrida."
+      ]
+    }
+  },
+  {
+    "id": "meal_35",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Filete de Res a la Plancha (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 737,
+    "protein": 34,
+    "carbs": 89,
+    "sugars": 6,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Bistec de res magro (Porción extra/grande)",
+        "Papa al horno (Porción extra/grande)",
+        "Espárragos (Porción extra/grande)"
+      ],
+      "steps": [
+        "Sazonar y asar la res.",
+        "Hornear papa envuelta en aluminio.",
+        "Saltear espárragos ligeramente."
+      ]
+    }
+  },
+  {
+    "id": "meal_36",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Filete de Res a la Plancha (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 391,
+    "protein": 30,
+    "carbs": 20,
+    "sugars": 4,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Bistec de res magro (Porción moderada)",
+        "Papa al horno (Porción moderada)",
+        "Espárragos (Porción moderada)"
+      ],
+      "steps": [
+        "Sazonar y asar la res.",
+        "Hornear papa envuelta en aluminio.",
+        "Saltear espárragos ligeramente."
+      ]
+    }
+  },
+  {
+    "id": "meal_37",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Ensalada César con Pollo (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 580,
+    "protein": 41,
+    "carbs": 84,
+    "sugars": 13,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Lechuga orejona (Porción extra/grande)",
+        "Pollo a la plancha (Porción extra/grande)",
+        "Crutones integrales (Porción extra/grande)",
+        "Aderezo bajo en grasa (Porción extra/grande)"
+      ],
+      "steps": [
+        "Lavar lechuga y picar.",
+        "Agregar trozos de pollo y crutones.",
+        "Mezclar con poco aderezo."
+      ]
+    }
+  },
+  {
+    "id": "meal_38",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Ensalada César con Pollo (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 252,
+    "protein": 29,
+    "carbs": 15,
+    "sugars": 2,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Lechuga orejona (Porción moderada)",
+        "Pollo a la plancha (Porción moderada)",
+        "Crutones integrales (Porción moderada)",
+        "Aderezo bajo en grasa (Porción moderada)"
+      ],
+      "steps": [
+        "Lavar lechuga y picar.",
+        "Agregar trozos de pollo y crutones.",
+        "Mezclar con poco aderezo."
+      ]
+    }
+  },
+  {
+    "id": "meal_39",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Lentejas Guisadas (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 729,
+    "protein": 39,
+    "carbs": 81,
+    "sugars": 8,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Lentejas (Porción extra/grande)",
+        "Zanahoria, papa picada (Porción extra/grande)",
+        "Tomate, cebolla, ajo (Porción extra/grande)"
+      ],
+      "steps": [
+        "Hervir lentejas.",
+        "Sofreír tomate, cebolla y verduras picadas.",
+        "Agregar al caldo y cocer bien."
+      ]
+    }
+  },
+  {
+    "id": "meal_40",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Lentejas Guisadas (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 280,
+    "protein": 25,
+    "carbs": 17,
+    "sugars": 7,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Lentejas (Porción moderada)",
+        "Zanahoria, papa picada (Porción moderada)",
+        "Tomate, cebolla, ajo (Porción moderada)"
+      ],
+      "steps": [
+        "Hervir lentejas.",
+        "Sofreír tomate, cebolla y verduras picadas.",
+        "Agregar al caldo y cocer bien."
+      ]
+    }
+  },
+  {
+    "id": "meal_41",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Fajitas de Pollo (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 580,
+    "protein": 34,
+    "carbs": 72,
+    "sugars": 9,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Tiras de pollo (Porción extra/grande)",
+        "Pimientos de colores (Porción extra/grande)",
+        "Cebolla (Porción extra/grande)",
+        "Tortillas de maíz (Porción extra/grande)"
+      ],
+      "steps": [
+        "Sofreír pollo con pimientos y cebolla.",
+        "Servir con tortillas calientes."
+      ]
+    }
+  },
+  {
+    "id": "meal_42",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Fajitas de Pollo (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 395,
+    "protein": 21,
+    "carbs": 19,
+    "sugars": 2,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Tiras de pollo (Porción moderada)",
+        "Pimientos de colores (Porción moderada)",
+        "Cebolla (Porción moderada)",
+        "Tortillas de maíz (Porción moderada)"
+      ],
+      "steps": [
+        "Sofreír pollo con pimientos y cebolla.",
+        "Servir con tortillas calientes."
+      ]
+    }
+  },
+  {
+    "id": "meal_43",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Pescado Empapelado (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 653,
+    "protein": 39,
+    "carbs": 86,
+    "sugars": 12,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Filete de pescado blanco (Porción extra/grande)",
+        "Calabacitas y zanahoria (Porción extra/grande)",
+        "Limón y cilantro (Porción extra/grande)"
+      ],
+      "steps": [
+        "Poner el filete y verduras en papel aluminio.",
+        "Sazonar, cerrar el paquete y asar al comal 15 min."
+      ]
+    }
+  },
+  {
+    "id": "meal_44",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Pescado Empapelado (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 271,
+    "protein": 21,
+    "carbs": 26,
+    "sugars": 3,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Filete de pescado blanco (Porción moderada)",
+        "Calabacitas y zanahoria (Porción moderada)",
+        "Limón y cilantro (Porción moderada)"
+      ],
+      "steps": [
+        "Poner el filete y verduras en papel aluminio.",
+        "Sazonar, cerrar el paquete y asar al comal 15 min."
+      ]
+    }
+  },
+  {
+    "id": "meal_45",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Albóndigas de Pavo (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 718,
+    "protein": 38,
+    "carbs": 79,
+    "sugars": 12,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Carne molida de pavo (Porción extra/grande)",
+        "Avena molida (como pan molido) (Porción extra/grande)",
+        "Salsa de tomate casera (Porción extra/grande)"
+      ],
+      "steps": [
+        "Formar albóndigas con la carne y avena.",
+        "Cocer en la salsa de tomate a fuego lento."
+      ]
+    }
+  },
+  {
+    "id": "meal_46",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Albóndigas de Pavo (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 393,
+    "protein": 27,
+    "carbs": 22,
+    "sugars": 4,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Carne molida de pavo (Porción moderada)",
+        "Avena molida (como pan molido) (Porción moderada)",
+        "Salsa de tomate casera (Porción moderada)"
+      ],
+      "steps": [
+        "Formar albóndigas con la carne y avena.",
+        "Cocer en la salsa de tomate a fuego lento."
+      ]
+    }
+  },
+  {
+    "id": "meal_47",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Arroz Frito Saludable (Estilo Oriental) (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 709,
+    "protein": 37,
+    "carbs": 83,
+    "sugars": 9,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Arroz sobrante del día anterior (Porción extra/grande)",
+        "Huevo (Porción extra/grande)",
+        "Chícharos y zanahoria (Porción extra/grande)",
+        "Salsa de soya baja en sodio (Porción extra/grande)"
+      ],
+      "steps": [
+        "Sofreír las verduras y arroz en un wok o sartén grande.",
+        "Añadir huevo y remover.",
+        "Agregar salsa de soya."
+      ]
+    }
+  },
+  {
+    "id": "meal_48",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Arroz Frito Saludable (Estilo Oriental) (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 355,
+    "protein": 32,
+    "carbs": 20,
+    "sugars": 4,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Arroz sobrante del día anterior (Porción moderada)",
+        "Huevo (Porción moderada)",
+        "Chícharos y zanahoria (Porción moderada)",
+        "Salsa de soya baja en sodio (Porción moderada)"
+      ],
+      "steps": [
+        "Sofreír las verduras y arroz en un wok o sartén grande.",
+        "Añadir huevo y remover.",
+        "Agregar salsa de soya."
+      ]
+    }
+  },
+  {
+    "id": "meal_49",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Salpicón de Res (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 551,
+    "protein": 28,
+    "carbs": 70,
+    "sugars": 12,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Carne de res para deshebrar (Porción extra/grande)",
+        "Lechuga, rábano, cebolla (Porción extra/grande)",
+        "Tostadas horneadas (Porción extra/grande)"
+      ],
+      "steps": [
+        "Cocer y deshebrar la carne.",
+        "Mezclar fría con las verduras picadas y limón.",
+        "Comer con tostadas."
+      ]
+    }
+  },
+  {
+    "id": "meal_50",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Salpicón de Res (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 338,
+    "protein": 34,
+    "carbs": 15,
+    "sugars": 4,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Carne de res para deshebrar (Porción moderada)",
+        "Lechuga, rábano, cebolla (Porción moderada)",
+        "Tostadas horneadas (Porción moderada)"
+      ],
+      "steps": [
+        "Cocer y deshebrar la carne.",
+        "Mezclar fría con las verduras picadas y limón.",
+        "Comer con tostadas."
+      ]
+    }
+  },
+  {
+    "id": "meal_51",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Tortitas de Atún y Avena (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 679,
+    "protein": 28,
+    "carbs": 61,
+    "sugars": 12,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Atún de lata (Porción extra/grande)",
+        "Huevo (Porción extra/grande)",
+        "Avena (Porción extra/grande)",
+        "Ajo y perejil picado (Porción extra/grande)"
+      ],
+      "steps": [
+        "Mezclar atún, huevo y avena.",
+        "Formar tortitas pequeñas con las manos.",
+        "Cocinar en sartén con aceite en aerosol."
+      ]
+    }
+  },
+  {
+    "id": "meal_52",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Tortitas de Atún y Avena (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 266,
+    "protein": 30,
+    "carbs": 30,
+    "sugars": 2,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Atún de lata (Porción moderada)",
+        "Huevo (Porción moderada)",
+        "Avena (Porción moderada)",
+        "Ajo y perejil picado (Porción moderada)"
+      ],
+      "steps": [
+        "Mezclar atún, huevo y avena.",
+        "Formar tortitas pequeñas con las manos.",
+        "Cocinar en sartén con aceite en aerosol."
+      ]
+    }
+  },
+  {
+    "id": "meal_53",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Picadillo de Res con Verduras (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 605,
+    "protein": 42,
+    "carbs": 67,
+    "sugars": 7,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Carne molida magra de res (Porción extra/grande)",
+        "Papa, zanahoria, chícharos (Porción extra/grande)",
+        "Puré de tomate (Porción extra/grande)"
+      ],
+      "steps": [
+        "Sofreír la carne.",
+        "Añadir verduras picadas y el puré.",
+        "Cocer hasta que reduzca."
+      ]
+    }
+  },
+  {
+    "id": "meal_54",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Picadillo de Res con Verduras (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 300,
+    "protein": 30,
+    "carbs": 33,
+    "sugars": 3,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Carne molida magra de res (Porción moderada)",
+        "Papa, zanahoria, chícharos (Porción moderada)",
+        "Puré de tomate (Porción moderada)"
+      ],
+      "steps": [
+        "Sofreír la carne.",
+        "Añadir verduras picadas y el puré.",
+        "Cocer hasta que reduzca."
+      ]
+    }
+  },
+  {
+    "id": "meal_55",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Bowl de Quinoa y Garbanzos (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 694,
+    "protein": 28,
+    "carbs": 70,
+    "sugars": 5,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Quinoa cocida (Porción extra/grande)",
+        "Garbanzos tostados (Porción extra/grande)",
+        "Aguacate, pepino (Porción extra/grande)"
+      ],
+      "steps": [
+        "Cocer quinoa.",
+        "Tostar garbanzos con pimentón en sartén.",
+        "Armar un bowl con todo."
+      ]
+    }
+  },
+  {
+    "id": "meal_56",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Bowl de Quinoa y Garbanzos (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 380,
+    "protein": 32,
+    "carbs": 33,
+    "sugars": 3,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Quinoa cocida (Porción moderada)",
+        "Garbanzos tostados (Porción moderada)",
+        "Aguacate, pepino (Porción moderada)"
+      ],
+      "steps": [
+        "Cocer quinoa.",
+        "Tostar garbanzos con pimentón en sartén.",
+        "Armar un bowl con todo."
+      ]
+    }
+  },
+  {
+    "id": "meal_57",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Sopa de Fideos con Pollo (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 590,
+    "protein": 43,
+    "carbs": 80,
+    "sugars": 13,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Pasta fideo (Porción extra/grande)",
+        "Caldo de pollo natural (Porción extra/grande)",
+        "Zanahoria y apio (Porción extra/grande)"
+      ],
+      "steps": [
+        "Dorar el fideo ligeramente.",
+        "Agregar el caldo y las verduras.",
+        "Cocer 15 min."
+      ]
+    }
+  },
+  {
+    "id": "meal_58",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Sopa de Fideos con Pollo (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 255,
+    "protein": 23,
+    "carbs": 33,
+    "sugars": 7,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Pasta fideo (Porción moderada)",
+        "Caldo de pollo natural (Porción moderada)",
+        "Zanahoria y apio (Porción moderada)"
+      ],
+      "steps": [
+        "Dorar el fideo ligeramente.",
+        "Agregar el caldo y las verduras.",
+        "Cocer 15 min."
+      ]
+    }
+  },
+  {
+    "id": "meal_59",
+    "type": "Almuerzo",
+    "objective": "Aumento",
+    "name": "Tacos de Soya Sabor Pastor (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 636,
+    "protein": 26,
+    "carbs": 82,
+    "sugars": 7,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Soya texturizada (Porción extra/grande)",
+        "Adobo de chiles secos (pastor) (Porción extra/grande)",
+        "Tortillas, cilantro, cebolla (Porción extra/grande)"
+      ],
+      "steps": [
+        "Hidratar y exprimir la soya.",
+        "Cocinar con el adobo.",
+        "Armar los tacos con su verdura."
+      ]
+    }
+  },
+  {
+    "id": "meal_60",
+    "type": "Almuerzo",
+    "objective": "Definición",
+    "name": "Tacos de Soya Sabor Pastor (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 392,
+    "protein": 29,
+    "carbs": 28,
+    "sugars": 2,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Soya texturizada (Porción moderada)",
+        "Adobo de chiles secos (pastor) (Porción moderada)",
+        "Tortillas, cilantro, cebolla (Porción moderada)"
+      ],
+      "steps": [
+        "Hidratar y exprimir la soya.",
+        "Cocinar con el adobo.",
+        "Armar los tacos con su verdura."
+      ]
+    }
+  },
+  {
+    "id": "meal_61",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Wrap de Atún (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 584,
+    "protein": 36,
+    "carbs": 66,
+    "sugars": 12,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Tortilla integral grande (Porción extra/grande)",
+        "Atún, elote dorado (Porción extra/grande)",
+        "Lechuga (Porción extra/grande)"
+      ],
+      "steps": [
+        "Escurrir atún.",
+        "Poner en la tortilla con lechuga y elote.",
+        "Enrollar y partir por la mitad."
+      ]
+    }
+  },
+  {
+    "id": "meal_62",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Wrap de Atún (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 258,
+    "protein": 22,
+    "carbs": 32,
+    "sugars": 6,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Tortilla integral grande (Porción moderada)",
+        "Atún, elote dorado (Porción moderada)",
+        "Lechuga (Porción moderada)"
+      ],
+      "steps": [
+        "Escurrir atún.",
+        "Poner en la tortilla con lechuga y elote.",
+        "Enrollar y partir por la mitad."
+      ]
+    }
+  },
+  {
+    "id": "meal_63",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Tostadas de Queso Panela (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 691,
+    "protein": 38,
+    "carbs": 87,
+    "sugars": 13,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Tostadas horneadas (Porción extra/grande)",
+        "Queso panela rebanado (Porción extra/grande)",
+        "Pico de gallo (Porción extra/grande)"
+      ],
+      "steps": [
+        "Colocar rebanadas de panela sobre las tostadas.",
+        "Añadir salsa de pico de gallo encima."
+      ]
+    }
+  },
+  {
+    "id": "meal_64",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Tostadas de Queso Panela (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 312,
+    "protein": 31,
+    "carbs": 22,
+    "sugars": 4,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Tostadas horneadas (Porción moderada)",
+        "Queso panela rebanado (Porción moderada)",
+        "Pico de gallo (Porción moderada)"
+      ],
+      "steps": [
+        "Colocar rebanadas de panela sobre las tostadas.",
+        "Añadir salsa de pico de gallo encima."
+      ]
+    }
+  },
+  {
+    "id": "meal_65",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Sándwich de Ensalada de Pollo (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 576,
+    "protein": 38,
+    "carbs": 67,
+    "sugars": 9,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Pollo deshebrado (Porción extra/grande)",
+        "Yogur griego (como mayonesa) (Porción extra/grande)",
+        "Pan integral (Porción extra/grande)"
+      ],
+      "steps": [
+        "Mezclar pollo con el yogur y un poco de mostaza.",
+        "Untar en el pan y servir."
+      ]
+    }
+  },
+  {
+    "id": "meal_66",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Sándwich de Ensalada de Pollo (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 259,
+    "protein": 24,
+    "carbs": 24,
+    "sugars": 7,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Pollo deshebrado (Porción moderada)",
+        "Yogur griego (como mayonesa) (Porción moderada)",
+        "Pan integral (Porción moderada)"
+      ],
+      "steps": [
+        "Mezclar pollo con el yogur y un poco de mostaza.",
+        "Untar en el pan y servir."
+      ]
+    }
+  },
+  {
+    "id": "meal_67",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Huevos Hervidos con Galletas (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 617,
+    "protein": 30,
+    "carbs": 88,
+    "sugars": 12,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Huevos (Porción extra/grande)",
+        "Galletas Salmas o integrales (Porción extra/grande)",
+        "Tomate cherry (Porción extra/grande)"
+      ],
+      "steps": [
+        "Hervir huevos (10-12 min).",
+        "Partir a la mitad y comer acompañados de las galletas y tomate."
+      ]
+    }
+  },
+  {
+    "id": "meal_68",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Huevos Hervidos con Galletas (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 320,
+    "protein": 26,
+    "carbs": 25,
+    "sugars": 2,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Huevos (Porción moderada)",
+        "Galletas Salmas o integrales (Porción moderada)",
+        "Tomate cherry (Porción moderada)"
+      ],
+      "steps": [
+        "Hervir huevos (10-12 min).",
+        "Partir a la mitad y comer acompañados de las galletas y tomate."
+      ]
+    }
+  },
+  {
+    "id": "meal_69",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Tacos de Champiñones al Ajillo (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 716,
+    "protein": 34,
+    "carbs": 64,
+    "sugars": 10,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Champiñones rebanados (Porción extra/grande)",
+        "Ajo, aceite de oliva (Porción extra/grande)",
+        "Tortillas de maíz (Porción extra/grande)"
+      ],
+      "steps": [
+        "Sofreír ajo, agregar champiñones hasta dorar.",
+        "Servir en tortillas calientes."
+      ]
+    }
+  },
+  {
+    "id": "meal_70",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Tacos de Champiñones al Ajillo (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 356,
+    "protein": 20,
+    "carbs": 28,
+    "sugars": 6,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Champiñones rebanados (Porción moderada)",
+        "Ajo, aceite de oliva (Porción moderada)",
+        "Tortillas de maíz (Porción moderada)"
+      ],
+      "steps": [
+        "Sofreír ajo, agregar champiñones hasta dorar.",
+        "Servir en tortillas calientes."
+      ]
+    }
+  },
+  {
+    "id": "meal_71",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Quesadilla de Pavo y Espinaca (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 668,
+    "protein": 44,
+    "carbs": 84,
+    "sugars": 14,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Tortillas integrales o de maíz (Porción extra/grande)",
+        "Jamón de pavo, queso Oaxaca (Porción extra/grande)",
+        "Espinacas bebé (Porción extra/grande)"
+      ],
+      "steps": [
+        "Calentar tortilla, derretir queso con jamón.",
+        "Añadir un puñado de espinacas antes de cerrar."
+      ]
+    }
+  },
+  {
+    "id": "meal_72",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Quesadilla de Pavo y Espinaca (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 386,
+    "protein": 23,
+    "carbs": 23,
+    "sugars": 5,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Tortillas integrales o de maíz (Porción moderada)",
+        "Jamón de pavo, queso Oaxaca (Porción moderada)",
+        "Espinacas bebé (Porción moderada)"
+      ],
+      "steps": [
+        "Calentar tortilla, derretir queso con jamón.",
+        "Añadir un puñado de espinacas antes de cerrar."
+      ]
+    }
+  },
+  {
+    "id": "meal_73",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Crema de Calabaza (Sopa) (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 689,
+    "protein": 41,
+    "carbs": 84,
+    "sugars": 10,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Calabacines (Porción extra/grande)",
+        "Cebolla (Porción extra/grande)",
+        "Un toque de leche evaporada baja en grasa (Porción extra/grande)"
+      ],
+      "steps": [
+        "Hervir calabacín y cebolla.",
+        "Licuar con un poco de agua y leche.",
+        "Calentar y salpimentar."
+      ]
+    }
+  },
+  {
+    "id": "meal_74",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Crema de Calabaza (Sopa) (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 292,
+    "protein": 26,
+    "carbs": 22,
+    "sugars": 6,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Calabacines (Porción moderada)",
+        "Cebolla (Porción moderada)",
+        "Un toque de leche evaporada baja en grasa (Porción moderada)"
+      ],
+      "steps": [
+        "Hervir calabacín y cebolla.",
+        "Licuar con un poco de agua y leche.",
+        "Calentar y salpimentar."
+      ]
+    }
+  },
+  {
+    "id": "meal_75",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Ensalada Caprese Ligera (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 727,
+    "protein": 37,
+    "carbs": 89,
+    "sugars": 12,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Tomates en rodajas (Porción extra/grande)",
+        "Queso mozzarella fresco (Porción extra/grande)",
+        "Albahaca fresca (Porción extra/grande)"
+      ],
+      "steps": [
+        "Acomodar tomate y queso intercalados.",
+        "Decorar con albahaca y unas gotas de vinagre balsámico."
+      ]
+    }
+  },
+  {
+    "id": "meal_76",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Ensalada Caprese Ligera (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 342,
+    "protein": 27,
+    "carbs": 27,
+    "sugars": 3,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Tomates en rodajas (Porción moderada)",
+        "Queso mozzarella fresco (Porción moderada)",
+        "Albahaca fresca (Porción moderada)"
+      ],
+      "steps": [
+        "Acomodar tomate y queso intercalados.",
+        "Decorar con albahaca y unas gotas de vinagre balsámico."
+      ]
+    }
+  },
+  {
+    "id": "meal_77",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Filete de Pescado Blanco al Limón (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 703,
+    "protein": 38,
+    "carbs": 83,
+    "sugars": 6,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Pescado tilapia (Porción extra/grande)",
+        "Jugo de limón, pimienta (Porción extra/grande)",
+        "Ensalada verde (Porción extra/grande)"
+      ],
+      "steps": [
+        "Marinar pescado en limón.",
+        "Cocinar en sartén antiadherente.",
+        "Acompañar con la ensalada."
+      ]
+    }
+  },
+  {
+    "id": "meal_78",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Filete de Pescado Blanco al Limón (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 362,
+    "protein": 31,
+    "carbs": 15,
+    "sugars": 4,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Pescado tilapia (Porción moderada)",
+        "Jugo de limón, pimienta (Porción moderada)",
+        "Ensalada verde (Porción moderada)"
+      ],
+      "steps": [
+        "Marinar pescado en limón.",
+        "Cocinar en sartén antiadherente.",
+        "Acompañar con la ensalada."
+      ]
+    }
+  },
+  {
+    "id": "meal_79",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Pizza en Pan Árabe (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 738,
+    "protein": 37,
+    "carbs": 61,
+    "sugars": 14,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Pan pita (árabe) (Porción extra/grande)",
+        "Salsa de tomate casera (Porción extra/grande)",
+        "Queso rallado magro, champiñones (Porción extra/grande)"
+      ],
+      "steps": [
+        "Untar salsa en el pan pita.",
+        "Poner queso y champiñones.",
+        "Hornear hasta que cruja."
+      ]
+    }
+  },
+  {
+    "id": "meal_80",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Pizza en Pan Árabe (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 324,
+    "protein": 23,
+    "carbs": 19,
+    "sugars": 5,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Pan pita (árabe) (Porción moderada)",
+        "Salsa de tomate casera (Porción moderada)",
+        "Queso rallado magro, champiñones (Porción moderada)"
+      ],
+      "steps": [
+        "Untar salsa en el pan pita.",
+        "Poner queso y champiñones.",
+        "Hornear hasta que cruja."
+      ]
+    }
+  },
+  {
+    "id": "meal_81",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Rollitos de Jamón y Queso (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 643,
+    "protein": 38,
+    "carbs": 65,
+    "sugars": 6,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Rebanadas gruesas de jamón de pavo (Porción extra/grande)",
+        "Bastones de queso y pepino (Porción extra/grande)"
+      ],
+      "steps": [
+        "Enrollar un bastón de queso y pepino dentro del jamón.",
+        "Sujetar con un palillo."
+      ]
+    }
+  },
+  {
+    "id": "meal_82",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Rollitos de Jamón y Queso (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 331,
+    "protein": 24,
+    "carbs": 25,
+    "sugars": 6,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Rebanadas gruesas de jamón de pavo (Porción moderada)",
+        "Bastones de queso y pepino (Porción moderada)"
+      ],
+      "steps": [
+        "Enrollar un bastón de queso y pepino dentro del jamón.",
+        "Sujetar con un palillo."
+      ]
+    }
+  },
+  {
+    "id": "meal_83",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Cereal Liviano de Noche (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 734,
+    "protein": 33,
+    "carbs": 76,
+    "sugars": 13,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Cereal sin azúcar o avena inflada (Porción extra/grande)",
+        "Leche de almendras (Porción extra/grande)",
+        "Canela (Porción extra/grande)"
+      ],
+      "steps": [
+        "Servir en un bol pequeño.",
+        "Comer para saciar antojos dulces de forma ligera."
+      ]
+    }
+  },
+  {
+    "id": "meal_84",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Cereal Liviano de Noche (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 338,
+    "protein": 24,
+    "carbs": 27,
+    "sugars": 3,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Cereal sin azúcar o avena inflada (Porción moderada)",
+        "Leche de almendras (Porción moderada)",
+        "Canela (Porción moderada)"
+      ],
+      "steps": [
+        "Servir en un bol pequeño.",
+        "Comer para saciar antojos dulces de forma ligera."
+      ]
+    }
+  },
+  {
+    "id": "meal_85",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Fajitas de Calabacín y Cebolla (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 720,
+    "protein": 33,
+    "carbs": 88,
+    "sugars": 12,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Calabacín en tiras (Porción extra/grande)",
+        "Cebolla y pimientos (Porción extra/grande)",
+        "Salsa de soya (Porción extra/grande)"
+      ],
+      "steps": [
+        "Saltear todas las verduras.",
+        "Aderezar con soya y comer caliente o en tacos."
+      ]
+    }
+  },
+  {
+    "id": "meal_86",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Fajitas de Calabacín y Cebolla (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 308,
+    "protein": 22,
+    "carbs": 34,
+    "sugars": 5,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Calabacín en tiras (Porción moderada)",
+        "Cebolla y pimientos (Porción moderada)",
+        "Salsa de soya (Porción moderada)"
+      ],
+      "steps": [
+        "Saltear todas las verduras.",
+        "Aderezar con soya y comer caliente o en tacos."
+      ]
+    }
+  },
+  {
+    "id": "meal_87",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Pimientos Rellenos Fáciles (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 551,
+    "protein": 40,
+    "carbs": 66,
+    "sugars": 9,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Pimiento morrón (Porción extra/grande)",
+        "Sobrante de picadillo o quinoa (Porción extra/grande)"
+      ],
+      "steps": [
+        "Cortar la tapa del pimiento y limpiar semillas.",
+        "Rellenar y asar o meter al microondas 3-4 min."
+      ]
+    }
+  },
+  {
+    "id": "meal_88",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Pimientos Rellenos Fáciles (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 327,
+    "protein": 25,
+    "carbs": 23,
+    "sugars": 2,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Pimiento morrón (Porción moderada)",
+        "Sobrante de picadillo o quinoa (Porción moderada)"
+      ],
+      "steps": [
+        "Cortar la tapa del pimiento y limpiar semillas.",
+        "Rellenar y asar o meter al microondas 3-4 min."
+      ]
+    }
+  },
+  {
+    "id": "meal_89",
+    "type": "Cena",
+    "objective": "Aumento",
+    "name": "Yogur con Gelatina (Para Ganar Masa)",
+    "description": "Versión alta en calorías y carbohidratos, ideal para tu fase de recomposición y ganancia de masa en brazos, espalda y pecho.",
+    "calories": 659,
+    "protein": 38,
+    "carbs": 81,
+    "sugars": 14,
+    "recipe": {
+      "portions": "1 porción abundante",
+      "ingredients": [
+        "Yogur natural (Porción extra/grande)",
+        "Gelatina sin azúcar preparada (Porción extra/grande)"
+      ],
+      "steps": [
+        "Mezclar trozos de gelatina firme dentro del yogur.",
+        "Postre ligero, llenador y bajo en calorías."
+      ]
+    }
+  },
+  {
+    "id": "meal_90",
+    "type": "Cena",
+    "objective": "Definición",
+    "name": "Yogur con Gelatina (Para Bajar Panza)",
+    "description": "Versión reducida en carbohidratos, priorizando proteína para mantener tu masa muscular mientras bajas porcentaje de grasa abdominal.",
+    "calories": 350,
+    "protein": 34,
+    "carbs": 15,
+    "sugars": 5,
+    "recipe": {
+      "portions": "1 porción moderada con abundantes vegetales",
+      "ingredients": [
+        "Yogur natural (Porción moderada)",
+        "Gelatina sin azúcar preparada (Porción moderada)"
+      ],
+      "steps": [
+        "Mezclar trozos de gelatina firme dentro del yogur.",
+        "Postre ligero, llenador y bajo en calorías."
+      ]
+    }
+  },
+  {
+    "id": "meal_91",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Jugo Verde Depurativo",
+    "description": "Alto en vitaminas, ideal para alcalinizar.",
+    "calories": 50,
+    "protein": 1,
+    "carbs": 12,
+    "sugars": 8,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "Apio, Nopal, Piña pequeña, Agua"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_92",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Batido de Proteína Whey",
+    "description": "Recuperación muscular rápida.",
+    "calories": 110,
+    "protein": 24,
+    "carbs": 3,
+    "sugars": 1,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "1 scoop Proteína, 250ml Agua"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_93",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Agua de Limón con Chía",
+    "description": "Refrescante y rica en Omega 3.",
+    "calories": 30,
+    "protein": 1,
+    "carbs": 2,
+    "sugars": 0,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "Limón, 1 cda chía, Stevia, Agua"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_94",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Té Verde Frío",
+    "description": "Termogénico natural, quema grasa.",
+    "calories": 5,
+    "protein": 0,
+    "carbs": 0,
+    "sugars": 0,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "Bolsitas de Té verde, Hielo, Limón"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_95",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Agua de Jamaica sin azúcar",
+    "description": "Diurético para no retener líquidos.",
+    "calories": 10,
+    "protein": 0,
+    "carbs": 2,
+    "sugars": 0,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "Flor de jamaica hervida, Agua, Stevia"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_96",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Café Negro Intenso",
+    "description": "Pre-entreno natural por excelencia.",
+    "calories": 2,
+    "protein": 0,
+    "carbs": 0,
+    "sugars": 0,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "Café molido, Agua caliente"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_97",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Limonada Rosa de Fresa",
+    "description": "Bebida cítrica frutal sin excesos.",
+    "calories": 20,
+    "protein": 0,
+    "carbs": 4,
+    "sugars": 3,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "3 Fresas licuadas, Limón, Agua mineral"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_98",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Licuado de Plátano Básico",
+    "description": "Para volumen rápido.",
+    "calories": 250,
+    "protein": 8,
+    "carbs": 45,
+    "sugars": 15,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "1 Plátano, Leche, Avena"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_99",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Infusión de Manzanilla",
+    "description": "Relajante para las noches.",
+    "calories": 0,
+    "protein": 0,
+    "carbs": 0,
+    "sugars": 0,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "Manzanilla, Agua caliente"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_100",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Agua de Pepino y Menta",
+    "description": "Frescura total y bajas calorías.",
+    "calories": 15,
+    "protein": 0,
+    "carbs": 3,
+    "sugars": 1,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "Medio pepino, hojas de menta, agua"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_101",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Leche Dorada (Golden Milk)",
+    "description": "Antiinflamatorio articular.",
+    "calories": 80,
+    "protein": 4,
+    "carbs": 12,
+    "sugars": 10,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "Leche descremada, Cúrcuma, Pimienta, Canela"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_102",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Agua Mineral con Limón y Sal",
+    "description": "Rehidratación para entrenamientos intensos (electrolitos).",
+    "calories": 5,
+    "protein": 0,
+    "carbs": 0,
+    "sugars": 0,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "Agua mineral con gas, Limón, Pizca de sal"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_103",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Smoothie de Frutos Rojos",
+    "description": "Antioxidantes para recomposición corporal.",
+    "calories": 120,
+    "protein": 2,
+    "carbs": 18,
+    "sugars": 9,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "Moras, Frambuesas, Leche vegetal"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_104",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Té de Jengibre y Canela",
+    "description": "Estimula el metabolismo en la mañana.",
+    "calories": 5,
+    "protein": 0,
+    "carbs": 0,
+    "sugars": 0,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "Raíz de jengibre, Canela en rama, Agua hervida"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  },
+  {
+    "id": "meal_105",
+    "type": "Bebida",
+    "objective": "Ambos",
+    "name": "Agua de Tamarindo (Ligera)",
+    "description": "Dulce pero sin agregar azúcar refinada.",
+    "calories": 40,
+    "protein": 0,
+    "carbs": 10,
+    "sugars": 6,
+    "recipe": {
+      "portions": "1 vaso",
+      "ingredients": [
+        "Vainas de tamarindo cocidas, Stevia"
+      ],
+      "steps": [
+        "Mezclar o licuar todos los ingredientes.",
+        "Servir frío o caliente según corresponda."
+      ]
+    }
+  }
+]
