@@ -57,7 +57,10 @@ public class CacheService : ICacheService
         {
             try
             {
-                await _redis.StringSetAsync(key, serialized, expiry);
+                if (expiry.HasValue)
+                    await _redis.StringSetAsync(key, serialized, expiry.Value);
+                else
+                    await _redis.StringSetAsync(key, serialized);
                 return;
             }
             catch
