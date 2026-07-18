@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AegiFitness — Guía de Despliegue</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #F2F3F7; color: #1C1E26; line-height: 1.7; }
+
+    :root {
+      --cy: #0891B2; --cy-pl: #CFFAFE; --cy-bg: #ECFEFF;
+      --em: #10B981; --em-pl: #DCFCE7;
+      --am: #F59E0B; --am-pl: #FEF3C7;
+      --in: #6366F1; --in-pl: #E0E7FF; --in-bg: #EEF2FF;
+      --gray-dark: #1C1E26; --gray-700: #374151; --gray-muted: #6B7280;
+      --gray-line: #E5E7EB; --gray-foot: #F9FAFB; --white: #FFFFFF;
+      --r-sm: 6px; --r-md: 10px; --r-lg: 14px;
+      --shadow: 0 1px 4px rgba(0,0,0,.08), 0 0 0 .5px rgba(0,0,0,.06);
+    }
+
+    .header {
+      background: linear-gradient(135deg, #0E7490 0%, #22D3EE 100%);
+      color: #fff; padding: 60px 24px 40px; text-align: center;
+    }
+    .header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 8px; }
+    .header p { font-size: 1.1rem; opacity: .92; max-width: 640px; margin: 0 auto; }
+    .header .version {
+      display: inline-block; margin-top: 16px; font-size: .75rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+      background: rgba(255,255,255,.2); padding: 4px 12px; border-radius: 20px;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 24px; }
+    .grid { display: grid; grid-template-columns: 260px 1fr; gap: 32px; }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+
+    .sidebar { position: sticky; top: 24px; height: fit-content; }
+    .nav-card { background: var(--white); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 20px; }
+    .nav-card h3 { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--gray-muted); margin-bottom: 12px; }
+    .nav-card a {
+      display: block; padding: 8px 10px; border-radius: var(--r-sm);
+      font-size: .85rem; color: var(--gray-700); text-decoration: none;
+      transition: background 150ms, color 150ms; margin-bottom: 2px;
+    }
+    .nav-card a:hover { background: var(--cy-pl); color: var(--cy); }
+
+    .card { background: var(--white); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 32px; margin-bottom: 24px; }
+    .card h2 { font-size: 1.4rem; font-weight: 700; color: var(--gray-dark); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .card h2 .num {
+      width: 32px; height: 32px; border-radius: 50%; background: var(--cy-pl);
+      color: var(--cy); display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; font-weight: 700; flex-shrink: 0;
+    }
+    .card h3 { font-size: 1.1rem; font-weight: 600; color: var(--gray-dark); margin: 24px 0 12px; }
+    .card p { margin-bottom: 12px; color: var(--gray-700); }
+    .card ul, .card ol { margin: 12px 0 12px 20px; color: var(--gray-700); }
+    .card li { margin-bottom: 6px; }
+    .card strong { color: var(--gray-dark); }
+
+    pre {
+      background: #1e1e2e; color: #cdd6f4; padding: 16px 20px; border-radius: var(--r-md);
+      overflow-x: auto; font-family: 'Roboto Mono', monospace; font-size: .82rem;
+      line-height: 1.6; margin: 16px 0;
+    }
+    code {
+      background: var(--gray-foot); border: 1px solid var(--gray-line);
+      padding: 2px 6px; border-radius: 4px; font-family: 'Roboto Mono', monospace;
+      font-size: .85em; color: var(--cy);
+    }
+    pre code { background: none; border: none; padding: 0; color: inherit; }
+
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: .9rem; }
+    th, td { border: 1px solid var(--gray-line); padding: 10px 12px; text-align: left; }
+    th { background: var(--gray-foot); font-weight: 600; color: var(--gray-dark); }
+    td { color: var(--gray-700); }
+
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .75rem; font-weight: 600; margin-right: 6px; }
+    .badge-green { background: var(--em-pl); color: #065F46; }
+    .badge-blue { background: var(--in-pl); color: var(--in); }
+    .badge-cyan { background: var(--cy-pl); color: var(--cy); }
+    .badge-orange { background: var(--am-pl); color: #92400E; }
+
+    .info-box { background: var(--cy-bg); border-left: 4px solid var(--cy); padding: 16px 20px; border-radius: 0 var(--r-md) var(--r-md) 0; margin: 16px 0; }
+    .info-box p { margin: 0; color: var(--gray-700); }
+    .warning-box { background: var(--am-pl); border-left: 4px solid var(--am); padding: 16px 20px; border-radius: 0 var(--r-md) var(--r-md) 0; margin: 16px 0; }
+    .warning-box p { margin: 0; color: #92400E; }
+
+    .footer { text-align: center; padding: 40px 24px; color: var(--gray-muted); font-size: .85rem; }
+    section { scroll-margin-top: 24px; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <h1>AegiFitness</h1>
+  <p>Guía completa de despliegue en tu servidor: Docker + Nginx Proxy Manager + Cloudflare Tunnel</p>
+  <span class="version">v1.0</span>
+</header>
+
+<div class="container">
+  <div class="grid">
+
+    <aside class="sidebar">
+      <div class="nav-card">
+        <h3>Contenido</h3>
+        <a href="#requisitos">1. Requisitos</a>
+        <a href="#arquitectura">2. Arquitectura</a>
+        <a href="#estructura">3. Estructura</a>
+        <a href="#instalacion">4. Instalación</a>
+        <a href="#compose">5. Docker Compose</a>
+        <a href="#cloudflare">6. Cloudflare Tunnel</a>
+        <a href="#npm">7. Nginx Proxy Manager</a>
+        <a href="#acceso">8. Primer Acceso</a>
+        <a href="#actualizar">9. Actualizar App</a>
+        <a href="#claves">10. Cambiar Claves</a>
+        <a href="#respaldo">11. Respaldos</a>
+        <a href="#problemas">12. Problemas</a>
+      </div>
+    </aside>
+
+    <main>
+
+      <!-- 1. Requisitos -->
+      <section id="requisitos" class="card">
+        <h2><span class="num">1</span>Requisitos</h2>
+        <p>Tu servidor ya tiene casi todo. AegiFitness necesita:</p>
+        <ul>
+          <li><strong>Ubuntu Server</strong> con Docker y Docker Compose (ya lo tienes)</li>
+          <li><strong>Red Docker <code>proxy</code></strong> externa donde vive Nginx Proxy Manager (ya existe)</li>
+          <li><strong>Cloudflare Tunnel</strong> apuntando a NPM (ya existe)</li>
+          <li><strong>~2 GB de RAM libres</strong> para construir las imágenes en el servidor (la API .NET y el build de Vite se compilan dentro de Docker)</li>
+          <li>Un <strong>subdominio</strong> para la app, ej: <code>fitness.tudominio.com</code></li>
+        </ul>
+        <div class="info-box">
+          <p><strong>Nota:</strong> A diferencia de AegisDocs, AegiFitness sí lleva backend: API ASP.NET Core, PostgreSQL y Redis. Todo viaja en el mismo <code>docker-compose.yml</code> — no instalas nada más en el host.</p>
+        </div>
+      </section>
+
+      <!-- 2. Arquitectura -->
+      <section id="arquitectura" class="card">
+        <h2><span class="num">2</span>Arquitectura General</h2>
+        <pre><code>Internet
+    ↓
+Cloudflare DNS
+    ↓
+Cloudflare Tunnel (cloudflared)
+    ↓
+Nginx Proxy Manager  ──► red "proxy"
+    ↓
+aegifit-web   (Nginx: sirve la PWA y proxifica /api)
+    ↓           red "internal" (privada, no expuesta)
+aegifit-api   (ASP.NET Core 10)
+    ↓
+aegifit-db (PostgreSQL 17)  +  aegifit-redis (caché)</code></pre>
+        <p>Esta arquitectura es:</p>
+        <ul>
+          <li><span class="badge badge-green">Segura</span> la base de datos y Redis nunca salen de la red interna</li>
+          <li><span class="badge badge-blue">Simple</span> un solo compose levanta todo el stack</li>
+          <li><span class="badge badge-cyan">Coherente</span> mismo patrón que AegisDocs: NPM → contenedor por nombre</li>
+          <li><span class="badge badge-orange">Portable</span> respaldar = copiar un volumen</li>
+        </ul>
+      </section>
+
+      <!-- 3. Estructura -->
+      <section id="estructura" class="card">
+        <h2><span class="num">3</span>Estructura del Servidor</h2>
+        <p>Crea la carpeta del proyecto junto a tus otras apps:</p>
+        <pre><code>/home/keor/AegiFitness/
+├── docker-compose.yml     ← orquesta los 4 contenedores
+├── client/                ← código del frontend (se compila en el build)
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   ├── package.json
+│   └── src/ ...
+└── server/                ← código del backend (se compila en el build)
+    └── AegiFitness.Api/
+        ├── Dockerfile
+        └── ... (API .NET)</code></pre>
+        <div class="warning-box">
+          <p><strong>Importante:</strong> a diferencia de AegisDocs (que monta archivos estáticos), aquí las imágenes se <strong>construyen en el servidor</strong> con <code>docker compose up -d --build</code>. Por eso debes subir el <strong>código fuente completo</strong> de <code>client/</code> y <code>server/</code>.</p>
+        </div>
+      </section>
+
+      <!-- 4. Instalación -->
+      <section id="instalacion" class="card">
+        <h2><span class="num">4</span>Instalación Paso a Paso</h2>
+
+        <h3>Paso 1: Verificar la red proxy</h3>
+        <pre><code>docker network ls | grep proxy
+# Si no existiera: docker network create proxy</code></pre>
+
+        <h3>Paso 2: Crear la carpeta y subir el código</h3>
+        <pre><code>mkdir -p /home/keor/AegiFitness</code></pre>
+        <p>Desde tu PC (WinSCP, scp o rsync), sube <strong>todo el proyecto</strong>:</p>
+        <pre><code># En Windows, desde la carpeta del repo:
+scp -r client server docker-compose.yml user@tu-servidor:/home/keor/AegiFitness/
+
+# O con rsync (más rápido en actualizaciones):
+rsync -avz --delete client/ user@tu-servidor:/home/keor/AegiFitness/client/
+rsync -avz --delete server/ user@tu-servidor:/home/keor/AegiFitness/server/
+scp docker-compose.yml user@tu-servidor:/home/keor/AegiFitness/</code></pre>
+        <div class="info-box">
+          <p><strong>Tip:</strong> no subas <code>node_modules/</code>, <code>dist/</code>, <code>bin/</code> ni <code>obj/</code>. Los builds ocurren dentro de Docker. (<code>rsync --delete</code> con esas carpetas excluidas localmente ya está bien; los <code>.dockerignore</code> incluidos las filtran del build de todas formas.)</p>
+        </div>
+
+        <h3>Paso 3: (Opcional) Editar claves antes del primer arranque</h3>
+        <p>Abre <code>docker-compose.yml</code> y ajusta si quieres: <code>POSTGRES_PASSWORD</code>, <code>Jwt__Key</code> y <code>SEED_ADMIN_PASSWORD</code> (la contraseña inicial del usuario <code>admin</code>). Para uso personal puedes dejarlas como están.</p>
+
+        <h3>Paso 4: Construir y levantar</h3>
+        <pre><code>cd /home/keor/AegiFitness
+docker compose up -d --build</code></pre>
+        <p>La primera vez tarda varios minutos: descarga las imágenes base, compila la API .NET, compila el frontend y siembra la base de datos (roles, usuario admin, 185 ejercicios y 140 comidas).</p>
+
+        <h3>Paso 5: Verificar que todo está sano</h3>
+        <pre><code>docker compose ps
+# Los 4 contenedores deben estar "Up" (db y redis "healthy")
+
+docker logs aegifit-api --tail 20
+# Debe verse: migraciones aplicadas + "Now listening on: http://[::]:8080"
+
+# Probar la API a través del contenedor web:
+docker exec aegifit-web wget -qO- http://aegifit-api:8080/api/health
+# {"status":"ok"}</code></pre>
+      </section>
+
+      <!-- 5. Compose -->
+      <section id="compose" class="card">
+        <h2><span class="num">5</span>Docker Compose</h2>
+        <p>El <code>docker-compose.yml</code> define 4 servicios:</p>
+        <table>
+          <tr><th>Servicio</th><th>Contenedor</th><th>Imagen / Build</th><th>Función</th></tr>
+          <tr><td><code>db</code></td><td><code>aegifit-db</code></td><td>postgres:17-alpine</td><td>Base de datos (volumen <code>aegifit-pgdata</code>)</td></tr>
+          <tr><td><code>redis</code></td><td><code>aegifit-redis</code></td><td>redis:7-alpine</td><td>Caché de catálogos y métricas</td></tr>
+          <tr><td><code>api</code></td><td><code>aegifit-api</code></td><td>build <code>server/</code></td><td>API REST (JWT, Identity, EF Core) en :8080</td></tr>
+          <tr><td><code>web</code></td><td><code>aegifit-web</code></td><td>build <code>client/</code></td><td>Nginx: PWA estática + proxy <code>/api</code> → api:8080</td></tr>
+        </table>
+        <p>Redes:</p>
+        <table>
+          <tr><th>Red</th><th>Tipo</th><th>Quién está</th></tr>
+          <tr><td><code>internal</code></td><td>bridge (privada del proyecto)</td><td>db, redis, api, web</td></tr>
+          <tr><td><code>proxy</code></td><td>externa (la de NPM)</td><td>solo <strong>web</strong></td></tr>
+        </table>
+        <div class="info-box">
+          <p><strong>Claves:</strong> van inline en el propio compose (<code>POSTGRES_PASSWORD</code>, <code>Jwt__Key</code>, <code>SEED_ADMIN_PASSWORD</code>). Para cambiarlas: edita el archivo y <code>docker compose up -d --build</code>. Ver sección 10.</p>
+        </div>
+      </section>
+
+      <!-- 6. Cloudflare -->
+      <section id="cloudflare" class="card">
+        <h2><span class="num">6</span>Cloudflare Tunnel</h2>
+        <p>En tu configuración de cloudflared (ej: <code>/root/docker/cloudflared/config.yml</code>), agrega el hostname apuntando a NPM:</p>
+        <pre><code>- hostname: fitness.tudominio.com
+  service: http://npm:80</code></pre>
+        <p>Luego reinicia el túnel:</p>
+        <pre><code>docker restart cloudflared</code></pre>
+
+        <h3>DNS en Cloudflare</h3>
+        <table>
+          <tr><th>Tipo</th><th>Nombre</th><th>Destino</th></tr>
+          <tr><td>CNAME</td><td>fitness</td><td>tu-tunnel-id.cfargotunnel.com</td></tr>
+        </table>
+        <p>Activa el proxy naranja.</p>
+      </section>
+
+      <!-- 7. NPM -->
+      <section id="npm" class="card">
+        <h2><span class="num">7</span>Nginx Proxy Manager</h2>
+        <p>En tu panel de NPM, crea un <strong>Proxy Host</strong>:</p>
+        <table>
+          <tr><th>Campo</th><th>Valor</th></tr>
+          <tr><td>Domain Names</td><td><code>fitness.tudominio.com</code></td></tr>
+          <tr><td>Scheme</td><td><code>http</code></td></tr>
+          <tr><td>Forward Hostname / IP</td><td><code>aegifit-web</code></td></tr>
+          <tr><td>Forward Port</td><td><code>80</code></td></tr>
+          <tr><td>Cache Assets</td><td>OFF (la PWA gestiona su propio caché)</td></tr>
+          <tr><td>Block Common Exploits</td><td>ON</td></tr>
+        </table>
+        <p>En la pestaña <strong>SSL</strong>:</p>
+        <ul>
+          <li>SSL Certificate: <code>Request a new SSL Certificate</code></li>
+          <li>Force SSL: <code>ON</code></li>
+          <li>HTTP/2 Support: <code>ON</code></li>
+        </ul>
+        <div class="warning-box">
+          <p><strong>No actives "Cache Assets":</strong> el Service Worker de la PWA necesita respuestas frescas de <code>sw.js</code> y del manifest, y el nginx interno ya aplica las cabeceras de caché correctas para los assets.</p>
+        </div>
+      </section>
+
+      <!-- 8. Primer acceso -->
+      <section id="acceso" class="card">
+        <h2><span class="num">8</span>Primer Acceso y Licenciamiento</h2>
+        <ol>
+          <li>Abre <code>https://fitness.tudominio.com</code> (te llegará la PWA instalable: en el móvil, "Añadir a pantalla de inicio").</li>
+          <li>Inicia sesión con el usuario semilla: <strong>usuario</strong> <code>admin</code> · <strong>contraseña</strong> la de <code>SEED_ADMIN_PASSWORD</code> del compose (por defecto <code>Admin#2026!</code>).</li>
+          <li>Completa el onboarding (datos, objetivo, configuración semanal) — el admin también es usuario 1 con su propio plan.</li>
+          <li>Cambia la contraseña de admin cuando puedas.</li>
+        </ol>
+        <h3>Licenciar a otros usuarios</h3>
+        <ol>
+          <li>La otra persona entra a la URL y se registra (usuario y contraseña únicos).</li>
+          <li>Su cuenta queda en estado <strong>pendiente</strong>: puede iniciar sesión pero no usar nada.</li>
+          <li>Tú entras como admin → <strong>Admin</strong> en el menú → filtro <code>pending</code> → <strong>Aprobar</strong> (opcionalmente con vigencia en días).</li>
+          <li>Desde el mismo panel puedes <strong>Suspender</strong>, <strong>Revocar</strong>, <strong>Extender</strong> la licencia u otorgar el rol Admin.</li>
+        </ol>
+      </section>
+
+      <!-- 9. Actualizar -->
+      <section id="actualizar" class="card">
+        <h2><span class="num">9</span>Actualizar la App</h2>
+        <p>Cuando tengas cambios nuevos en el código:</p>
+        <ol>
+          <li>Sube el código actualizado:</li>
+        </ol>
+        <pre><code>rsync -avz --delete client/ user@tu-servidor:/home/keor/AegiFitness/client/
+rsync -avz --delete server/ user@tu-servidor:/home/keor/AegiFitness/server/</code></pre>
+        <ol start="2">
+          <li>Reconstruye y reinicia:</li>
+        </ol>
+        <pre><code>cd /home/keor/AegiFitness
+docker compose up -d --build</code></pre>
+        <p>La base de datos <strong>no se toca</strong>: vive en el volumen <code>aegifit-pgdata</code> y las migraciones se aplican solas al arrancar la API.</p>
+        <div class="info-box">
+          <p><strong>Tip:</strong> si solo cambiaste <code>docker-compose.yml</code> (claves, por ejemplo), basta <code>docker compose up -d</code> — recrea los contenedores sin reconstruir imágenes.</p>
+        </div>
+      </section>
+
+      <!-- 10. Claves -->
+      <section id="claves" class="card">
+        <h2><span class="num">10</span>Cambiar Claves</h2>
+        <p>Todas las claves están en <code>docker-compose.yml</code>, sección <code>api → environment</code> y <code>db → environment</code>:</p>
+        <table>
+          <tr><th>Variable</th><th>Qué es</th><th>Nota</th></tr>
+          <tr><td><code>POSTGRES_PASSWORD</code></td><td>Contraseña de PostgreSQL</td><td>Si la cambias tras el primer arranque, recrea el volumen (ver abajo)</td></tr>
+          <tr><td><code>ConnectionStrings__Default</code></td><td>Cadena de conexión de la API</td><td>Debe llevar la misma contraseña que <code>POSTGRES_PASSWORD</code></td></tr>
+          <tr><td><code>Jwt__Key</code></td><td>Firma de los tokens JWT</td><td>Mínimo 32 caracteres; al cambiarla se cierran todas las sesiones</td></tr>
+          <tr><td><code>SEED_ADMIN_PASSWORD</code></td><td>Contraseña inicial del admin</td><td>Solo se aplica en el primer arranque (con la BD vacía)</td></tr>
+        </table>
+        <p>Tras editar:</p>
+        <pre><code>docker compose up -d</code></pre>
+        <div class="warning-box">
+          <p><strong>Ojo:</strong> <code>POSTGRES_PASSWORD</code> solo inicializa la base de datos la primera vez. Si la cambias con datos existentes, la API no podrá conectar hasta que actualices también la contraseña dentro de PostgreSQL — o borres el volumen y empieces de cero (<code>docker compose down -v</code>, destruye los datos).</p>
+        </div>
+      </section>
+
+      <!-- 11. Respaldos -->
+      <section id="respaldo" class="card">
+        <h2><span class="num">11</span>Respaldos de la Base de Datos</h2>
+        <p>Todo el estado de la app (usuarios, perfiles, planes, logs, XP) vive en PostgreSQL:</p>
+        <h3>Respaldar</h3>
+        <pre><code>docker exec aegifit-db pg_dump -U aegifit aegifitness | gzip &gt; aegifitness-$(date +%F).sql.gz</code></pre>
+        <h3>Restaurar</h3>
+        <pre><code>gunzip -c aegifitness-2026-07-17.sql.gz | docker exec -i aegifit-db psql -U aegifit -d aegifitness</code></pre>
+        <h3>Respaldo completo (volumen)</h3>
+        <pre><code>docker run --rm -v aegifit-pgdata:/data -v $(pwd):/backup alpine \
+  tar czf /backup/aegifit-pgdata-$(date +%F).tar.gz -C /data .</code></pre>
+        <div class="info-box">
+          <p><strong>Sugerencia:</strong> programa un cron semanal con el <code>pg_dump</code> y guarda el archivo junto a tus otros respaldos.</p>
+        </div>
+      </section>
+
+      <!-- 12. Problemas -->
+      <section id="problemas" class="card">
+        <h2><span class="num">12</span>Solución de Problemas</h2>
+        <table>
+          <tr><th>Síntoma</th><th>Causa probable</th><th>Solución</th></tr>
+          <tr>
+            <td>La página carga pero dice "Error de conexión"</td>
+            <td>La API no está sana o NPM no alcanza <code>aegifit-web</code></td>
+            <td><code>docker compose ps</code> y <code>docker logs aegifit-api --tail 50</code>; verifica que <code>aegifit-web</code> está en la red <code>proxy</code>: <code>docker network inspect proxy | grep aegifit</code></td>
+          </tr>
+          <tr>
+            <td>Login válido pero rebota a /login</td>
+            <td>La API no responde o el JWT cambió</td>
+            <td>Revisa logs de la API; si cambiaste <code>Jwt__Key</code>, vuelve a iniciar sesión</td>
+          </tr>
+          <tr>
+            <td>La API reinicia en bucle</td>
+            <td>No conecta a PostgreSQL</td>
+            <td><code>docker logs aegifit-db</code>; verifica que la contraseña del compose coincide en <code>db</code> y <code>api</code></td>
+          </tr>
+          <tr>
+            <td>El build falla por memoria</td>
+            <td>Poca RAM para compilar .NET + Vite a la vez</td>
+            <td>Construye por partes: <code>docker compose build api</code> y luego <code>docker compose build web</code></td>
+          </tr>
+          <tr>
+            <td>Cambios del frontend no se ven</td>
+            <td>Service Worker viejo en el navegador</td>
+            <td>Recarga forzada (Ctrl+Shift+R); la PWA se actualiza sola al detectar el nuevo SW</td>
+          </tr>
+          <tr>
+            <td>Empezar de cero</td>
+            <td>—</td>
+            <td><code>docker compose down -v &amp;&amp; docker compose up -d --build</code> (destruye TODOS los datos)</td>
+          </tr>
+        </table>
+        <h3>Logs útiles</h3>
+        <pre><code>docker logs aegifit-api --tail 100 -f    # API (migraciones, seed, errores)
+docker logs aegifit-web --tail 50        # Nginx del frontend
+docker logs aegifit-db --tail 50         # PostgreSQL
+docker compose ps                        # estado general</code></pre>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>AegiFitness v1.0 — Rutinas, nutrición y progreso gamificados</p>
+  <p style="margin-top:4px;opacity:.7;">Desplegado con Docker + PostgreSQL + Redis + Nginx + Cloudflare</p>
+</footer>
+
+</body>
+</html>

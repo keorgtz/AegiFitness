@@ -1,0 +1,91 @@
+# AegiFitness — Docker Deployment
+# Compatible con tu infraestructura existente: Ubuntu + Docker + NPM + Cloudflare Tunnel
+#
+# Las claves van inline porque el proyecto es de uso personal.
+# Si algún día lo abres a más gente: edítalas aquí y redespliega con
+#   docker compose up -d --build
+
+services:
+  # ── PostgreSQL 17 ─────────────────────────────────────────────
+  db:
+    image: postgres:17-alpine
+    container_name: aegifit-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aegifitness
+      POSTGRES_USER: aegifit
+      POSTGRES_PASSWORD: aegifit2026!        # <-- edítala si lo deseas
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aegifit -d aegifitness"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks:
+      - internal
+
+  # ── Redis 7 (caché de catálogos y métricas) ───────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: aegifit-redis
+    restart: unless-stopped
+    command: ["redis-server", "--maxmemory", "128mb", "--maxmemory-policy", "allkeys-lru"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    networks:
+      - internal
+
+  # ── API ASP.NET Core 10 ───────────────────────────────────────
+  api:
+    build:
+      context: ./server
+      dockerfile: AegiFitness.Api/Dockerfile
+    container_name: aegifit-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__Default: Host=db;Port=5432;Database=aegifitness;Username=aegifit;Password=aegifit2026!
+      Redis__ConnectionString: redis:6379,abortConnect=false
+      Jwt__Key: AegiFitnessJwtKey2026-CambialaSiAbresLaApp   # <-- mín 32 chars
+      Jwt__Issuer: AegiFitness
+      Jwt__Audience: AegiFitness
+      # Contraseña del usuario admin (usuario 1, rol Admin) que se siembra
+      # en el primer arranque. Cámbiala antes del primer despliegue.
+      SEED_ADMIN_PASSWORD: Admin#2026!
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - internal
+
+  # ── Web: Nginx sirviendo la PWA + proxy /api → api:8080 ──────
+  # Único contenedor expuesto a tu red proxy (donde vive NPM).
+  web:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: aegifit-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    networks:
+      - internal
+      - proxy
+    labels:
+      - "traefik.enable=false"
+
+volumes:
+  pgdata:
+    name: aegifit-pgdata
+
+networks:
+  internal:
+    driver: bridge
+  proxy:
+    external: true

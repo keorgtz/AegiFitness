@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AegiFitness — Resumen de implementacion 2026-07-17</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: #070b18;
+    color: #e2e8f0;
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 2rem 1rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  header {
+    text-align: center;
+    padding: 2.5rem 1rem 2rem;
+    border-bottom: 1px solid rgba(34, 211, 238, 0.15);
+    margin-bottom: 2rem;
+  }
+  header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #22d3ee 0%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+  }
+  header .sub {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  header .sub span { color: #22d3ee; }
+  .date-badge {
+    display: inline-block;
+    background: rgba(34, 211, 238, 0.1);
+    color: #22d3ee;
+    border: 1px solid rgba(34, 211, 238, 0.25);
+    padding: 0.25rem 1rem;
+    border-radius: 14px;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+  }
+  .section {
+    background: #0f172a;
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .section-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #22d3ee;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(34, 211, 238, 0.12);
+  }
+  .section-title .count {
+    color: #64748b;
+    font-weight: 400;
+    margin-left: 0.35rem;
+  }
+
+  /* Stack table */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  @media (min-width: 500px) {
+    .stack-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .stack-item {
+    background: #16213d;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .stack-item .layer { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; }
+  .stack-item .tech { font-size: 0.95rem; font-weight: 500; color: #e2e8f0; }
+
+  /* Module badges */
+  .mod-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+  @media (min-width: 450px) { .mod-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 700px) { .mod-grid { grid-template-columns: 1fr 1fr 1fr; } }
+  .mod-card {
+    background: #16213d;
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    border-left: 3px solid #22d3ee;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    transition: border-color 0.15s;
+  }
+  .mod-card .mod-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    letter-spacing: 0.02em;
+  }
+  .mod-card .mod-desc {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+  .mod-card .mod-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.2rem;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    line-height: 1.4;
+  }
+  .badge-cyan  { background: rgba(34, 211, 238, 0.12); color: #22d3ee; }
+  .badge-emerald { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+  .badge-amber  { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+  .badge-indigo { background: rgba(99, 102, 241, 0.12); color: #6366f1; }
+  .badge-violet { background: rgba(139, 92, 246, 0.12); color: #8b5cf6; }
+  .badge-red    { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+  .badge-white  { background: rgba(255,255,255,0.06); color: #94a3b8; }
+
+  /* Verification table */
+  .v-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  @media (min-width: 500px) { .v-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 750px) { .v-grid { grid-template-columns: 1fr 1fr 1fr; } }
+  .v-card {
+    background: #16213d;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .v-card .v-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+  }
+  .v-card .v-value {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .v-card .v-detail {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+  .pass  { color: #10b981; }
+  .warn  { color: #f59e0b; }
+  .info  { color: #6366f1; }
+
+  /* Bugs list */
+  .bug-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .bug-list li {
+    background: #16213d;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    color: #cbd5e1;
+    line-height: 1.5;
+    border-left: 3px solid transparent;
+  }
+  .bug-list li strong { color: #f1f5f9; font-weight: 600; }
+  .bug-list li .fix { color: #22d3ee; font-weight: 500; }
+  .bug-crit { border-left-color: #ef4444 !important; }
+  .bug-high { border-left-color: #f59e0b !important; }
+  .bug-med  { border-left-color: #6366f1 !important; }
+  .bug-low  { border-left-color: #10b981 !important; }
+
+  /* Deploy */
+  .deploy-cmds {
+    background: #070b18;
+    border-radius: 10px;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 0.8rem;
+    line-height: 1.8;
+    color: #e2e8f0;
+    border: 1px solid rgba(255,255,255,0.05);
+    overflow-x: auto;
+    white-space: pre;
+    margin-top: 0.5rem;
+  }
+  .deploy-cmds .cmd-comment { color: #64748b; }
+  .deploy-cmds .cmd { color: #22d3ee; }
+
+  /* Next steps */
+  .next-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+  @media (min-width: 500px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+  .next-item {
+    background: #16213d;
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    border-left: 3px solid #6366f1;
+  }
+  .next-item .n-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 0.15rem;
+  }
+  .next-item .n-desc {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+
+  .divider { border: none; border-top: 1px solid rgba(255,255,255,0.04); margin: 1.5rem 0; }
+
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    color: #475569;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 400px) {
+    body { padding: 1rem 0.5rem; }
+    .section { padding: 1rem; }
+    header h1 { font-size: 1.35rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>AegiFitness</h1>
+  <div class="sub">App fitness gamificada &mdash; <span>implementacion completada</span></div>
+  <div class="date-badge">2026-07-17</div>
+</header>
+
+<!-- RESUMEN -->
+<div class="section">
+  <div class="section-title">Resumen</div>
+  <p style="font-size:0.9rem;color:#cbd5e1;line-height:1.7;margin-bottom:0.75rem;">
+    PWA fitness integral con rutinas inteligentes, nutricion personalizada, tracking al milimetro y gamificacion completa.
+    Construida con React 19 + TypeScript + Vite en el frontend (<code style="color:#22d3ee;">client/</code>) y
+    ASP.NET Core 10 + EF Core + PostgreSQL + Redis en el backend (<code style="color:#22d3ee;">server/AegiFitness.Api/</code>).
+    Orquestada via Docker Compose con 5 servicios: base de datos, cache, API, Nginx para la PWA y tunel Cloudflare.
+  </p>
+  <p style="font-size:0.9rem;color:#cbd5e1;line-height:1.7;">
+    Un solo despliegue. Una sola UI adaptable (sidebar en escritorio, bottom-nav en movil).
+    Vistas unicas role-gated: Admin y Member conviven en las mismas rutas sin duplicacion de pantallas.
+    185 ejercicios y 140 comidas sembrados en catalogo. Motor de rutinas semanales con 6 modos de entrenamiento.
+    Motor de planes de comida por objetivo con rotacion determinista. 12+ logros, niveles con titulos, rachas y metas auto-evaluadas.
+  </p>
+</div>
+
+<!-- STACK -->
+<div class="section">
+  <div class="section-title">Stack tecnológico</div>
+  <div class="stack-grid">
+    <div class="stack-item"><span class="layer">Frontend</span><span class="tech">React 19 &middot; TypeScript &middot; Vite &middot; PWA instalable</span></div>
+    <div class="stack-item"><span class="layer">Backend</span><span class="tech">ASP.NET Core 10 Web API &middot; EF Core 10 &middot; Npgsql &middot; ASP.NET Identity &middot; JWT Bearer</span></div>
+    <div class="stack-item"><span class="layer">Base de datos</span><span class="tech">PostgreSQL 17 (<code>aegifitness</code>)</span></div>
+    <div class="stack-item"><span class="layer">Cache</span><span class="tech">Redis 7 (StackExchange.Redis + fallback IMemoryCache)</span></div>
+    <div class="stack-item"><span class="layer">Infraestructura</span><span class="tech">Docker Compose: <code>db</code> + <code>redis</code> + <code>api</code> + <code>web</code> (Nginx) + <code>cloudflared</code></span></div>
+    <div class="stack-item"><span class="layer">Testing</span><span class="tech">Playwright E2E &middot; Smoke API PowerShell</span></div>
+  </div>
+</div>
+
+<!-- MODULOS -->
+<div class="section">
+  <div class="section-title">Modulos implementados <span class="count">(10)</span></div>
+  <div class="mod-grid">
+    <div class="mod-card">
+      <div class="mod-name">Auth + JWT</div>
+      <div class="mod-desc">Registro, login con JWT + refresh tokens rotativos (hash en DB). Claims: sub, username, roles, lic.</div>
+      <div class="mod-tags"><span class="badge badge-cyan">backend</span><span class="badge badge-indigo">frontend</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-name">Roles y licenciamiento</div>
+      <div class="mod-desc">Dos roles (Admin/Member). Registro libre con licencia Pending; admin aprueba/suspende/revoca desde panel. Policy ActiveLicense en toda la API.</div>
+      <div class="mod-tags"><span class="badge badge-cyan">backend</span><span class="badge badge-amber">admin panel</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-name">Perfil y biometricos</div>
+      <div class="mod-desc">Sexo, peso, altura, edad, objetivo conmutable (Recomposicion/Volumen/Definicion). TDEE Mifflin-St Jeor + macros por objetivo. Onboarding wizard 3 pasos.</div>
+      <div class="mod-tags"><span class="badge badge-cyan">backend</span><span class="badge badge-indigo">frontend</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-name">Configuracion semanal</div>
+      <div class="mod-desc">7 dias configurables: Rest/Gym/Calistenia/Both. Modos Gym: Bodybuilding/Health/Combined. Modos Calistenia: Classic/Military/CrossFit. Musculos por dia.</div>
+      <div class="mod-tags"><span class="badge badge-cyan">backend</span><span class="badge badge-indigo">frontend</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-name">Motor de rutinas</div>
+      <div class="mod-desc">Generador con esquemas por modo (volumen, descanso, series, reps). Garantia 50/50 en dias Both. Split por defecto si no hay musculos marcados. Desactiva plan anterior.</div>
+      <div class="mod-tags"><span class="badge badge-cyan">backend</span><span class="badge badge-violet">algoritmo</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-name">Motor de comidas</div>
+      <div class="mod-desc">Distribucion kcal por MealType segun preferencias. Rotacion determinista por (fecha + tipo) para variedad sin repetir. Regeneracion al cambiar objetivo/perfil.</div>
+      <div class="mod-tags"><span class="badge badge-cyan">backend</span><span class="badge badge-violet">algoritmo</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-name">Catalogos sembrados</div>
+      <div class="mod-desc">185 ejercicios con musculo, tipo, dificultad, equipo, instrucciones. 140 comidas con macros, ingredientes y pasos. Seed idempotente por nombre.</div>
+      <div class="mod-tags"><span class="badge badge-emerald">data</span><span class="badge badge-white">185+140</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-name">Tracking al milimetro</div>
+      <div class="mod-desc">Workout logs y meal logs con extras (mas/menos de lo planeado). Ejercicios y comidas personalizados. Upsert por fecha. XP disparado automaticamente.</div>
+      <div class="mod-tags"><span class="badge badge-cyan">backend</span><span class="badge badge-indigo">frontend</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-name">Gamificacion</div>
+      <div class="mod-desc">XP por accion, niveles (Novato a Leyenda), rachas de dias consecutivos, 12+ logros evaluados automaticamente, metas con auto-progreso (peso, entrenos, proteina).</div>
+      <div class="mod-tags"><span class="badge badge-amber">backend</span><span class="badge badge-violet">logica</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-name">Dashboard y metricas</div>
+      <div class="mod-desc">Resumen diario, semanal y mensual. Adherencia, volumen por musculo, progreso de peso, XP por dia. Cache Redis 5 min con invalidation en logs nuevos.</div>
+      <div class="mod-tags"><span class="badge badge-cyan">backend</span><span class="badge badge-indigo">frontend</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- VERIFICACION -->
+<div class="section">
+  <div class="section-title">Verificacion y pruebas</div>
+  <div class="v-grid">
+    <div class="v-card">
+      <span class="v-label">Build backend</span>
+      <span class="v-value pass">0 errores, 0 warnings</span>
+      <span class="v-detail"><code>dotnet build</code> &mdash; solucion limpia, sin advertencias</span>
+    </div>
+    <div class="v-card">
+      <span class="v-label">Build frontend</span>
+      <span class="v-value pass">Limpio</span>
+      <span class="v-detail"><code>tsc</code> + Vite + PWA sin errores</span>
+    </div>
+    <div class="v-card">
+      <span class="v-label">Smoke API</span>
+      <span class="v-value pass">36 / 36 PASS</span>
+      <span class="v-detail">3 corridas consecutivas: auth, licencias, catalogos, TDEE, generacion planes, tracking, gamificacion, metricas</span>
+    </div>
+    <div class="v-card">
+      <span class="v-label">E2E UI Playwright</span>
+      <span class="v-value pass">13 / 13 PASS</span>
+      <span class="v-detail">Desktop sidebar + mobile bottom-nav, flujo pending, 0 errores consola</span>
+    </div>
+    <div class="v-card">
+      <span class="v-label">Cache</span>
+      <span class="v-value pass">Resiliente</span>
+      <span class="v-detail">Fallback a IMemoryCache si Redis no disponible; invalidacion en logs nuevos y cambios de licencia</span>
+    </div>
+    <div class="v-card">
+      <span class="v-label">PWA</span>
+      <span class="v-value pass">Instalable</span>
+      <span class="v-detail">Manifest, service worker, iconos, theme <code>#070b18</code></span>
+    </div>
+  </div>
+</div>
+
+<!-- BUGS -->
+<div class="section">
+  <div class="section-title">Bugs corregidos durante verificacion <span class="count">(10)</span></div>
+  <ul class="bug-list">
+    <li class="bug-crit">
+      <strong>Esquemas de autenticacion pisados por AddIdentity</strong> &mdash;
+      AddIdentity sobrescribia DefaultAuthenticateScheme y DefaultChallengeScheme.
+      <span class="fix">Fix:</span> fijar los tres esquemas a JwtBearerDefaults.AuthenticationScheme.
+    </li>
+    <li class="bug-crit">
+      <strong>MapInboundClaims=false rompia busqueda de sub</strong> &mdash;
+      El mapeo entrante convertia "sub" a NameIdentifier.
+      <span class="fix">Fix:</span> usar FindFirst("sub") explicitamente en validacion de token.
+    </li>
+    <li class="bug-high">
+      <strong>DbUpdateConcurrencyException en entidades hijas</strong> &mdash;
+      Asignar entidades nuevas a navigation properties de un padre ya trackeado causaba concurrencia.
+      <span class="fix">Fix:</span> usar AddRange explicito en vez de navegacion.
+    </li>
+    <li class="bug-high">
+      <strong>Cache de licencia no invalidada</strong> &mdash;
+      Al aprobar, suspender o revocar, el cache Redis de <code>/me</code> devolvia estado anterior.
+      <span class="fix">Fix:</span> invalidar entrada de cache tras cambios de licencia.
+    </li>
+    <li class="bug-high">
+      <strong>NullReferenceException en MetricsService</strong> &mdash;
+      ThenInclude faltante para Exercise en WorkoutLogEntry causaba NRE al calcular volumen por musculo.
+      <span class="fix">Fix:</span> agregar <code>.ThenInclude(e => e.Exercise)</code> en la query.
+    </li>
+    <li class="bug-med">
+      <strong>Redirect fantasma a /login al visitar /register sin sesion</strong> &mdash;
+      El evento aegi:logout se disparaba incluso sin sesion activa.
+      <span class="fix">Fix:</span> disparar evento solo si habia sesion previamente.
+    </li>
+    <li class="bug-med">
+      <strong>Keys duplicadas en grafico de barras</strong> &mdash;
+      Labels de semana repetidos cuando la query devolvia multiples filas para el mismo dia.
+      <span class="fix">Fix:</span> agregar DistinctBy fecha en la agregacion del dashboard.
+    </li>
+    <li class="bug-med">
+      <strong>Garantia 50/50 en dias Both</strong> &mdash;
+      La seleccion de ejercicios Gym vs Calistenia no aseguraba proporcion equitativa.
+      <span class="fix">Fix:</span> algoritmo de mezcla con minimo 2 de cada tipo si hay >=5 ejercicios.
+    </li>
+    <li class="bug-low">
+      <strong>Foco del plan en espanol</strong> &mdash;
+      El campo Focus del plan de entrenamiento se generaba en ingles.
+      <span class="fix">Fix:</span> mapear nombres de musculos y modos al espanol.
+    </li>
+    <li class="bug-low">
+      <strong>CacheService sin resiliencia a caida de Redis</strong> &mdash;
+      Si Redis no respondia, la API lanzaba excepcion en vez de degradar graceful.
+      <span class="fix">Fix:</span> try-catch con fallback a IMemoryCache y reintento diferido.
+    </li>
+  </ul>
+</div>
+
+<!-- DESPLIEGUE -->
+<div class="section">
+  <div class="section-title">Despliegue</div>
+  <p style="font-size:0.85rem;color:#cbd5e1;margin-bottom:0.75rem;">
+    Pasos para poner en produccion en cualquier servidor con Docker:
+  </p>
+  <div class="deploy-cmds"><span class="cmd-comment"># 1. Clonar y configurar entorno</span>
+cp .env.example .env
+<span class="cmd-comment"># Editar .env: POSTGRES_PASSWORD, JWT_KEY (min 32 chars), SEED_ADMIN_PASSWORD</span>
+
+<span class="cmd-comment"># 2. Levantar stack completo (db, redis, api, web)</span>
+<span class="cmd">docker compose up -d --build</span>
+
+<span class="cmd-comment"># 3. Tunel Cloudflare (opcional, perfil tunnel)</span>
+docker compose --profile tunnel up -d
+
+<span class="cmd-comment"># 4. Acceder</span>
+<span class="cmd-comment"># PWA: http://servidor:8080</span>
+<span class="cmd-comment"># Admin seed: usuario "admin", password = SEED_ADMIN_PASSWORD</span></div>
+  <p style="font-size:0.8rem;color:#94a3b8;margin-top:0.75rem;line-height:1.6;">
+    El admin seed (usuario 1) nace con licencia Active y rol Admin. Los demas usuarios se registran solos,
+    quedan en estado Pending y solo pueden usar la app tras ser aprobados desde Admin &rarr; Usuarios.
+    Nginx sirve la PWA y proxifica <code>/api</code> al backend.
+  </p>
+</div>
+
+<!-- PROXIMOS PASOS -->
+<div class="section">
+  <div class="section-title">Proximos pasos sugeridos</div>
+  <div class="next-grid">
+    <div class="next-item">
+      <div class="n-title">Notificaciones push</div>
+      <div class="n-desc">Recordatorios de entrenamiento diario, comidas pendientes y rachas en riesgo via Service Worker + Web Push API.</div>
+    </div>
+    <div class="next-item">
+      <div class="n-title">Progreso visual avanzado</div>
+      <div class="n-desc">Graficos de evolucion de peso/volumen/IMC con zoom y rangos personalizables. Fotos de progreso con timeline.</div>
+    </div>
+    <div class="next-item">
+      <div class="n-title">Planes personalizados por admin</div>
+      <div class="n-desc">Endpoint para que el admin asigne rutinas o dietas custom a usuarios concretos, sobreescribiendo el motor generico.</div>
+    </div>
+    <div class="next-item">
+      <div class="n-title">Internacionalizacion</div>
+      <div class="n-desc">Soporte multi-idioma (Ingles, Portugues) usando i18next en frontend y recursos satelite en backend.</div>
+    </div>
+    <div class="next-item">
+      <div class="n-title">Modo offline</div>
+      <div class="n-desc">Cachear rutina del dia y plan de comidas en IndexedDB para consulta sin conexion. Sincronizar logs al recuperar conectividad.</div>
+    </div>
+    <div class="next-item">
+      <div class="n-title">Auditoria y analytics</div>
+      <div class="n-desc">Logs de acceso admin, metricas de uso agregadas (usuarios activos, retencion, logros mas desbloqueados), dashboard de negocio.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<footer>AegiFitness &mdash; Implementacion completada 2026-07-17 &mdash; Resumen tecnico</footer>
+
+</div>
+</body>
+</html>
