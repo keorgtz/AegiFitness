@@ -65,9 +65,10 @@ public class GamificationService
         var activeDates = workoutDates.Union(mealDates).OrderByDescending(d => d).ToList();
         if (!activeDates.Any()) return 0;
 
+        // Anclar en la fecha de la última actividad del usuario (su "hoy" local),
+        // no en el UTC del servidor: evita rachas rotas por diferencias de zona horaria.
         int streak = 0;
-        var current = DateOnly.FromDateTime(DateTime.UtcNow);
-        if (activeDates.First() < current.AddDays(-1)) return 0;
+        var current = activeDates.First();
 
         while (activeDates.Contains(current))
         {
@@ -78,7 +79,7 @@ public class GamificationService
         return streak;
     }
 
-    public async Task EvaluateWorkoutLoggedAsync(Guid userId, CancellationToken ct = default)
+    public async Task EvaluateWorkoutLoggedAsync(Guid userId, DateOnly activityDate, CancellationToken ct = default)
     {
         var workouts = await _context.WorkoutLogs.CountAsync(x => x.UserId == userId, ct);
         await UnlockAsync(userId, "first-workout", 1, ct);
@@ -87,23 +88,23 @@ public class GamificationService
         await UnlockAsync(userId, "workouts-50", workouts, ct);
         await UnlockAsync(userId, "workouts-100", workouts, ct);
         await CheckStreakAchievementsAsync(userId, ct);
-        await UpdateGoalsAsync(userId, ct);
+        await UpdateGoalsAsync(userId, activityDate, ct);
     }
 
-    public async Task EvaluateMealLoggedAsync(Guid userId, CancellationToken ct = default)
+    public async Task EvaluateMealLoggedAsync(Guid userId, DateOnly activityDate, CancellationToken ct = default)
     {
         var meals = await _context.MealLogs.CountAsync(x => x.UserId == userId, ct);
         await UnlockAsync(userId, "meal-logs-30", meals, ct);
         await CheckMealPerfectStreakAsync(userId, ct);
         await CheckProteinStreakAsync(userId, ct);
         await CheckStreakAchievementsAsync(userId, ct);
-        await UpdateGoalsAsync(userId, ct);
+        await UpdateGoalsAsync(userId, activityDate, ct);
     }
 
-    public async Task EvaluateWeightLoggedAsync(Guid userId, CancellationToken ct = default)
+    public async Task EvaluateWeightLoggedAsync(Guid userId, DateOnly activityDate, CancellationToken ct = default)
     {
         await UnlockAsync(userId, "weight-goal", 1, ct);
-        await UpdateGoalsAsync(userId, ct);
+        await UpdateGoalsAsync(userId, activityDate, ct);
     }
 
     public async Task EvaluateOnboardingAsync(Guid userId, CancellationToken ct = default)
@@ -170,7 +171,7 @@ public class GamificationService
             .ToListAsync(ct);
 
         int consecutive = 0;
-        var current = DateOnly.FromDateTime(DateTime.UtcNow);
+        var current = logs.FirstOrDefault()?.Date ?? DateOnly.FromDateTime(DateTime.UtcNow);
         foreach (var date in Enumerable.Range(0, 30).Select(i => current.AddDays(-i)))
         {
             var log = logs.FirstOrDefault(x => x.Date == date);
@@ -196,7 +197,7 @@ public class GamificationService
             .ToListAsync(ct);
 
         int consecutive = 0;
-        var current = DateOnly.FromDateTime(DateTime.UtcNow);
+        var current = logs.FirstOrDefault()?.Date ?? DateOnly.FromDateTime(DateTime.UtcNow);
         foreach (var date in Enumerable.Range(0, 30).Select(i => current.AddDays(-i)))
         {
             var log = logs.FirstOrDefault(x => x.Date == date);
@@ -211,7 +212,7 @@ public class GamificationService
         await UnlockAsync(userId, "protein-streak-7", consecutive, ct);
     }
 
-    public async Task UpdateGoalsAsync(Guid userId, CancellationToken ct = default)
+    public async Task UpdateGoalsAsync(Guid userId, DateOnly? referenceDate = null, CancellationToken ct = default)
     {
         var goals = await _context.UserGoals.Where(x => x.UserId == userId && x.Status == GoalStatus.Active).ToListAsync(ct);
         var latestWeight = await _context.WeightEntries
@@ -220,7 +221,9 @@ public class GamificationService
             .OrderByDescending(x => x.Date)
             .FirstOrDefaultAsync(ct);
 
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        // La referencia es la fecha de actividad del usuario (su día local),
+        // no el UTC del servidor: evita desfaces de semana por zona horaria.
+        var today = referenceDate ?? DateOnly.FromDateTime(DateTime.UtcNow);
         var startOfWeek = today.AddDays(-(int)today.DayOfWeek);
         var workoutsThisWeek = await _context.WorkoutLogs
             .CountAsync(x => x.UserId == userId && x.Date >= startOfWeek, ct);

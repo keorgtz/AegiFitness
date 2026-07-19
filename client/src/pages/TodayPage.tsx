@@ -1,10 +1,25 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { mealLogApi, mealPlanApi, workoutLogApi, workoutPlanApi } from "../api/resources";
 import {
   exerciseCatalogApi,
   foodCatalogApi,
+  mealLogApi,
+  mealPlanApi,
+  workoutLogApi,
+  workoutPlanApi,
 } from "../api/resources";
-import { Button, Card, Chip, EmptyState, ErrorState, Loading, Modal } from "../components/ui";
+import {
+  Button,
+  Chip,
+  EmptyState,
+  ErrorState,
+  ExerciseGuideModal,
+  Loading,
+  Modal,
+  RecipeModal,
+  SegmentedControl,
+  Stepper,
+} from "../components/ui";
+import { MacroBar } from "../components/ui/charts";
 import { useAsync } from "../hooks/useAsync";
 import { useToastCtx } from "../hooks/useToastContext";
 import type {
@@ -12,6 +27,8 @@ import type {
   FoodDto,
   MealLogEntryRequest,
   MealPlanDto,
+  MealPlanItemDto,
+  MealType,
   WorkoutLogEntryRequest,
   WorkoutPlanDayDto,
 } from "../types/api";
@@ -21,9 +38,9 @@ interface WorkoutEntry {
   exerciseId: number;
   plannedSets: number;
   plannedReps: number;
-  actualSets?: number;
-  actualReps?: number;
-  actualWeightKg?: number;
+  actualSets: number;
+  actualReps: number;
+  actualWeightKg: number;
   completed: boolean;
   isExtra: boolean;
   exercise: ExerciseDto;
@@ -32,7 +49,7 @@ interface WorkoutEntry {
 interface MealEntry {
   foodId?: number;
   customName?: string;
-  mealType: "Breakfast" | "Lunch" | "Dinner" | "Snack";
+  mealType: MealType;
   servings: number;
   calories: number;
   proteinG: number;
@@ -40,14 +57,22 @@ interface MealEntry {
   fatG: number;
   isExtra: boolean;
   food?: FoodDto;
+  baseServings?: number;
+  baseCalories?: number;
+  baseProteinG?: number;
+  baseCarbsG?: number;
+  baseFatG?: number;
 }
 
 export default function TodayPage() {
   const toast = useToastCtx();
   const [saving, setSaving] = useState(false);
+  const [mealTab, setMealTab] = useState<"recommended" | "log">("recommended");
   const [exerciseModal, setExerciseModal] = useState(false);
   const [foodModal, setFoodModal] = useState(false);
-  const [customMealModal, setCustomMealModal] = useState(false);
+  const [quickMealModal, setQuickMealModal] = useState(false);
+  const [guide, setGuide] = useState<ExerciseDto | null>(null);
+  const [recipe, setRecipe] = useState<FoodDto | null>(null);
 
   const todayStr = today();
 
@@ -83,6 +108,7 @@ export default function TodayPage() {
 
   const [workoutEntries, setWorkoutEntries] = useState<WorkoutEntry[]>([]);
   const [mealEntries, setMealEntries] = useState<MealEntry[]>([]);
+  const [planServings, setPlanServings] = useState<Record<number, number>>({});
 
   useEffect(() => {
     if (!data) return;
@@ -94,9 +120,9 @@ export default function TodayPage() {
           exerciseId: e.exerciseId,
           plannedSets: e.plannedSets,
           plannedReps: e.plannedReps,
-          actualSets: e.actualSets,
-          actualReps: e.actualReps,
-          actualWeightKg: e.actualWeightKg,
+          actualSets: e.actualSets ?? e.plannedSets,
+          actualReps: e.actualReps ?? e.plannedReps,
+          actualWeightKg: e.actualWeightKg ?? 0,
           completed: e.completed,
           isExtra: e.isExtra,
           exercise: e.exercise,
@@ -110,7 +136,7 @@ export default function TodayPage() {
           plannedReps: Math.round((item.repsMin + item.repsMax) / 2),
           actualSets: item.sets,
           actualReps: Math.round((item.repsMin + item.repsMax) / 2),
-          actualWeightKg: undefined,
+          actualWeightKg: 0,
           completed: false,
           isExtra: false,
           exercise: item.exercise,
@@ -137,20 +163,14 @@ export default function TodayPage() {
         })),
       );
     } else {
-      setMealEntries(
-        data.mealPlan.items.map((item) => ({
-          foodId: item.foodId,
-          mealType: item.mealType,
-          servings: item.servings,
-          calories: Math.round(item.food.calories * item.servings),
-          proteinG: Math.round(item.food.proteinG * item.servings),
-          carbsG: Math.round(item.food.carbsG * item.servings),
-          fatG: Math.round(item.food.fatG * item.servings),
-          isExtra: false,
-          food: item.food,
-        })),
-      );
+      setMealEntries([]);
     }
+
+    const servings: Record<number, number> = {};
+    for (const item of data.mealPlan.items) {
+      servings[item.id] = item.servings;
+    }
+    setPlanServings(servings);
   }, [data]);
 
   const updateWorkoutEntry = (index: number, patch: Partial<WorkoutEntry>) => {
@@ -158,20 +178,11 @@ export default function TodayPage() {
   };
 
   const updateMealEntry = (index: number, patch: Partial<MealEntry>) => {
-    setMealEntries((prev) =>
-      prev.map((e, i) => {
-        if (i !== index) return e;
-        const next = { ...e, ...patch };
-        if (next.food && patch.servings !== undefined) {
-          const ratio = next.servings;
-          next.calories = Math.round(next.food.calories * ratio);
-          next.proteinG = Math.round(next.food.proteinG * ratio);
-          next.carbsG = Math.round(next.food.carbsG * ratio);
-          next.fatG = Math.round(next.food.fatG * ratio);
-        }
-        return next;
-      }),
-    );
+    setMealEntries((prev) => prev.map((e, i) => (i === index ? { ...e, ...patch } : e)));
+  };
+
+  const removeMealEntry = (index: number) => {
+    setMealEntries((prev) => prev.filter((_, i) => i !== index));
   };
 
   const totals = useMemo(() => {
@@ -187,23 +198,40 @@ export default function TodayPage() {
     );
   }, [mealEntries]);
 
-  const handleSave = async () => {
+  const handleSaveWorkout = async () => {
     setSaving(true);
     try {
-      await workoutLogApi.log({
+      const res = await workoutLogApi.log({
         date: todayStr,
         planDayId: data?.planDay?.id,
         entries: workoutEntries.map((e) => ({
           exerciseId: e.exerciseId,
           plannedSets: e.plannedSets,
           plannedReps: e.plannedReps,
-          actualSets: e.actualSets,
-          actualReps: e.actualReps,
-          actualWeightKg: e.actualWeightKg,
+          actualSets: e.completed ? e.actualSets : undefined,
+          actualReps: e.completed ? e.actualReps : undefined,
+          actualWeightKg: e.completed && e.actualWeightKg > 0 ? e.actualWeightKg : undefined,
           completed: e.completed,
           isExtra: e.isExtra,
         })) satisfies WorkoutLogEntryRequest[],
       });
+      const xp = res.totalXp;
+      toast.add(xp ? `Entreno guardado · +${xp} XP` : "Entreno guardado", "success");
+      load();
+    } catch (err) {
+      const message =
+        typeof err === "object" && err !== null && "message" in err
+          ? String(err.message)
+          : "Error al guardar";
+      toast.add(message, "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveMeals = async () => {
+    setSaving(true);
+    try {
       await mealLogApi.log({
         date: todayStr,
         entries: mealEntries.map((e) => ({
@@ -218,7 +246,7 @@ export default function TodayPage() {
           isExtra: e.isExtra,
         })) satisfies MealLogEntryRequest[],
       });
-      toast.add("Registro guardado", "success");
+      toast.add("Comidas guardadas", "success");
       load();
     } catch (err) {
       const message =
@@ -240,6 +268,7 @@ export default function TodayPage() {
         plannedReps: 10,
         actualSets: 3,
         actualReps: 10,
+        actualWeightKg: 0,
         completed: false,
         isExtra: true,
         exercise,
@@ -248,7 +277,26 @@ export default function TodayPage() {
     setExerciseModal(false);
   };
 
-  const addFood = (food: FoodDto, mealType: "Breakfast" | "Lunch" | "Dinner" | "Snack") => {
+  const eatRecommended = (item: MealPlanItemDto) => {
+    const servings = planServings[item.id] ?? item.servings;
+    setMealEntries((prev) => [
+      ...prev,
+      {
+        foodId: item.foodId,
+        mealType: item.mealType,
+        servings,
+        calories: Math.round(item.food.calories * servings),
+        proteinG: Math.round(item.food.proteinG * servings),
+        carbsG: Math.round(item.food.carbsG * servings),
+        fatG: Math.round(item.food.fatG * servings),
+        isExtra: true,
+        food: item.food,
+      },
+    ]);
+    setMealTab("log");
+  };
+
+  const addFoodToLog = (food: FoodDto, mealType: MealType) => {
     setMealEntries((prev) => [
       ...prev,
       {
@@ -266,181 +314,316 @@ export default function TodayPage() {
     setFoodModal(false);
   };
 
-  const addCustomMeal = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const f = e.currentTarget;
+  const addQuickMeal = (entry: {
+    name: string;
+    mealType: MealType;
+    calories: number;
+    proteinG: number;
+    carbsG: number;
+    fatG: number;
+  }) => {
     setMealEntries((prev) => [
       ...prev,
       {
-        customName: f.customName.value,
-        mealType: f.mealType.value as MealEntry["mealType"],
+        customName: entry.name,
+        mealType: entry.mealType,
         servings: 1,
-        calories: Number(f.calories.value),
-        proteinG: Number(f.proteinG.value),
-        carbsG: Number(f.carbsG.value),
-        fatG: Number(f.fatG.value),
+        calories: entry.calories,
+        proteinG: entry.proteinG,
+        carbsG: entry.carbsG,
+        fatG: entry.fatG,
         isExtra: true,
       },
     ]);
-    setCustomMealModal(false);
-    f.reset();
+    setQuickMealModal(false);
   };
 
   if (loading && !data) return <Loading message="Cargando día" />;
   if (error) return <ErrorState message={error} onRetry={load} />;
   if (!data) return <EmptyState icon="event_busy" title="Sin datos" />;
 
+  const targets = data.mealPlan;
+  const hasPlan = !!data.planDay;
+  const workoutDone = workoutEntries.filter((e) => e.completed).length;
+
   return (
     <div className="page">
-      <div className="page__header">
-        <h1 className="hero__title">Hoy · {dayName(new Date().getDay())}</h1>
+      <div className="page__header mb-4">
+        <h1 className="hero__title" style={{ fontSize: "1.6rem" }}>
+          Hoy · {dayName(new Date().getDay())}
+        </h1>
       </div>
 
-      {data.planDay && (
-        <Card title="Entrenamiento" icon="fitness_center" style={{ marginBottom: 16 }}>
-          <div className="label mb-3">
-            {modalityName(data.planDay.modality)} · {data.planDay.focus}
+      <div className="today-grid">
+        <div>
+          <div className="section-title">
+            <span>Entrenamiento</span>
+            <span className="section-title__hint">
+              {hasPlan
+                ? `${workoutDone}/${workoutEntries.length} hechos`
+                : "Día de descanso"}
+            </span>
           </div>
+
+          {!hasPlan && workoutEntries.length === 0 && (
+            <EmptyState
+              icon="hotel"
+              title="Hoy es descanso"
+              description="Puedes registrar un entreno libre si entrenaste igual."
+              action={
+                <Button variant="ghost" onClick={() => setExerciseModal(true)}>
+                  Añadir ejercicio
+                </Button>
+              }
+            />
+          )}
+
+          {hasPlan && (
+            <div className="label mb-3">
+              {modalityName(data.planDay!.modality)} · {data.planDay!.focus}
+            </div>
+          )}
+
           {workoutEntries.map((entry, index) => (
-            <div key={`${entry.exerciseId}-${index}`} className="log-exercise">
-              <div className="log-exercise__head">
-                <div>
-                  <div className="log-exercise__name">{entry.exercise.name}</div>
-                  <div className="log-exercise__meta">
-                    {muscleGroupName(entry.exercise.muscleGroup)} · Plan: {entry.plannedSets}x{entry.plannedReps}
-                  </div>
-                </div>
-                <Chip
-                  active={entry.completed}
-                  secondary={entry.completed}
-                  onClick={() => updateWorkoutEntry(index, { completed: !entry.completed })}
+            <div
+              key={`${entry.exerciseId}-${index}`}
+              className={`exercise-card ${entry.completed ? "exercise-card--done" : ""}`}
+            >
+              <div className="exercise-card__head">
+                <button
+                  type="button"
+                  className="exercise-card__title-btn"
+                  onClick={() => setGuide(entry.exercise)}
                 >
-                  {entry.completed ? "Hecho" : "Pendiente"}
-                </Chip>
+                  <span className="exercise-card__name">{entry.exercise.name}</span>
+                  <span className="icon">info</span>
+                </button>
+                {entry.isExtra && <Chip small>Extra</Chip>}
               </div>
-              <div className="log-fields">
-                <div className="log-field">
-                  <span className="log-field__label">Series</span>
-                  <input
-                    className="log-field__input"
-                    type="number"
-                    value={entry.actualSets ?? ""}
-                    onChange={(e) =>
-                      updateWorkoutEntry(index, { actualSets: Number(e.target.value) })
-                    }
-                  />
-                </div>
-                <div className="log-field">
-                  <span className="log-field__label">Reps</span>
-                  <input
-                    className="log-field__input"
-                    type="number"
-                    value={entry.actualReps ?? ""}
-                    onChange={(e) =>
-                      updateWorkoutEntry(index, { actualReps: Number(e.target.value) })
-                    }
-                  />
-                </div>
-                <div className="log-field">
-                  <span className="log-field__label">Peso (kg)</span>
-                  <input
-                    className="log-field__input"
-                    type="number"
-                    step="0.25"
-                    value={entry.actualWeightKg ?? ""}
-                    onChange={(e) =>
-                      updateWorkoutEntry(index, { actualWeightKg: Number(e.target.value) })
-                    }
-                  />
-                </div>
+              <div className="exercise-card__meta mb-3">
+                {muscleGroupName(entry.exercise.muscleGroup)} · Plan {entry.plannedSets}×
+                {entry.plannedReps}
+                {data.planDay && (
+                  <>
+                    {" "}
+                    · Descanso{" "}
+                    {data.planDay.items.find((i) => i.exerciseId === entry.exerciseId)
+                      ?.restSeconds ?? 60}
+                    s
+                  </>
+                )}
+              </div>
+              <div className="exercise-card__row">
+                <Stepper
+                  label="Series"
+                  value={entry.actualSets}
+                  onChange={(v) => updateWorkoutEntry(index, { actualSets: v })}
+                  min={0}
+                  max={20}
+                  size="sm"
+                />
+                <Stepper
+                  label="Reps"
+                  value={entry.actualReps}
+                  onChange={(v) => updateWorkoutEntry(index, { actualReps: v })}
+                  min={0}
+                  max={100}
+                  size="sm"
+                />
+                <Stepper
+                  label="Peso"
+                  value={entry.actualWeightKg}
+                  onChange={(v) => updateWorkoutEntry(index, { actualWeightKg: v })}
+                  min={0}
+                  max={500}
+                  step={2.5}
+                  unit="kg"
+                  size="sm"
+                />
+                <button
+                  type="button"
+                  className={`check-btn ${entry.completed ? "check-btn--active" : ""}`}
+                  onClick={() => updateWorkoutEntry(index, { completed: !entry.completed })}
+                  aria-label={entry.completed ? "Marcar pendiente" : "Marcar hecho"}
+                >
+                  <span className={`icon ${entry.completed ? "fill" : ""}`}>check</span>
+                </button>
               </div>
             </div>
           ))}
-          <Button variant="ghost" block onClick={() => setExerciseModal(true)}>
-            Añadir ejercicio
-          </Button>
-        </Card>
-      )}
 
-      <Card title="Nutrición" icon="restaurant">
-        <div className="grid-2 mb-4">
-          <div className="stat-card stat-card--primary">
-            <div className="stat-card__label">Kcal registradas</div>
-            <div className="stat-card__value">{totals.calories}</div>
-          </div>
-          <div className="stat-card stat-card--success">
-            <div className="stat-card__label">Proteína</div>
-            <div className="stat-card__value">{totals.protein}g</div>
-          </div>
+          {workoutEntries.length > 0 && (
+            <>
+              <Button variant="ghost" block onClick={() => setExerciseModal(true)} className="mb-3">
+                Añadir ejercicio extra
+              </Button>
+              <Button variant="primary" block loading={saving} onClick={() => void handleSaveWorkout()}>
+                Guardar entreno
+              </Button>
+            </>
+          )}
         </div>
 
-        {mealEntries.map((entry, index) => (
-          <div key={`${entry.foodId ?? entry.customName}-${index}`} className="log-meal">
-            <div className="log-meal__head">
-              <div>
-                <div className="log-meal__name">
-                  {entry.food?.name ?? entry.customName ?? "Comida"}
-                </div>
-                <div className="log-meal__meta">
-                  {mealTypeName(entry.mealType)} · {entry.calories} kcal · {entry.proteinG}g P
-                </div>
-              </div>
-              <Chip
-                active
-                secondary
-                onClick={() => {
-                  const next = [...mealEntries];
-                  next.splice(index, 1);
-                  setMealEntries(next);
-                }}
-              >
-                Quitar
-              </Chip>
-            </div>
-            <div className="log-fields log-fields--2">
-              <div className="log-field">
-                <span className="log-field__label">Porciones</span>
-                <input
-                  className="log-field__input"
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  value={entry.servings}
-                  onChange={(e) => updateMealEntry(index, { servings: Number(e.target.value) })}
-                />
-              </div>
-              <div className="log-field">
-                <span className="log-field__label">Kcal</span>
-                <input
-                  className="log-field__input"
-                  type="number"
-                  value={entry.calories}
-                  onChange={(e) => updateMealEntry(index, { calories: Number(e.target.value) })}
-                />
-              </div>
-            </div>
+        <div>
+          <div className="section-title">
+            <span>Comidas</span>
           </div>
-        ))}
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          <Button variant="ghost" onClick={() => setFoodModal(true)}>
-            Añadir del catálogo
-          </Button>
-          <Button variant="ghost" onClick={() => setCustomMealModal(true)}>
-            Añadir manual
-          </Button>
+          <div className="mb-3">
+            <SegmentedControl
+              options={[
+                { value: "recommended", label: "Recomendadas" },
+                { value: "log", label: "Mi registro" },
+              ]}
+              value={mealTab}
+              onChange={(v) => setMealTab(v as "recommended" | "log")}
+            />
+          </div>
+
+          {mealTab === "recommended" && (
+            <>
+              {data.mealPlan.items.length === 0 ? (
+                <EmptyState icon="no_meals" title="Sin plan" description="No hay comidas planificadas para hoy." />
+              ) : (
+                data.mealPlan.items.map((item) => {
+                  const servings = planServings[item.id] ?? item.servings;
+                  return (
+                    <div key={item.id} className="meal-rec-card">
+                      <div className="meal-rec-card__head">
+                        <div className="meal-rec-card__name">{item.food.name}</div>
+                        <Chip small>{mealTypeName(item.mealType)}</Chip>
+                      </div>
+                      <div className="meal-rec-card__macros">
+                        <span>
+                          <strong>{Math.round(item.food.calories * servings)}</strong> kcal
+                        </span>
+                        <span>
+                          <strong>{Math.round(item.food.proteinG * servings)}</strong>g P
+                        </span>
+                        <span>
+                          <strong>{Math.round(item.food.carbsG * servings)}</strong>g C
+                        </span>
+                        <span>
+                          <strong>{Math.round(item.food.fatG * servings)}</strong>g G
+                        </span>
+                      </div>
+                      <div className="meal-rec-card__row">
+                        <Button size="sm" onClick={() => eatRecommended(item)}>
+                          La comí
+                        </Button>
+                        <button
+                          type="button"
+                          className="btn-icon"
+                          onClick={() => setRecipe(item.food)}
+                          aria-label="Ver receta"
+                        >
+                          <span className="icon">menu_book</span>
+                        </button>
+                        <Stepper
+                          label="Porciones"
+                          value={servings}
+                          onChange={(v) => setPlanServings((s) => ({ ...s, [item.id]: v }))}
+                          min={0.5}
+                          max={5}
+                          step={0.5}
+                          size="sm"
+                        />
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </>
+          )}
+
+          {mealTab === "log" && (
+            <>
+              {mealEntries.length === 0 ? (
+                <EmptyState
+                  icon="restaurant"
+                  title="Sin registros"
+                  description="Añade comidas del catálogo o una entrada rápida."
+                />
+              ) : (
+                mealEntries.map((entry, index) => (
+                  <div key={index} className="meal-entry">
+                    <div className="meal-entry__head">
+                      <div>
+                        <div className="meal-entry__name">
+                          {entry.food?.name ?? entry.customName ?? "Comida"}
+                        </div>
+                        <div className="meal-entry__meta">
+                          {mealTypeName(entry.mealType)} · {entry.calories} kcal · {entry.proteinG}g P ·{" "}
+                          {entry.carbsG}g C · {entry.fatG}g G
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn-icon"
+                        onClick={() => removeMealEntry(index)}
+                        aria-label="Eliminar"
+                      >
+                        <span className="icon">delete</span>
+                      </button>
+                    </div>
+                    <div className="meal-entry__row">
+                      <span className="label">Porciones</span>
+                      <Stepper
+                        value={entry.servings}
+                        onChange={(v) => {
+                          const base = entry.baseServings ?? 1;
+                          const ratio = v / base;
+                          updateMealEntry(index, {
+                            servings: v,
+                            calories: Math.round((entry.baseCalories ?? entry.calories) * ratio * base) / base,
+                            proteinG: Math.round((entry.baseProteinG ?? entry.proteinG) * ratio * base) / base,
+                            carbsG: Math.round((entry.baseCarbsG ?? entry.carbsG) * ratio * base) / base,
+                            fatG: Math.round((entry.baseFatG ?? entry.fatG) * ratio * base) / base,
+                          });
+                        }}
+                        min={0.5}
+                        max={5}
+                        step={0.5}
+                        size="sm"
+                      />
+                    </div>
+                  </div>
+                ))
+              )}
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }} className="mb-4">
+                <Button variant="ghost" onClick={() => setFoodModal(true)}>
+                  Del catálogo
+                </Button>
+                <Button variant="ghost" onClick={() => setQuickMealModal(true)}>
+                  Entrada rápida
+                </Button>
+              </div>
+
+              <div className="card">
+                <div className="card__title">
+                  <span className="icon">monitoring</span>
+                  Totales del día
+                </div>
+                <MacroBar label="Kcal" current={totals.calories} target={targets.targetCalories} unit="" color="primary" />
+                <MacroBar label="Proteína" current={totals.protein} target={targets.targetProteinG} unit="g" color="success" />
+                <MacroBar label="Carbos" current={totals.carbs} target={targets.targetCarbsG} unit="g" color="danger" />
+                <MacroBar label="Grasas" current={totals.fat} target={targets.targetFatG} unit="g" color="primary" />
+              </div>
+
+              <Button variant="primary" block loading={saving} onClick={() => void handleSaveMeals()} className="mt-3">
+                Guardar comidas
+              </Button>
+            </>
+          )}
         </div>
-      </Card>
-
-      <div style={{ marginTop: 20 }}>
-        <Button variant="primary" block loading={saving} onClick={() => void handleSave()}>
-          Guardar registro del día
-        </Button>
       </div>
 
       <ExercisePickerModal open={exerciseModal} onClose={() => setExerciseModal(false)} onSelect={addExercise} />
-      <FoodPickerModal open={foodModal} onClose={() => setFoodModal(false)} onSelect={addFood} />
-      <CustomMealModal open={customMealModal} onClose={() => setCustomMealModal(false)} onSubmit={addCustomMeal} />
+      <FoodPickerModal open={foodModal} onClose={() => setFoodModal(false)} onSelect={addFoodToLog} />
+      <QuickMealModal open={quickMealModal} onClose={() => setQuickMealModal(false)} onAdd={addQuickMeal} />
+      <ExerciseGuideModal exercise={guide} onClose={() => setGuide(null)} />
+      <RecipeModal food={recipe} onClose={() => setRecipe(null)} />
     </div>
   );
 }
@@ -508,11 +691,11 @@ function FoodPickerModal({
 }: {
   open: boolean;
   onClose: () => void;
-  onSelect: (f: FoodDto, mealType: MealEntry["mealType"]) => void;
+  onSelect: (f: FoodDto, mealType: MealType) => void;
 }) {
   const [items, setItems] = useState<FoodDto[]>([]);
   const [search, setSearch] = useState("");
-  const [mealType, setMealType] = useState<MealEntry["mealType"]>("Snack");
+  const [mealType, setMealType] = useState<MealType>("Snack");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -529,7 +712,7 @@ function FoodPickerModal({
       <select
         className="select mb-3"
         value={mealType}
-        onChange={(e) => setMealType(e.target.value as MealEntry["mealType"])}
+        onChange={(e) => setMealType(e.target.value as MealType)}
       >
         {(["Breakfast", "Lunch", "Dinner", "Snack"] as const).map((mt) => (
           <option key={mt} value={mt}>
@@ -569,39 +752,80 @@ function FoodPickerModal({
   );
 }
 
-function CustomMealModal({
+function QuickMealModal({
   open,
   onClose,
-  onSubmit,
+  onAdd,
 }: {
   open: boolean;
   onClose: () => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onAdd: (entry: {
+    name: string;
+    mealType: MealType;
+    calories: number;
+    proteinG: number;
+    carbsG: number;
+    fatG: number;
+  }) => void;
 }) {
+  const [name, setName] = useState("");
+  const [mealType, setMealType] = useState<MealType>("Snack");
+  const [calories, setCalories] = useState(300);
+  const [proteinG, setProteinG] = useState(0);
+  const [carbsG, setCarbsG] = useState(0);
+  const [fatG, setFatG] = useState(0);
+
+  useEffect(() => {
+    if (open) {
+      setName("");
+      setMealType("Snack");
+      setCalories(300);
+      setProteinG(0);
+      setCarbsG(0);
+      setFatG(0);
+    }
+  }, [open]);
+
+  const submit = () => {
+    if (!name.trim()) return;
+    onAdd({ name: name.trim(), mealType, calories, proteinG, carbsG, fatG });
+  };
+
   return (
-    <Modal open={open} onClose={onClose} title="Comida personalizada">
-      <form onSubmit={onSubmit}>
-        <input name="customName" className="input mb-3" placeholder="Nombre" required />
-        <select name="mealType" className="select mb-3" required>
+    <Modal open={open} onClose={onClose} title="Entrada rápida">
+      <div className="input-group">
+        <label className="input-group__label">Nombre</label>
+        <input
+          className="input"
+          placeholder="Lo que comiste"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
+      <div className="input-group">
+        <label className="input-group__label">Tipo</label>
+        <select className="select" value={mealType} onChange={(e) => setMealType(e.target.value as MealType)}>
           {(["Breakfast", "Lunch", "Dinner", "Snack"] as const).map((mt) => (
             <option key={mt} value={mt}>
               {mealTypeName(mt)}
             </option>
           ))}
         </select>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          <input name="calories" className="input" type="number" placeholder="Kcal" required />
-          <input name="proteinG" className="input" type="number" placeholder="Proteína" required />
-          <input name="carbsG" className="input" type="number" placeholder="Carbos" required />
-          <input name="fatG" className="input" type="number" placeholder="Grasas" required />
-        </div>
-        <div className="dialog__footer">
-          <Button variant="ghost" onClick={onClose} type="button">
-            Cancelar
-          </Button>
-          <Button type="submit">Añadir</Button>
-        </div>
-      </form>
+      </div>
+      <div className="grid-2 mb-3">
+        <Stepper label="Kcal" value={calories} onChange={setCalories} min={0} max={3000} step={50} />
+        <Stepper label="Proteína (g)" value={proteinG} onChange={setProteinG} min={0} max={300} step={5} />
+        <Stepper label="Carbos (g)" value={carbsG} onChange={setCarbsG} min={0} max={500} step={5} />
+        <Stepper label="Grasas (g)" value={fatG} onChange={setFatG} min={0} max={200} step={5} />
+      </div>
+      <div className="dialog__footer">
+        <Button variant="ghost" onClick={onClose}>
+          Cancelar
+        </Button>
+        <Button onClick={submit} disabled={!name.trim()}>
+          Añadir
+        </Button>
+      </div>
     </Modal>
   );
 }

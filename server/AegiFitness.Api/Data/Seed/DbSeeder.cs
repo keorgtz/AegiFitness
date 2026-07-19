@@ -13,7 +13,21 @@ public static class DbSeeder
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
-        await context.Database.MigrateAsync();
+        // Migraciones automáticas con reintentos: la BD puede tardar en estar lista
+        // tras un deploy. Nunca destructivo (solo Migrate, jamás EnsureDeleted).
+        const int maxAttempts = 12;
+        for (var attempt = 1; ; attempt++)
+        {
+            try
+            {
+                await context.Database.MigrateAsync();
+                break;
+            }
+            catch (Exception) when (attempt < maxAttempts)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(5));
+            }
+        }
 
         await SeedRolesAsync(roleManager);
         await SeedAdminAsync(userManager, context);

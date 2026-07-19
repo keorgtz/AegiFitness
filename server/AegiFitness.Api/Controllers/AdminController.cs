@@ -74,16 +74,99 @@ public class AdminController : ControllerBase
         var license = await _context.Licenses.FirstOrDefaultAsync(x => x.UserId == id);
         if (license is null) return NotFound();
 
-        var days = dto?.ValidDays ?? 365;
         license.Status = LicenseStatus.Active;
         license.LicensedAt = DateTime.UtcNow;
-        license.ExpiresAt = DateTime.UtcNow.AddDays(days);
+        // Sin validDays => licencia de por vida (ExpiresAt null)
+        license.ExpiresAt = dto?.ValidDays is > 0 ? DateTime.UtcNow.AddDays(dto.ValidDays.Value) : null;
         license.Notes = dto?.Notes;
         license.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
         InvalidateLicenseCache(id);
         await _gamification.AddXpAsync(id, 50, "Licencia activada", HttpContext.RequestAborted);
+
+        return Ok(new AdminLicenseDto(license.Status, license.LicensedAt, license.ExpiresAt, license.Notes));
+    }
+
+    [HttpPut("users/{id:guid}")]
+    public async Task<ActionResult<AdminUserDto>> UpdateUser(Guid id, [FromBody] AdminUserUpdateDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        if (user is null) return NotFound();
+
+        var usernameTaken = await _userManager.Users.AnyAsync(u => u.Id != id && u.NormalizedUserName == _userManager.NormalizeName(dto.Username));
+        if (usernameTaken)
+            return BadRequest(new { message = "Ese nombre de usuario ya está en uso." });
+
+        var emailTaken = await _userManager.Users.AnyAsync(u => u.Id != id && u.NormalizedEmail == _userManager.NormalizeEmail(dto.Email));
+        if (emailTaken)
+            return BadRequest(new { message = "Ese correo ya está en uso por otra cuenta." });
+
+        user.UserName = dto.Username.Trim();
+        user.DisplayName = dto.DisplayName.Trim();
+        user.Email = dto.Email.Trim();
+
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+            return BadRequest(new { message = string.Join(" ", result.Errors.Select(e => e.Description)) });
+
+        var roles = await _userManager.GetRolesAsync(user);
+        var license = await _context.Licenses.AsNoTracking().FirstOrDefaultAsync(l => l.UserId == id);
+        var workouts = await _context.WorkoutLogs.CountAsync(x => x.UserId == id);
+        return Ok(new AdminUserDto(
+            user.Id,
+            user.UserName ?? string.Empty,
+            user.DisplayName,
+            user.Email ?? string.Empty,
+            user.CreatedAt,
+            roles.ToArray(),
+            new AdminLicenseDto(license?.Status ?? LicenseStatus.Pending, license?.LicensedAt, license?.ExpiresAt, license?.Notes),
+            new AdminStatsDto(workouts, null)));
+    }
+
+    [HttpPost("users/{id:guid}/password")]
+    public async Task<ActionResult<MessageDto>> ResetPassword(Guid id, [FromBody] AdminPasswordResetDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        if (user is null) return NotFound();
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var result = await _userManager.ResetPasswordAsync(user, token, dto.NewPassword);
+        if (!result.Succeeded)
+            return BadRequest(new { message = string.Join(" ", result.Errors.Select(e => e.Description)) });
+
+        // Cerrar sesiones activas del usuario: revocar refresh tokens
+        var activeTokens = await _context.RefreshTokens.Where(t => t.UserId == id && t.RevokedAt == null).ToListAsync();
+        foreach (var t in activeTokens) t.RevokedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+
+        return Ok(new MessageDto("Contraseña restablecida."));
+    }
+
+    [HttpPut("users/{id:guid}/license")]
+    public async Task<ActionResult<AdminLicenseDto>> UpdateLicense(Guid id, [FromBody] AdminLicenseUpdateDto dto)
+    {
+        var license = await _context.Licenses.FirstOrDefaultAsync(x => x.UserId == id);
+        if (license is null) return NotFound();
+
+        if (dto.Status.HasValue)
+        {
+            license.Status = dto.Status.Value;
+            if (dto.Status.Value == LicenseStatus.Active && license.LicensedAt is null)
+                license.LicensedAt = DateTime.UtcNow;
+        }
+
+        // ExpiresAt null => licencia de por vida.
+        // El cliente envía fechas sin zona (Kind=Unspecified): normalizar a UTC
+        // porque la columna es timestamptz (Npgsql rechaza Unspecified).
+        license.ExpiresAt = dto.ExpiresAt.HasValue
+            ? DateTime.SpecifyKind(dto.ExpiresAt.Value, DateTimeKind.Utc)
+            : null;
+        license.Notes = dto.Notes ?? license.Notes;
+        license.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        InvalidateLicenseCache(id);
 
         return Ok(new AdminLicenseDto(license.Status, license.LicensedAt, license.ExpiresAt, license.Notes));
     }

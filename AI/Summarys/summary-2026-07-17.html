@@ -378,9 +378,19 @@
       <span class="v-detail">3 corridas consecutivas: auth, licencias, catalogos, TDEE, generacion planes, tracking, gamificacion, metricas</span>
     </div>
     <div class="v-card">
+      <span class="v-label">Smoke Admin</span>
+      <span class="v-value pass">11 / 11 PASS</span>
+      <span class="v-detail">Gestión de usuarios, licencias, roles, contraseñas, sesiones revocadas</span>
+    </div>
+    <div class="v-card">
       <span class="v-label">E2E UI Playwright</span>
-      <span class="v-value pass">13 / 13 PASS</span>
-      <span class="v-detail">Desktop sidebar + mobile bottom-nav, flujo pending, 0 errores consola</span>
+      <span class="v-value pass">13 / 13 PASS en 32s</span>
+      <span class="v-detail">Desktop sidebar + mobile bottom-nav, flujo pending, registro diario, modales, admin, 0 errores consola</span>
+    </div>
+    <div class="v-card">
+      <span class="v-label">Build + Publish</span>
+      <span class="v-value pass">0 errores, Release OK</span>
+      <span class="v-detail"><code>dotnet build</code> limpio; <code>dotnet publish -c Release</code> sin advertencias</span>
     </div>
     <div class="v-card">
       <span class="v-label">Cache</span>
@@ -452,6 +462,74 @@
   </ul>
 </div>
 
+<!-- ITERACION 2 -->
+<div class="section">
+  <div class="section-title">Iteracion 2 — UX de registro diario y gestion de usuarios</div>
+
+  <p style="font-size:0.9rem;color:#cbd5e1;line-height:1.7;margin-bottom:1rem;">
+    Segunda iteracion centrada en reducir friccion en el registro diario, exponer informacion de ejercicios y recetas,
+    y dotar al admin (y al usuario) de controles completos de cuenta y licenciamiento.
+  </p>
+
+  <div class="section-title" style="font-size:0.75rem;color:#6366f1;border-bottom-color:rgba(99,102,241,0.12);">Nuevas capacidades</div>
+  <div class="mod-grid" style="margin-bottom:1.25rem;">
+    <div class="mod-card" style="border-left-color:#10b981;">
+      <div class="mod-name">TodayPage redisenada</div>
+      <div class="mod-desc">Steppers +/- para series, reps, peso y porciones. Registro sin teclado: 1 tap para completar. Pestañas "Recomendadas" (platillos del plan con boton "La comi" y receta) y "Mi registro" (lo realmente comido, 1 o 6 entradas, catalogo + entrada rapida).</div>
+      <div class="mod-tags"><span class="badge badge-emerald">frontend</span><span class="badge badge-indigo">ux</span></div>
+    </div>
+    <div class="mod-card" style="border-left-color:#8b5cf6;">
+      <div class="mod-name">Modales informativos</div>
+      <div class="mod-desc">ExerciseGuideModal (descripcion, instrucciones, musculos, efecto) y RecipeModal (macros, ingredientes, pasos) accesibles con un tap desde ejercicios y platillos en cualquier vista.</div>
+      <div class="mod-tags"><span class="badge badge-violet">frontend</span><span class="badge badge-indigo">ux</span></div>
+    </div>
+    <div class="mod-card" style="border-left-color:#f59e0b;">
+      <div class="mod-name">Admin: gestion total por usuario</div>
+      <div class="mod-desc">Editar nombre, usuario y correo. Restablecer contraseña revocando todas las sesiones. Estado y fecha de vencimiento de licencia con opcion "De por vida" (expiresAt null). Toggle de rol Admin.</div>
+      <div class="mod-tags"><span class="badge badge-amber">admin panel</span><span class="badge badge-cyan">backend</span></div>
+    </div>
+    <div class="mod-card" style="border-left-color:#22d3ee;">
+      <div class="mod-name">Cuenta propia en Ajustes</div>
+      <div class="mod-desc">Editar nombre y correo. Cambio de contraseña con validacion de la actual. Actualizacion inmediata en UI tras guardar.</div>
+      <div class="mod-tags"><span class="badge badge-cyan">frontend</span><span class="badge badge-indigo">backend</span></div>
+    </div>
+    <div class="mod-card" style="border-left-color:#6366f1;">
+      <div class="mod-name">Migraciones automaticas</div>
+      <div class="mod-desc">Al arrancar la API se ejecutan migraciones con reintentos (backoff). Deploy sin tocar la BD manualmente. Nunca destructivo: solo EnsureCreated/Migrate segun entorno.</div>
+      <div class="mod-tags"><span class="badge badge-indigo">devops</span><span class="badge badge-cyan">backend</span></div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:0.75rem;color:#ef4444;border-bottom-color:rgba(239,68,68,0.12);">Bugs corregidos en esta iteracion <span class="count">(5)</span></div>
+  <ul class="bug-list">
+    <li class="bug-crit">
+      <strong>Npgsql rechazaba DateTime Kind=Unspecified en timestamptz</strong> &mdash;
+      500 al poner vencimiento de licencia o deadline de meta porque EF enviaba DateTime con Kind=Unspecified.
+      <span class="fix">Fix:</span> <code>DateTime.SpecifyKind(value, DateTimeKind.Utc)</code> antes de persistir todo timestamptz.
+    </li>
+    <li class="bug-high">
+      <strong>NRE al mapear plan recien generado en /workout-plans/regenerate</strong> &mdash;
+      La respuesta del endpoint devolvia entidades sin includes; navigation properties nulas causaban NRE en el mapper.
+      <span class="fix">Fix:</span> re-query del plan recien creado con <code>.Include()</code> y <code>.ThenInclude()</code> completos antes de mapear.
+    </li>
+    <li class="bug-high">
+      <strong>Ejercicios duplicados por nombre en el plan</strong> &mdash;
+      Variantes Bulk/Cut del catalogo compartian nombre pero tenian IDs distintos; el generador seleccionaba ambas.
+      <span class="fix">Fix:</span> deduplicacion por nombre en el generador, manteniendo la variante mas adecuada al objetivo.
+    </li>
+    <li class="bug-med">
+      <strong>Metas WeeklyWorkouts y rachas en 0</strong> &mdash;
+      Anclas UTC del servidor vs dia local del usuario hacian que entrenos de tarde/noche no contaran para la meta/racha.
+      <span class="fix">Fix:</span> anclas por fecha de actividad del usuario (local) en vez de UTC del servidor.
+    </li>
+    <li class="bug-med">
+      <strong>E2E con procesos huerfanos y networkidle eterno</strong> &mdash;
+      Playwright se colgaba esperando networkidle; procesos del navegador quedaban huerfanos entre corridas.
+      <span class="fix">Fix:</span> watchdog de 3 min, kills por arbol de procesos, waitUntil <code>domcontentloaded</code> en vez de <code>networkidle</code>. Ahora 32s.
+    </li>
+  </ul>
+</div>
+
 <!-- DESPLIEGUE -->
 <div class="section">
   <div class="section-title">Despliegue</div>
@@ -511,7 +589,7 @@ docker compose --profile tunnel up -d
 
 <hr class="divider">
 
-<footer>AegiFitness &mdash; Implementacion completada 2026-07-17 &mdash; Resumen tecnico</footer>
+<footer>AegiFitness &mdash; Implementacion completada 2026-07-17 &mdash; Resumen tecnico &mdash; Actualizado con Iteracion 2 (2026-07-18)</footer>
 
 </div>
 </body>

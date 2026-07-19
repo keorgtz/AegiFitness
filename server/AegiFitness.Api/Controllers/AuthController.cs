@@ -126,6 +126,42 @@ public class AuthController : ControllerBase
         return Ok(me);
     }
 
+    [HttpPost("change-password")]
+    [Authorize]
+    public async Task<ActionResult<MessageDto>> ChangePassword(ChangePasswordDto dto)
+    {
+        var userId = CurrentUserId();
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user is null) return Unauthorized();
+
+        var result = await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+        if (!result.Succeeded)
+            return BadRequest(new { message = string.Join(" ", result.Errors.Select(e => e.Description)) });
+
+        return Ok(new MessageDto("Contraseña actualizada."));
+    }
+
+    [HttpPut("account")]
+    [Authorize]
+    public async Task<ActionResult<MeDto>> UpdateAccount(AccountUpdateDto dto)
+    {
+        var userId = CurrentUserId();
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user is null) return Unauthorized();
+
+        var emailTaken = await _userManager.Users.AnyAsync(u => u.Id != userId && u.NormalizedEmail == _userManager.NormalizeEmail(dto.Email));
+        if (emailTaken)
+            return BadRequest(new { message = "Ese correo ya está en uso por otra cuenta." });
+
+        user.DisplayName = dto.DisplayName.Trim();
+        user.Email = dto.Email.Trim();
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+            return BadRequest(new { message = string.Join(" ", result.Errors.Select(e => e.Description)) });
+
+        return Ok(await BuildMeAsync(user));
+    }
+
     private async Task<AuthResponseDto> IssueTokensAsync(ApplicationUser user)
     {
         var roles = await _userManager.GetRolesAsync(user);

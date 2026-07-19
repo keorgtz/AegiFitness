@@ -1,5 +1,8 @@
 import type { ReactNode, ButtonHTMLAttributes } from "react";
 
+export { Stepper } from "./Stepper";
+export { ExerciseGuideModal, RecipeModal } from "./GuideModals";
+
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "ghost" | "danger";
   size?: "sm" | "md" | "lg";

@@ -29,13 +29,14 @@ public class WorkoutPlanGenerator
         };
 
         var usedExerciseIds = new HashSet<int>();
+        var usedExerciseNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var day in activeDays)
         {
             var muscles = GetMusclesForDay(day, activeDays.Count, activeDays.IndexOf(day));
             var dayModality = day.Modality;
             var scheme = ResolveScheme(config, dayModality);
-            var candidates = SelectCandidates(exercises, dayModality, muscles, goal, usedExerciseIds, rng);
+            var candidates = SelectCandidates(exercises, dayModality, muscles, goal, usedExerciseIds, usedExerciseNames, rng);
             var items = BuildItems(candidates, config, dayModality, scheme, rng);
 
             var planDay = new WorkoutPlanDay
@@ -49,7 +50,11 @@ public class WorkoutPlanGenerator
             plan.Days.Add(planDay);
 
             foreach (var item in items)
+            {
                 usedExerciseIds.Add(item.ExerciseId);
+                var ex = exercises.FirstOrDefault(e => e.Id == item.ExerciseId);
+                if (ex is not null) usedExerciseNames.Add(ex.Name);
+            }
         }
 
         var previous = await _context.WorkoutPlans.Where(x => x.UserId == userId && x.IsActive).ToListAsync(ct);
@@ -132,7 +137,7 @@ public class WorkoutPlanGenerator
         };
     }
 
-    private static List<Exercise> SelectCandidates(List<Exercise> all, Modality modality, List<MuscleGroup> muscles, Goal goal, HashSet<int> used, Random rng)
+    private static List<Exercise> SelectCandidates(List<Exercise> all, Modality modality, List<MuscleGroup> muscles, Goal goal, HashSet<int> used, HashSet<string> usedNames, Random rng)
     {
         var allowedTypes = modality switch
         {
@@ -142,9 +147,15 @@ public class WorkoutPlanGenerator
             _ => new[] { Modality.Gym }
         };
 
-        IEnumerable<Exercise> ByType(IEnumerable<Exercise> source) => source.Where(e => allowedTypes.Contains(e.Type));
+        // El catálogo tiene variantes Bulk/Cut del mismo ejercicio: dedup por nombre
+        // para no meter "el mismo" ejercicio dos veces en el día o la semana.
+        IEnumerable<Exercise> DistinctNames(IEnumerable<Exercise> source) => source
+            .GroupBy(e => e.Name, StringComparer.OrdinalIgnoreCase)
+            .Select(g => g.First());
+
+        IEnumerable<Exercise> ByType(IEnumerable<Exercise> source) => DistinctNames(source.Where(e => allowedTypes.Contains(e.Type)));
         IEnumerable<Exercise> ByMuscles(IEnumerable<Exercise> source) => muscles.Any() ? source.Where(e => muscles.Contains(e.MuscleGroup)) : source;
-        IEnumerable<Exercise> Unused(IEnumerable<Exercise> source) => source.Where(e => !used.Contains(e.Id));
+        IEnumerable<Exercise> Unused(IEnumerable<Exercise> source) => source.Where(e => !used.Contains(e.Id) && !usedNames.Contains(e.Name));
 
         List<Exercise> Order(IEnumerable<Exercise> source) => goal == Goal.Bulk
             ? source.OrderByDescending(e => e.Difficulty).ThenBy(_ => rng.Next()).ToList()
@@ -156,13 +167,13 @@ public class WorkoutPlanGenerator
         if (candidates.Count < 4)
             candidates = Order(ByType(all));
         if (candidates.Count < 4)
-            candidates = Order(all);
+            candidates = Order(DistinctNames(all));
 
         if (muscles.Contains(MuscleGroup.Core) && !candidates.Any(e => e.MuscleGroup == MuscleGroup.Core))
         {
-            var core = all.FirstOrDefault(e => allowedTypes.Contains(e.Type) && e.MuscleGroup == MuscleGroup.Core && !used.Contains(e.Id))
-                ?? all.FirstOrDefault(e => allowedTypes.Contains(e.Type) && e.MuscleGroup == MuscleGroup.Core);
-            if (core is not null) candidates.Add(core);
+            var core = ByType(all).FirstOrDefault(e => e.MuscleGroup == MuscleGroup.Core && !usedNames.Contains(e.Name))
+                ?? ByType(all).FirstOrDefault(e => e.MuscleGroup == MuscleGroup.Core);
+            if (core is not null && !candidates.Contains(core)) candidates.Add(core);
         }
 
         return candidates;

@@ -26,7 +26,7 @@ public class GoalsController : ControllerBase
     public async Task<ActionResult<UserGoalDto[]>> List()
     {
         var userId = CurrentUserId();
-        await _gamification.UpdateGoalsAsync(userId);
+        await _gamification.UpdateGoalsAsync(userId, await LatestActivityDateAsync(userId));
         var goals = await _context.UserGoals
             .AsNoTracking()
             .Where(x => x.UserId == userId)
@@ -48,13 +48,23 @@ public class GoalsController : ControllerBase
             Title = dto.Title,
             TargetValue = dto.TargetValue,
             Unit = dto.Unit,
-            Deadline = dto.Deadline
+            Deadline = dto.Deadline.HasValue
+                ? DateTime.SpecifyKind(dto.Deadline.Value, DateTimeKind.Utc)
+                : null
         };
         _context.UserGoals.Add(goal);
         await _context.SaveChangesAsync();
-        await _gamification.UpdateGoalsAsync(userId);
+        await _gamification.UpdateGoalsAsync(userId, await LatestActivityDateAsync(userId));
         await _context.Entry(goal).ReloadAsync();
         return Ok(Map(goal));
+    }
+
+    private async Task<DateOnly?> LatestActivityDateAsync(Guid userId)
+    {
+        var w = await _context.WorkoutLogs.Where(x => x.UserId == userId).MaxAsync(x => (DateOnly?)x.Date);
+        var m = await _context.MealLogs.Where(x => x.UserId == userId).MaxAsync(x => (DateOnly?)x.Date);
+        var latest = new[] { w, m }.Where(d => d.HasValue).Select(d => d!.Value).DefaultIfEmpty().Max();
+        return latest == default ? null : latest;
     }
 
     [HttpPut("{id:guid}")]

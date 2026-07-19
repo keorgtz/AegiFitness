@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { profileApi, trainingConfigApi } from "../api/resources";
+import { accountApi, profileApi, trainingConfigApi } from "../api/resources";
 import { useAuth } from "../auth/AuthContext";
 import { Button, Card, Chip, EmptyState, ErrorState, Input, Loading, Modal, Select } from "../components/ui";
 import { DayConfigEditor } from "../components/DayConfigEditor";
@@ -21,7 +21,7 @@ const GYM_MODES: GymMode[] = ["Bodybuilding", "Health", "Combined"];
 const CALI_MODES: CalisthenicsMode[] = ["Classic", "Military", "CrossFit"];
 
 export default function SettingsPage() {
-  const { user, logout } = useAuth();
+  const { user, logout, refetchMe } = useAuth();
   const toast = useToastCtx();
   const [activeTab, setActiveTab] = useState<"profile" | "training" | "account">("profile");
   const [confirmGoal, setConfirmGoal] = useState(false);
@@ -304,32 +304,14 @@ export default function SettingsPage() {
       )}
 
       {activeTab === "account" && (
-        <div>
-          <Card title="Cuenta" icon="account_circle" style={{ marginBottom: 16 }}>
-            <div style={{ marginBottom: 12 }}>
-              <div className="label">Usuario</div>
-              <div>{user?.username}</div>
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <div className="label">Correo</div>
-              <div>{user?.email}</div>
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <div className="label">Licencia</div>
-              <span className={`badge badge--${user?.license.status === "Active" ? "success" : "warning"}`}>
-                {licenseStatusName(user?.license.status ?? "Pending")}
-              </span>
-              {user?.license.expiresAt && (
-                <div style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginTop: 4 }}>
-                  Expira: {new Date(user.license.expiresAt).toLocaleDateString("es-ES")}
-                </div>
-              )}
-            </div>
-            <Button variant="danger" block onClick={() => void logout()}>
-              Cerrar sesión
-            </Button>
-          </Card>
-        </div>
+        <AccountSection
+          username={user?.username ?? ""}
+          displayName={user?.displayName ?? ""}
+          email={user?.email ?? ""}
+          license={user?.license}
+          onSaved={() => void refetchMe()}
+          onLogout={() => void logout()}
+        />
       )}
 
       <Modal
@@ -352,6 +334,131 @@ export default function SettingsPage() {
           acción afecta los planes futuros.
         </p>
       </Modal>
+    </div>
+  );
+}
+
+interface AccountSectionProps {
+  username: string;
+  displayName: string;
+  email: string;
+  license?: { status: string; expiresAt?: string | null };
+  onSaved: () => void;
+  onLogout: () => void;
+}
+
+function AccountSection({ username, displayName, email, license, onSaved, onLogout }: AccountSectionProps) {
+  const toast = useToastCtx();
+  const [name, setName] = useState(displayName);
+  const [mail, setMail] = useState(email);
+  const [savingData, setSavingData] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [savingPass, setSavingPass] = useState(false);
+
+  const saveData = async () => {
+    if (name.trim().length < 2) {
+      toast.add("Ingresa un nombre válido", "error");
+      return;
+    }
+    setSavingData(true);
+    try {
+      await accountApi.update({ displayName: name.trim(), email: mail.trim() });
+      toast.add("Datos actualizados", "success");
+      onSaved();
+    } catch (err) {
+      toast.add(err instanceof Error ? err.message : "No se pudo guardar", "error");
+    } finally {
+      setSavingData(false);
+    }
+  };
+
+  const savePassword = async () => {
+    if (newPassword.length < 8) {
+      toast.add("La nueva contraseña debe tener al menos 8 caracteres", "error");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.add("Las contraseñas no coinciden", "error");
+      return;
+    }
+    setSavingPass(true);
+    try {
+      await accountApi.changePassword({ currentPassword, newPassword });
+      toast.add("Contraseña actualizada", "success");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err) {
+      toast.add(err instanceof Error ? err.message : "No se pudo actualizar", "error");
+    } finally {
+      setSavingPass(false);
+    }
+  };
+
+  return (
+    <div className="settings-account">
+      <Card title="Datos de la cuenta" icon="account_circle" style={{ marginBottom: 16 }}>
+        <div className="form-grid">
+          <Input label="Usuario" value={username} readOnly disabled />
+          <Input label="Nombre visible" value={name} onChange={(e) => setName(e.target.value)} />
+          <Input label="Correo" type="email" value={mail} onChange={(e) => setMail(e.target.value)} />
+        </div>
+        <div style={{ marginTop: 16 }}>
+          <Button variant="primary" onClick={() => void saveData()} loading={savingData}>
+            Guardar datos
+          </Button>
+        </div>
+      </Card>
+
+      <Card title="Cambiar contraseña" icon="lock" style={{ marginBottom: 16 }}>
+        <div className="form-grid">
+          <Input
+            label="Contraseña actual"
+            type="password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+          />
+          <Input
+            label="Nueva contraseña"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <Input
+            label="Confirmar nueva contraseña"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </div>
+        <div style={{ marginTop: 16 }}>
+          <Button
+            variant="primary"
+            onClick={() => void savePassword()}
+            loading={savingPass}
+            disabled={!currentPassword || !newPassword}
+          >
+            Actualizar contraseña
+          </Button>
+        </div>
+      </Card>
+
+      <Card title="Licencia" icon="verified_user" style={{ marginBottom: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <Chip active={license?.status === "Active"}>{licenseStatusName(license?.status ?? "Pending")}</Chip>
+          <span style={{ color: "var(--text-muted)", fontSize: 13 }}>
+            {license?.expiresAt
+              ? `Vigente hasta el ${new Date(license.expiresAt).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" })}`
+              : "Licencia de por vida"}
+          </span>
+        </div>
+      </Card>
+
+      <Button variant="danger" block onClick={onLogout}>
+        Cerrar sesión
+      </Button>
     </div>
   );
 }

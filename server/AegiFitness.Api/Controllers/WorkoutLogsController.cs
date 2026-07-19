@@ -103,7 +103,7 @@ public class WorkoutLogsController : ControllerBase
         await _context.SaveChangesAsync();
 
         await _gamification.AddXpAsync(userId, xp, $"Entrenamiento {dto.Date:yyyy-MM-dd}", HttpContext.RequestAborted);
-        await _gamification.EvaluateWorkoutLoggedAsync(userId, HttpContext.RequestAborted);
+        await _gamification.EvaluateWorkoutLoggedAsync(userId, dto.Date, HttpContext.RequestAborted);
         if (dto.Entries.Any(e => e.IsExtra))
             await _gamification.EvaluateExtraAsync(userId, HttpContext.RequestAborted);
         await _metrics.InvalidateAsync(userId, HttpContext.RequestAborted);

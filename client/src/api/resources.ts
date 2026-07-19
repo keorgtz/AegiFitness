@@ -1,6 +1,9 @@
 import { api } from "./client";
 import type {
+  AdminLicenseDto,
   AdminUserDto,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
   CreateGoalRequest,
   DashboardSummaryDto,
   ExerciseDto,
@@ -11,12 +14,17 @@ import type {
   MealLogDto,
   MealLogRequest,
   MealPlanDto,
+  MeDto,
   MetricsSummaryDto,
   PagedResult,
   ProfileDto,
+  ResetPasswordRequest,
   RoleRequest,
   TrainingConfigDto,
+  UpdateAccountRequest,
+  UpdateAdminUserRequest,
   UpdateGoalRequest,
+  UpdateLicenseRequest,
   WeightEntryDto,
   WeightEntryRequest,
   WorkoutLogDto,
@@ -117,6 +125,12 @@ export const foodCatalogApi = {
 export const adminApi = {
   users: (filter: "pending" | "active" | "all") =>
     api.get<AdminUserDto[]>(`/admin/users?filter=${filter}`),
+  updateUser: (id: string, req: UpdateAdminUserRequest) =>
+    api.put<AdminUserDto>(`/admin/users/${id}`, req),
+  resetPassword: (id: string, req: ResetPasswordRequest) =>
+    api.post<ChangePasswordResponse>(`/admin/users/${id}/password`, req),
+  updateLicense: (id: string, req: UpdateLicenseRequest) =>
+    api.put<AdminLicenseDto>(`/admin/users/${id}/license`, req),
   approve: (id: string, validDays?: number) =>
     api.post(`/admin/users/${id}/license/approve`, { validDays } satisfies LicenseActionRequest),
   suspend: (id: string, notes?: string) =>
@@ -127,6 +141,12 @@ export const adminApi = {
     api.put(`/admin/users/${id}/license/extend`, { days } satisfies ExtendLicenseRequest),
   setRole: (id: string, role: "Admin" | "Member", grant: boolean) =>
     api.post(`/admin/users/${id}/roles`, { role, grant } satisfies RoleRequest),
+};
+
+export const accountApi = {
+  update: (req: UpdateAccountRequest) => api.put<MeDto>("/auth/account", req),
+  changePassword: (req: ChangePasswordRequest) =>
+    api.post<ChangePasswordResponse>("/auth/change-password", req),
 };
 
 export const dashboardApi = {

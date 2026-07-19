@@ -1,20 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { adminApi } from "../api/resources";
 import { useAuth } from "../auth/AuthContext";
-import { Button, EmptyState, ErrorState, Input, Loading, Modal, SegmentedControl } from "../components/ui";
+import { Button, EmptyState, ErrorState, Input, Loading, Modal, SegmentedControl, Select } from "../components/ui";
 import { Badge } from "../components/ui/charts";
 import { useAsync } from "../hooks/useAsync";
 import { useToastCtx } from "../hooks/useToastContext";
-import type { AdminUserDto } from "../types/api";
+import type { AdminUserDto, LicenseStatus } from "../types/api";
 import { licenseStatusName } from "../utils/format";
 
 export default function AdminPage() {
   const { user } = useAuth();
   const toast = useToastCtx();
   const [filter, setFilter] = useState<"pending" | "active" | "all">("pending");
-  const [actionUser, setActionUser] = useState<AdminUserDto | null>(null);
-  const [actionType, setActionType] = useState<"approve" | "extend" | null>(null);
-  const [days, setDays] = useState("30");
+  const [manageUser, setManageUser] = useState<AdminUserDto | null>(null);
   const [loading, setLoading] = useState(false);
 
   const { data, loading: listLoading, error, run } = useAsync<{
@@ -29,11 +27,11 @@ export default function AdminPage() {
     load();
   }, [load]);
 
-  const doAction = async (fn: () => Promise<unknown>) => {
+  const doAction = async (fn: () => Promise<unknown>, okMessage = "Acción completada") => {
     setLoading(true);
     try {
       await fn();
-      toast.add("Acción completada", "success");
+      toast.add(okMessage, "success");
       load();
     } catch (err) {
       const message =
@@ -44,32 +42,6 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleApprove = () => {
-    if (!actionUser) return;
-    void doAction(() => adminApi.approve(actionUser.id, Number(days) || undefined));
-  };
-
-  const handleExtend = () => {
-    if (!actionUser) return;
-    void doAction(() => adminApi.extend(actionUser.id, Number(days) || 30));
-  };
-
-  const handleSuspend = (u: AdminUserDto) => {
-    void doAction(() => adminApi.suspend(u.id));
-  };
-
-  const handleRevoke = (u: AdminUserDto) => {
-    void doAction(() => adminApi.revoke(u.id));
-  };
-
-  const handleRole = (u: AdminUserDto, grant: boolean) => {
-    if (u.id === user?.id) {
-      toast.add("No puedes modificar tu propio rol", "error");
-      return;
-    }
-    void doAction(() => adminApi.setRole(u.id, "Admin", grant));
   };
 
   const badgeVariant = (status: string) => {
@@ -140,50 +112,45 @@ export default function AdminPage() {
                   <Badge variant={badgeVariant(u.license.status)}>
                     {licenseStatusName(u.license.status)}
                   </Badge>
+                  <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: 4 }}>
+                    {u.license.expiresAt
+                      ? `Vence ${new Date(u.license.expiresAt).toLocaleDateString("es-ES")}`
+                      : "De por vida"}
+                  </div>
                 </td>
                 <td>{u.stats.workouts}</td>
                 <td>
-                  <div className="row gap-2">
-                    {u.license.status !== "Active" && (
+                  <div className="row gap-2" style={{ flexWrap: "wrap" }}>
+                    {u.license.status === "Pending" && (
                       <Button
                         size="sm"
-                        onClick={() => {
-                          setActionUser(u);
-                          setActionType("approve");
-                          setDays("30");
-                        }}
+                        disabled={loading}
+                        onClick={() => void doAction(() => adminApi.approve(u.id), "Licencia activada de por vida")}
                       >
                         Aprobar
                       </Button>
                     )}
                     {u.license.status === "Active" && (
-                      <Button size="sm" variant="ghost" onClick={() => handleSuspend(u)}>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        disabled={loading}
+                        onClick={() => void doAction(() => adminApi.suspend(u.id), "Licencia suspendida")}
+                      >
                         Suspender
                       </Button>
                     )}
-                    <Button size="sm" variant="ghost" onClick={() => handleRevoke(u)}>
-                      Revocar
-                    </Button>
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => {
-                        setActionUser(u);
-                        setActionType("extend");
-                        setDays("30");
-                      }}
+                      disabled={loading}
+                      onClick={() => void doAction(() => adminApi.revoke(u.id), "Licencia revocada")}
                     >
-                      Extender
+                      Revocar
                     </Button>
-                    {u.roles.includes("Admin") ? (
-                      <Button size="sm" variant="danger" onClick={() => handleRole(u, false)}>
-                        Quitar admin
-                      </Button>
-                    ) : (
-                      <Button size="sm" variant="ghost" onClick={() => handleRole(u, true)}>
-                        Admin
-                      </Button>
-                    )}
+                    <Button size="sm" variant="primary" onClick={() => setManageUser(u)}>
+                      Gestionar
+                    </Button>
                   </div>
                 </td>
               </tr>
@@ -196,54 +163,212 @@ export default function AdminPage() {
         <EmptyState icon="search_off" title="Sin usuarios" description="No hay usuarios en este filtro." />
       )}
 
-      <Modal
-        open={actionType === "approve"}
-        onClose={() => setActionType(null)}
-        title="Aprobar licencia"
-        footer={
-          <>
-            <Button variant="ghost" onClick={() => setActionType(null)}>
-              Cancelar
-            </Button>
-            <Button onClick={handleApprove} loading={loading}>
-              Aprobar
-            </Button>
-          </>
-        }
-      >
-        <Input
-          type="number"
-          label="Días válidos (opcional)"
-          value={days}
-          onChange={(e) => setDays(e.target.value)}
-        />
-        <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginTop: 8 }}>
-          Deja en blanco o 0 para usar la vigencia por defecto.
-        </p>
-      </Modal>
-
-      <Modal
-        open={actionType === "extend"}
-        onClose={() => setActionType(null)}
-        title="Extender licencia"
-        footer={
-          <>
-            <Button variant="ghost" onClick={() => setActionType(null)}>
-              Cancelar
-            </Button>
-            <Button onClick={handleExtend} loading={loading}>
-              Extender
-            </Button>
-          </>
-        }
-      >
-        <Input
-          type="number"
-          label="Días a añadir"
-          value={days}
-          onChange={(e) => setDays(e.target.value)}
-        />
-      </Modal>
+      <UserManageModal
+        user={manageUser}
+        currentUserId={user?.id ?? ""}
+        onClose={() => setManageUser(null)}
+        onChanged={() => {
+          load();
+        }}
+      />
     </div>
+  );
+}
+
+function UserManageModal({
+  user,
+  currentUserId,
+  onClose,
+  onChanged,
+}: {
+  user: AdminUserDto | null;
+  currentUserId: string;
+  onClose: () => void;
+  onChanged: () => void;
+}) {
+  const toast = useToastCtx();
+  const [displayName, setDisplayName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [licenseStatus, setLicenseStatus] = useState<LicenseStatus>("Pending");
+  const [expiresAt, setExpiresAt] = useState("");
+  const [lifetime, setLifetime] = useState(false);
+  const [licenseNotes, setLicenseNotes] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    setDisplayName(user.displayName);
+    setUsername(user.username);
+    setEmail(user.email);
+    setNewPassword("");
+    setConfirmPassword("");
+    setLicenseStatus(user.license.status);
+    setExpiresAt(user.license.expiresAt ? user.license.expiresAt.slice(0, 10) : "");
+    setLifetime(!user.license.expiresAt);
+    setLicenseNotes(user.license.notes ?? "");
+    setIsAdmin(user.roles.includes("Admin"));
+  }, [user]);
+
+  if (!user) return null;
+
+  const saveSection = async (fn: () => Promise<unknown>, okMessage: string) => {
+    setSaving(true);
+    try {
+      await fn();
+      toast.add(okMessage, "success");
+      onChanged();
+    } catch (err) {
+      const message =
+        typeof err === "object" && err !== null && "message" in err
+          ? String(err.message)
+          : "Error al guardar";
+      toast.add(message, "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const saveData = () =>
+    saveSection(
+      () => adminApi.updateUser(user.id, { displayName, username, email }),
+      "Datos actualizados",
+    );
+
+  const savePassword = () => {
+    if (newPassword.length < 8) {
+      toast.add("La contraseña debe tener al menos 8 caracteres", "error");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.add("Las contraseñas no coinciden", "error");
+      return;
+    }
+    return saveSection(
+      () => adminApi.resetPassword(user.id, { newPassword }),
+      "Contraseña restablecida",
+    );
+  };
+
+  const saveLicense = () =>
+    saveSection(
+      () =>
+        adminApi.updateLicense(user.id, {
+          status: licenseStatus,
+          expiresAt: lifetime ? null : expiresAt || null,
+          notes: licenseNotes || undefined,
+        }),
+      "Licencia actualizada",
+    );
+
+  const saveRole = () => {
+    if (user.id === currentUserId) {
+      toast.add("No puedes modificar tu propio rol", "error");
+      return;
+    }
+    return saveSection(
+      () => adminApi.setRole(user.id, "Admin", isAdmin),
+      isAdmin ? "Rol Admin otorgado" : "Rol Admin revocado",
+    );
+  };
+
+  const isSelf = user.id === currentUserId;
+
+  return (
+    <Modal open onClose={onClose} title={`Gestionar: ${user.displayName}`} wide>
+      <div className="admin-section">
+        <div className="admin-section__title">Datos</div>
+        <Input label="Nombre visible" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+        <Input label="Usuario" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <Input label="Correo" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Button size="sm" onClick={() => void saveData()} loading={saving}>
+          Guardar datos
+        </Button>
+      </div>
+
+      <div className="admin-section">
+        <div className="admin-section__title">Contraseña</div>
+        <p style={{ color: "var(--text-muted)", fontSize: "0.82rem", marginBottom: 12 }}>
+          Restablecer la contraseña cierra las sesiones activas del usuario.
+        </p>
+        <Input
+          label="Nueva contraseña"
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+        <Input
+          label="Confirmar contraseña"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <Button size="sm" variant="danger" onClick={() => void savePassword()} loading={saving}>
+          Restablecer
+        </Button>
+      </div>
+
+      <div className="admin-section">
+        <div className="admin-section__title">Licencia</div>
+        <Select
+          label="Estado"
+          value={licenseStatus}
+          onChange={(e) => setLicenseStatus(e.target.value as LicenseStatus)}
+          options={(["Pending", "Active", "Suspended", "Revoked"] as LicenseStatus[]).map((s) => ({
+            value: s,
+            label: licenseStatusName(s),
+          }))}
+        />
+        {!lifetime && (
+          <Input
+            label="Vencimiento"
+            type="date"
+            value={expiresAt}
+            onChange={(e) => setExpiresAt(e.target.value)}
+          />
+        )}
+        <label className="checkbox-row mb-3">
+          <input
+            type="checkbox"
+            checked={lifetime}
+            onChange={(e) => setLifetime(e.target.checked)}
+          />
+          De por vida
+        </label>
+        <Input
+          label="Notas"
+          value={licenseNotes}
+          onChange={(e) => setLicenseNotes(e.target.value)}
+          placeholder="Notas internas"
+        />
+        <Button size="sm" onClick={() => void saveLicense()} loading={saving}>
+          Guardar licencia
+        </Button>
+      </div>
+
+      <div className="admin-section">
+        <div className="admin-section__title">Rol</div>
+        <label className="checkbox-row mb-3">
+          <input
+            type="checkbox"
+            checked={isAdmin}
+            disabled={isSelf}
+            onChange={(e) => setIsAdmin(e.target.checked)}
+          />
+          Administrador
+        </label>
+        {isSelf && (
+          <p style={{ color: "var(--text-muted)", fontSize: "0.82rem", marginBottom: 10 }}>
+            No puedes modificar tu propio rol.
+          </p>
+        )}
+        <Button size="sm" onClick={() => void saveRole()} loading={saving} disabled={isSelf}>
+          Guardar rol
+        </Button>
+      </div>
+    </Modal>
   );
 }

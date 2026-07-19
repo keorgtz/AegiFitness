@@ -77,6 +77,43 @@ export interface RegisterResponse {
   message: string;
 }
 
+export interface UpdateAccountRequest {
+  displayName: string;
+  email: string;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface ChangePasswordResponse {
+  message: string;
+}
+
+export interface UpdateAdminUserRequest {
+  displayName: string;
+  username: string;
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  newPassword: string;
+}
+
+export interface UpdateLicenseRequest {
+  status?: LicenseStatus;
+  expiresAt: string | null;
+  notes?: string;
+}
+
+export interface AdminLicenseDto {
+  status: LicenseStatus;
+  expiresAt?: string;
+  licensedAt?: string;
+  notes?: string;
+}
+
 export interface RefreshRequest {
   refreshToken: string;
 }

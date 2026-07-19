@@ -305,6 +305,18 @@ public record LicenseExtendDto([Required, Range(1, 3650)] int Days);
 
 public record RoleActionDto([Required] string Role, [Required] bool Grant);
 
+// ── Gestión de cuenta propia ──
+public record ChangePasswordDto([Required] string CurrentPassword, [Required, MinLength(8)] string NewPassword);
+public record AccountUpdateDto([Required, MinLength(2)] string DisplayName, [Required, EmailAddress] string Email);
+
+// ── Gestión admin de usuarios ──
+public record AdminUserUpdateDto(
+    [Required, MinLength(2)] string DisplayName,
+    [Required, MinLength(3)] string Username,
+    [Required, EmailAddress] string Email);
+public record AdminPasswordResetDto([Required, MinLength(8)] string NewPassword);
+public record AdminLicenseUpdateDto(LicenseStatus? Status, DateTime? ExpiresAt, string? Notes);
+
 public record MessageDto(string Message);
 
 public record PagedQuery(int Page = 1, int PageSize = 20);

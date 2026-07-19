@@ -99,7 +99,7 @@ public class MealLogsController : ControllerBase
         if (perfect)
             await _gamification.AddXpAsync(userId, 40, $"Nutrición perfecta {dto.Date:yyyy-MM-dd}", HttpContext.RequestAborted);
 
-        await _gamification.EvaluateMealLoggedAsync(userId, HttpContext.RequestAborted);
+        await _gamification.EvaluateMealLoggedAsync(userId, dto.Date, HttpContext.RequestAborted);
         if (dto.Entries.Any(e => e.IsExtra))
             await _gamification.EvaluateExtraAsync(userId, HttpContext.RequestAborted);
         await _metrics.InvalidateAsync(userId, HttpContext.RequestAborted);

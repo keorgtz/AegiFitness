@@ -59,7 +59,7 @@ public class MetricsController : ControllerBase
 
         await _context.SaveChangesAsync();
         await _gamification.AddXpAsync(userId, 10, $"Peso registrado {dto.Date:yyyy-MM-dd}", HttpContext.RequestAborted);
-        await _gamification.EvaluateWeightLoggedAsync(userId, HttpContext.RequestAborted);
+        await _gamification.EvaluateWeightLoggedAsync(userId, dto.Date, HttpContext.RequestAborted);
         await _metrics.InvalidateAsync(userId, HttpContext.RequestAborted);
 
         var entry = await _context.WeightEntries.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId && x.Date == dto.Date);

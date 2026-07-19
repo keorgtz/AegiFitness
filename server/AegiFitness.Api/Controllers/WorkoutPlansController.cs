@@ -26,14 +26,7 @@ public class WorkoutPlansController : ControllerBase
     public async Task<ActionResult<WorkoutPlanDto>> Current()
     {
         var userId = CurrentUserId();
-        var plan = await _context.WorkoutPlans
-            .AsNoTracking()
-            .Include(x => x.Days)
-            .ThenInclude(d => d.Items)
-            .ThenInclude(i => i.Exercise)
-            .Where(x => x.UserId == userId && x.IsActive)
-            .OrderByDescending(x => x.CreatedAt)
-            .FirstOrDefaultAsync();
+        var plan = await LoadActivePlanAsync(userId);
 
         if (plan is null)
         {
@@ -43,10 +36,11 @@ public class WorkoutPlansController : ControllerBase
             if (config is null) return NotFound(new { message = "Configuración de entrenamiento no encontrada." });
 
             var profile = await _context.UserProfiles.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId);
-            plan = await _generator.GenerateAsync(userId, config, profile?.Goal ?? Goal.Recomposition);
+            await _generator.GenerateAsync(userId, config, profile?.Goal ?? Goal.Recomposition);
+            plan = await LoadActivePlanAsync(userId);
         }
 
-        return Ok(Map(plan));
+        return Ok(Map(plan!));
     }
 
     [HttpPost("regenerate")]
@@ -59,9 +53,19 @@ public class WorkoutPlansController : ControllerBase
         if (config is null) return NotFound();
 
         var profile = await _context.UserProfiles.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId);
-        var plan = await _generator.GenerateAsync(userId, config, profile?.Goal ?? Goal.Recomposition);
-        return Ok(Map(plan));
+        await _generator.GenerateAsync(userId, config, profile?.Goal ?? Goal.Recomposition);
+        var plan = await LoadActivePlanAsync(userId);
+        return Ok(Map(plan!));
     }
+
+    private async Task<WorkoutPlan?> LoadActivePlanAsync(Guid userId) => await _context.WorkoutPlans
+        .AsNoTracking()
+        .Include(x => x.Days)
+        .ThenInclude(d => d.Items)
+        .ThenInclude(i => i.Exercise)
+        .Where(x => x.UserId == userId && x.IsActive)
+        .OrderByDescending(x => x.CreatedAt)
+        .FirstOrDefaultAsync();
 
     private static WorkoutPlanDto Map(WorkoutPlan p) => new(
         p.Id,

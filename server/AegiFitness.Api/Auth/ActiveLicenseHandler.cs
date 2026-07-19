@@ -33,16 +33,22 @@ public class ActiveLicenseHandler : AuthorizationHandler<ActiveLicenseRequiremen
         }
 
         var cacheKey = $"license:{userId}";
-        if (!_cache.TryGetValue(cacheKey, out Domain.LicenseStatus status))
+        if (!_cache.TryGetValue(cacheKey, out LicenseSnapshot? snapshot) || snapshot is null)
         {
             using var scope = _serviceProvider.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<Data.AppDbContext>();
             var license = await db.Licenses.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId);
-            status = license?.Status ?? Domain.LicenseStatus.Pending;
-            _cache.Set(cacheKey, status, TimeSpan.FromSeconds(60));
+            snapshot = new LicenseSnapshot(license?.Status ?? Domain.LicenseStatus.Pending, license?.ExpiresAt);
+            _cache.Set(cacheKey, snapshot, TimeSpan.FromSeconds(60));
         }
 
-        if (status == Domain.LicenseStatus.Active)
+        // Activa y (sin fecha de vencimiento = de por vida, o vigente)
+        if (snapshot.Status == Domain.LicenseStatus.Active
+            && (snapshot.ExpiresAt is null || snapshot.ExpiresAt > DateTime.UtcNow))
+        {
             context.Succeed(requirement);
+        }
     }
+
+    private sealed record LicenseSnapshot(Domain.LicenseStatus Status, DateTime? ExpiresAt);
 }
