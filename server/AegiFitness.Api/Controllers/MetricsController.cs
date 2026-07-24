@@ -67,10 +67,10 @@ public class MetricsController : ControllerBase
     }
 
     [HttpGet("summary")]
-    public async Task<ActionResult<MetricsSummary>> Summary()
+    public async Task<ActionResult<MetricsSummary>> Summary([FromQuery] DateOnly? date)
     {
         var userId = CurrentUserId();
-        var summary = await _metrics.GetSummaryAsync(userId);
+        var summary = await _metrics.GetSummaryAsync(userId, date);
         return Ok(summary);
     }
 

@@ -23,7 +23,7 @@ public class DashboardController : ControllerBase
     }
 
     [HttpGet("summary")]
-    public async Task<ActionResult<DashboardSummaryDto>> Summary()
+    public async Task<ActionResult<DashboardSummaryDto>> Summary([FromQuery] DateOnly? date)
     {
         var userId = CurrentUserId();
         var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId);
@@ -34,7 +34,8 @@ public class DashboardController : ControllerBase
         var title = _gamification.TitleForLevel(level);
         var streak = await _gamification.GetStreakDaysAsync(userId);
 
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        // El cliente envía su fecha local; sin ella cae al UTC del servidor
+        var today = date ?? DateOnly.FromDateTime(DateTime.UtcNow);
         var dayOfWeek = (int)today.DayOfWeek;
 
         var plan = await _context.WorkoutPlans

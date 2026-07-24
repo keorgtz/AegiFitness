@@ -67,7 +67,8 @@ export const mealLogApi = {
 };
 
 export const metricsApi = {
-  summary: () => api.get<MetricsSummaryDto>("/metrics/summary"),
+  summary: (date?: string) =>
+    api.get<MetricsSummaryDto>(`/metrics/summary${date ? `?date=${date}` : ""}`),
   weight: (from: string, to: string) =>
     api.get<WeightEntryDto[]>(`/metrics/weight?from=${from}&to=${to}`),
   saveWeight: (req: WeightEntryRequest) => api.post<WeightEntryDto>("/metrics/weight", req),
@@ -150,5 +151,6 @@ export const accountApi = {
 };
 
 export const dashboardApi = {
-  summary: () => api.get<DashboardSummaryDto>("/dashboard/summary"),
+  summary: (date: string) =>
+    api.get<DashboardSummaryDto>(`/dashboard/summary?date=${date}`),
 };

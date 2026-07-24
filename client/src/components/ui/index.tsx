@@ -134,24 +134,17 @@ interface SegmentedControlProps<T extends string> {
   options: { value: T; label: string }[];
   value: T;
   onChange: (value: T) => void;
+  block?: boolean;
 }
 
 export function SegmentedControl<T extends string>({
   options,
   value,
   onChange,
+  block,
 }: SegmentedControlProps<T>) {
-  const activeIndex = options.findIndex((o) => o.value === value);
-
   return (
-    <div className="seg" role="radiogroup">
-      <div
-        className="seg__indicator"
-        style={{
-          left: `calc(4px + (100% - 8px) * ${activeIndex} / ${options.length})`,
-          width: `calc((100% - 8px) / ${options.length})`,
-        }}
-      />
+    <div className={`seg ${block ? "seg--block" : ""}`} role="radiogroup">
       {options.map((o) => (
         <button
           key={o.value}
@@ -186,11 +179,13 @@ export function Modal({ open, onClose, title, children, footer, wide }: ModalPro
         className={`dialog ${wide ? "dialog--wide" : ""}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <button type="button" className="dialog__close" onClick={onClose}>
-          <span className="icon">close</span>
-        </button>
-        <div className="dialog__title">{title}</div>
-        {children}
+        <div className="dialog__header">
+          <div className="dialog__title">{title}</div>
+          <button type="button" className="dialog__close" onClick={onClose} aria-label="Cerrar">
+            <span className="icon">close</span>
+          </button>
+        </div>
+        <div className="dialog__body">{children}</div>
         {footer && <div className="dialog__footer">{footer}</div>}
       </div>
     </div>

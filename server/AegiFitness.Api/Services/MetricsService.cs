@@ -17,13 +17,14 @@ public class MetricsService
         _cache = cache;
     }
 
-    public async Task<MetricsSummary> GetSummaryAsync(Guid userId, CancellationToken ct = default)
+    public async Task<MetricsSummary> GetSummaryAsync(Guid userId, DateOnly? referenceDate = null, CancellationToken ct = default)
     {
-        var cacheKey = $"metrics:{userId}";
+        var cacheKey = $"metrics:{userId}:{referenceDate?.ToString("yyyy-MM-dd") ?? "utc"}";
         var cached = await _cache.GetAsync<MetricsSummary>(cacheKey, ct);
         if (cached is not null) return cached;
 
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        // El cliente envía su fecha local; sin ella cae al UTC del servidor
+        var today = referenceDate ?? DateOnly.FromDateTime(DateTime.UtcNow);
         var start7 = today.AddDays(-6);
         var start30 = today.AddDays(-29);
         var start14 = today.AddDays(-13);
@@ -59,11 +60,11 @@ public class MetricsService
         var workoutsTotal = await _context.WorkoutLogs.CountAsync(x => x.UserId == userId, ct);
         var streak = await _gamification.GetStreakDaysAsync(userId, ct);
 
-        var adherence7d = CalculateAdherence(workoutLogs7, mealLogs7, today);
+        var adherence7d = CalculateAdherence(workoutLogs7, mealLogs7, today, 7);
         var adherence30d = CalculateAdherence(
             await _context.WorkoutLogs.AsNoTracking().Where(x => x.UserId == userId && x.Date >= start30).Include(x => x.Entries).ToListAsync(ct),
             await _context.MealLogs.AsNoTracking().Where(x => x.UserId == userId && x.Date >= start30).Include(x => x.Entries).ToListAsync(ct),
-            today);
+            today, 30);
 
         var weightDelta30d = weightEntries.Count >= 2 && weightEntries.Last().Date <= today.AddDays(-30)
             ? weightEntries.First().WeightKg - weightEntries.Last(w => w.Date <= today.AddDays(-30)).WeightKg
@@ -113,16 +114,17 @@ public class MetricsService
         return summary;
     }
 
-    private static decimal CalculateAdherence(List<WorkoutLog> workouts, List<MealLog> meals, DateOnly today)
+    private static decimal CalculateAdherence(List<WorkoutLog> workouts, List<MealLog> meals, DateOnly today, int days)
     {
         int daysWithActivity = 0;
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < days; i++)
         {
             var d = today.AddDays(-i);
             if (workouts.Any(w => w.Date == d) || meals.Any(m => m.Date == d && m.Entries.Any()))
                 daysWithActivity++;
         }
-        return (decimal)daysWithActivity / 7m * 100m;
+        // 0-100 entero; el frontend solo le añade el símbolo %
+        return Math.Round((decimal)daysWithActivity / days * 100m);
     }
 
     public async Task InvalidateAsync(Guid userId, CancellationToken ct = default)

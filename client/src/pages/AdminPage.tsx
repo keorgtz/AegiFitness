@@ -85,7 +85,7 @@ export default function AdminPage() {
         />
       </div>
 
-      <div className="table-wrap">
+      <div className="table-wrap desktop-only">
         <table className="table">
           <thead>
             <tr>
@@ -113,9 +113,7 @@ export default function AdminPage() {
                     {licenseStatusName(u.license.status)}
                   </Badge>
                   <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: 4 }}>
-                    {u.license.expiresAt
-                      ? `Vence ${new Date(u.license.expiresAt).toLocaleDateString("es-ES")}`
-                      : "De por vida"}
+                    {licenseExpiryLabel(u.license.status, u.license.expiresAt)}
                   </div>
                 </td>
                 <td>{u.stats.workouts}</td>
@@ -159,6 +157,28 @@ export default function AdminPage() {
         </table>
       </div>
 
+      <div className="mobile-only">
+        {data.users.map((u) => (
+          <article key={u.id} className="admin-user-card">
+            <div className="admin-user-card__top">
+              <div>
+                <div className="admin-user-card__name">{u.displayName}</div>
+                <div className="admin-user-card__meta">@{u.username} · {u.email}</div>
+              </div>
+              <Badge variant={badgeVariant(u.license.status)}>{licenseStatusName(u.license.status)}</Badge>
+            </div>
+            <div className="admin-user-card__meta">
+              {licenseExpiryLabel(u.license.status, u.license.expiresAt)} · {u.stats.workouts} entrenos
+            </div>
+            <div className="admin-user-card__actions">
+              <Button size="sm" variant="primary" onClick={() => setManageUser(u)}>
+                Gestionar
+              </Button>
+            </div>
+          </article>
+        ))}
+      </div>
+
       {data.users.length === 0 && (
         <EmptyState icon="search_off" title="Sin usuarios" description="No hay usuarios en este filtro." />
       )}
@@ -173,6 +193,11 @@ export default function AdminPage() {
       />
     </div>
   );
+}
+
+function licenseExpiryLabel(status: LicenseStatus, expiresAt?: string) {
+  if (expiresAt) return `Vence ${new Date(expiresAt).toLocaleDateString("es-ES")}`;
+  return status === "Active" ? "De por vida" : "Sin licencia";
 }
 
 function UserManageModal({

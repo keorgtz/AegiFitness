@@ -28,16 +28,16 @@ public class MealPlansController : ControllerBase
         var userId = CurrentUserId();
         var targetDate = date ?? DateOnly.FromDateTime(DateTime.UtcNow);
 
-        var plan = await _context.MealPlans
-            .AsNoTracking()
-            .Include(x => x.Items)
-            .ThenInclude(i => i.Food)
-            .FirstOrDefaultAsync(x => x.UserId == userId && x.Date == targetDate);
+        var plan = await QueryWithFood(userId, targetDate);
 
         if (plan is null)
-            plan = await _generator.GenerateForDateAsync(userId, targetDate);
+        {
+            await _generator.GenerateForDateAsync(userId, targetDate);
+            // Recargar con Food incluido: el generador no trae la navegación
+            plan = await QueryWithFood(userId, targetDate);
+        }
 
-        return Ok(Map(plan));
+        return Ok(Map(plan!));
     }
 
     [HttpPost("regenerate")]
@@ -45,14 +45,23 @@ public class MealPlansController : ControllerBase
     {
         var userId = CurrentUserId();
         var targetDate = date ?? DateOnly.FromDateTime(DateTime.UtcNow);
-        var plan = await _generator.GenerateForDateAsync(userId, targetDate);
-        return Ok(Map(plan));
+        await _generator.GenerateForDateAsync(userId, targetDate);
+        var plan = await QueryWithFood(userId, targetDate);
+        return Ok(Map(plan!));
     }
+
+    private Task<MealPlan?> QueryWithFood(Guid userId, DateOnly date) =>
+        _context.MealPlans
+            .AsNoTracking()
+            .Include(x => x.Items)
+            .ThenInclude(i => i.Food)
+            .FirstOrDefaultAsync(x => x.UserId == userId && x.Date == date);
 
     private static MealPlanDto Map(MealPlan p)
     {
         var items = p.Items.Select(i => new MealPlanItemDto(
             i.Id,
+            i.FoodId,
             new FoodDto(
                 i.Food.Id,
                 i.Food.Name,

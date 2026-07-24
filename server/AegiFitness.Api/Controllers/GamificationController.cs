@@ -28,8 +28,8 @@ public class GamificationController : ControllerBase
         var xp = await _gamification.GetTotalXpAsync(userId);
         var level = _gamification.LevelForXp(xp);
         var title = _gamification.TitleForLevel(level);
-        var xpForLevel = _gamification.XpForLevel(level);
-        var xpForNext = _gamification.XpForLevel(level + 1);
+        var xpForPrevLevel = _gamification.XpForLevel(level - 1);
+        var xpForNext = _gamification.XpForLevel(level);
         var streak = await _gamification.GetStreakDaysAsync(userId);
 
         var userAchievements = await _context.UserAchievements
@@ -74,8 +74,8 @@ public class GamificationController : ControllerBase
             xp,
             level,
             title,
-            xp - xpForLevel,
-            xpForNext - xpForLevel,
+            xp - xpForPrevLevel,
+            xpForNext - xpForPrevLevel,
             streak,
             achievementDtos,
             goals));

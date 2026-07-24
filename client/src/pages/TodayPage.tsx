@@ -91,7 +91,7 @@ export default function TodayPage() {
           return day ?? null;
         }),
         workoutLogApi.get(todayStr, todayStr),
-        mealPlanApi.today(),
+        mealPlanApi.forDate(todayStr),
         mealLogApi.get(todayStr, todayStr),
       ]).then(([planDay, workoutLog, mealPlan, mealLog]) => ({
         planDay,

@@ -78,8 +78,10 @@ export default function AchievementsPage() {
       </Card>
 
       <div className="section-title">
-        <span>Logros desbloqueados</span>
-        <span className="section-title__hint">{unlocked.length}</span>
+        <span>
+          Logros desbloqueados
+          <span className="count-badge">{unlocked.length}</span>
+        </span>
       </div>
       {unlocked.length === 0 ? (
         <EmptyState icon="emoji_events" title="Sin logros aún" description="Sigue entrenando para desbloquear el primero." />
@@ -102,8 +104,10 @@ export default function AchievementsPage() {
       )}
 
       <div className="section-title mt-4">
-        <span>Logros pendientes</span>
-        <span className="section-title__hint">{locked.length}</span>
+        <span>
+          Logros pendientes
+          <span className="count-badge">{locked.length}</span>
+        </span>
       </div>
       {locked.length === 0 ? (
         <EmptyState icon="verified" title="Todos los logros desbloqueados" />
@@ -145,7 +149,7 @@ export default function AchievementsPage() {
               <div className="list-item__main">
                 <div className="list-item__title">{g.title}</div>
                 <div className="list-item__meta">
-                  {goalTypeName(g.type)} · {g.currentValue.toFixed(1)} / {g.targetValue.toFixed(1)} {g.unit}
+                  {goalTypeName(g.type)} · {formatGoalValue(g.currentValue)} / {formatGoalValue(g.targetValue)} {g.unit}
                 </div>
                 <div className="progress" style={{ marginTop: 8, height: 5 }}>
                   <div
@@ -175,6 +179,10 @@ export default function AchievementsPage() {
       <CreateGoalModal open={createOpen} onClose={() => setCreateOpen(false)} onCreated={load} />
     </div>
   );
+}
+
+function formatGoalValue(value: number) {
+  return Number.isInteger(value) ? value.toString() : value.toFixed(1);
 }
 
 function CreateGoalModal({
@@ -246,5 +254,4 @@ function CreateGoalModal({
     </Modal>
   );
 }
-
 

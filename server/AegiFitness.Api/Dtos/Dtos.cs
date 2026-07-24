@@ -132,6 +132,19 @@ public record WorkoutLogEntryDto(
     bool Completed,
     bool IsExtra);
 
+// Entrada de log tal como la consume el frontend (incluye el ejercicio).
+public record WorkoutLogEntryResponseDto(
+    Guid? Id,
+    int ExerciseId,
+    int PlannedSets,
+    int PlannedReps,
+    int? ActualSets,
+    int? ActualReps,
+    decimal? ActualWeightKg,
+    bool Completed,
+    bool IsExtra,
+    ExerciseDto Exercise);
+
 public record WorkoutLogCreateDto(
     [Required] DateOnly Date,
     Guid? PlanDayId,
@@ -146,10 +159,11 @@ public record WorkoutLogDto(
     int TotalXp,
     DateTime? StartedAt,
     DateTime? FinishedAt,
-    WorkoutLogEntryDto[] Entries);
+    WorkoutLogEntryResponseDto[] Entries);
 
 public record MealPlanItemDto(
     Guid Id,
+    int FoodId,
     FoodDto Food,
     MealType MealType,
     decimal Servings,
@@ -188,6 +202,20 @@ public record MealLogCreateDto(
     [Required] DateOnly Date,
     MealLogEntryDto[] Entries);
 
+// Entrada de log de comida con la comida resuelta (null para comidas custom).
+public record MealLogEntryResponseDto(
+    Guid? Id,
+    int? FoodId,
+    string? CustomName,
+    MealType MealType,
+    decimal Servings,
+    int Calories,
+    int ProteinG,
+    int CarbsG,
+    int FatG,
+    bool IsExtra,
+    FoodDto? Food);
+
 public record MealLogDto(
     Guid Id,
     DateOnly Date,
@@ -195,7 +223,7 @@ public record MealLogDto(
     int TotalProteinG,
     int TotalCarbsG,
     int TotalFatG,
-    MealLogEntryDto[] Entries);
+    MealLogEntryResponseDto[] Entries);
 
 public record WeightEntryDto(Guid Id, DateOnly Date, decimal WeightKg, string? Notes);
 

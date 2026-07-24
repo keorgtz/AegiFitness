@@ -108,8 +108,28 @@ public class WorkoutLogsController : ControllerBase
             await _gamification.EvaluateExtraAsync(userId, HttpContext.RequestAborted);
         await _metrics.InvalidateAsync(userId, HttpContext.RequestAborted);
 
-        return Ok(Map(log, xp));
+        // Recargar con ejercicios incluidos para devolver el contrato completo
+        var saved = await _context.WorkoutLogs
+            .AsNoTracking()
+            .Include(x => x.Entries)
+            .ThenInclude(e => e.Exercise)
+            .FirstAsync(x => x.Id == log.Id, HttpContext.RequestAborted);
+
+        return Ok(Map(saved, xp));
     }
+
+    private static ExerciseDto MapExercise(Exercise ex) => new(
+        ex.Id,
+        ex.Name,
+        ex.MuscleGroup,
+        ex.Type,
+        ex.Objective,
+        ex.Difficulty,
+        ex.Equipment,
+        ex.Description,
+        ex.Instructions,
+        ex.Target,
+        ex.Effect);
 
     private static WorkoutLogDto Map(WorkoutLog log, int xp = 0) => new(
         log.Id,
@@ -119,7 +139,7 @@ public class WorkoutLogsController : ControllerBase
         xp,
         log.StartedAt,
         log.FinishedAt,
-        log.Entries.Select(e => new WorkoutLogEntryDto(
+        log.Entries.Select(e => new WorkoutLogEntryResponseDto(
             e.Id,
             e.ExerciseId,
             e.PlannedSets,
@@ -128,7 +148,8 @@ public class WorkoutLogsController : ControllerBase
             e.ActualReps,
             e.ActualWeightKg,
             e.Completed,
-            e.IsExtra)).ToArray());
+            e.IsExtra,
+            MapExercise(e.Exercise))).ToArray());
 
     private Guid CurrentUserId() => Guid.Parse(User.FindFirst("sub")?.Value ?? Guid.Empty.ToString());
 }

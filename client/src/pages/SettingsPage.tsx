@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { accountApi, profileApi, trainingConfigApi } from "../api/resources";
 import { useAuth } from "../auth/AuthContext";
-import { Button, Card, Chip, EmptyState, ErrorState, Input, Loading, Modal, Select } from "../components/ui";
+import { Button, Card, Chip, EmptyState, ErrorState, Input, Loading, Modal, SegmentedControl, Select } from "../components/ui";
 import { DayConfigEditor } from "../components/DayConfigEditor";
 import { useAsync } from "../hooks/useAsync";
 import { useToastCtx } from "../hooks/useToastContext";
@@ -128,27 +128,16 @@ export default function SettingsPage() {
         <h1 className="hero__title">Configuración</h1>
       </div>
 
-      <div className="seg mb-4">
-        {[
-          { value: "profile", label: "Perfil" },
-          { value: "training", label: "Entrenamiento" },
-          { value: "account", label: "Cuenta" },
-        ].map((t) => (
-          <button
-            key={t.value}
-            type="button"
-            className={`seg__btn ${activeTab === t.value ? "active" : ""}`}
-            onClick={() => setActiveTab(t.value as typeof activeTab)}
-          >
-            {t.label}
-          </button>
-        ))}
-        <div
-          className="seg__indicator"
-          style={{
-            left: `calc(4px + (100% - 8px) * ${["profile", "training", "account"].indexOf(activeTab)} / 3)`,
-            width: `calc((100% - 8px) / 3)`,
-          }}
+      <div className="mb-4">
+        <SegmentedControl
+          block
+          options={[
+            { value: "profile", label: "Perfil" },
+            { value: "training", label: "Entrenamiento" },
+            { value: "account", label: "Cuenta" },
+          ]}
+          value={activeTab}
+          onChange={(v) => setActiveTab(v as typeof activeTab)}
         />
       </div>
 

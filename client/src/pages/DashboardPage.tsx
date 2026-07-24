@@ -4,7 +4,7 @@ import { dashboardApi } from "../api/resources";
 import { Button, Card, EmptyState, ErrorState, Loading } from "../components/ui";
 import { MacroBar, RingProgress, StatCard } from "../components/ui/charts";
 import { useAsync } from "../hooks/useAsync";
-import { formatNumber, modalityName } from "../utils/format";
+import { formatNumber, modalityName, today } from "../utils/format";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ export default function DashboardPage() {
   }>();
 
   const load = useCallback(() => {
-    void run(dashboardApi.summary().then((summary) => ({ summary })));
+    void run(dashboardApi.summary(today()).then((summary) => ({ summary })));
   }, [run]);
 
   useEffect(() => {

@@ -58,7 +58,7 @@ interface BarChartProps {
 export function BarChart({ data, max, height = 160 }: BarChartProps) {
   const computedMax = max ?? Math.max(...data.map((d) => d.value), 1);
   const barWidth = 24;
-  const gap = 12;
+  const gap = 16;
   const totalWidth = data.length * barWidth + (data.length - 1) * gap;
 
   return (
@@ -70,7 +70,7 @@ export function BarChart({ data, max, height = 160 }: BarChartProps) {
       preserveAspectRatio="xMidYMax meet"
     >
       {data.map((d, i) => {
-        const h = computedMax > 0 ? (d.value / computedMax) * (height - 24) : 0;
+        const h = computedMax > 0 ? (d.value / computedMax) * (height - 28) : 0;
         const x = i * (barWidth + gap);
         const y = height - h - 20;
         return (
@@ -89,7 +89,7 @@ export function BarChart({ data, max, height = 160 }: BarChartProps) {
               y={height - 6}
               textAnchor="middle"
               fill="var(--text-muted)"
-              fontSize={10}
+              fontSize={9}
               fontWeight={600}
             >
               {d.label}

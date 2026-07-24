@@ -104,8 +104,30 @@ public class MealLogsController : ControllerBase
             await _gamification.EvaluateExtraAsync(userId, HttpContext.RequestAborted);
         await _metrics.InvalidateAsync(userId, HttpContext.RequestAborted);
 
-        return Ok(Map(log));
+        // Recargar con comidas incluidas para devolver el contrato completo
+        var saved = await _context.MealLogs
+            .AsNoTracking()
+            .Include(x => x.Entries)
+            .ThenInclude(e => e.Food)
+            .FirstAsync(x => x.Id == log.Id, HttpContext.RequestAborted);
+
+        return Ok(Map(saved));
     }
+
+    private static FoodDto MapFood(Food f) => new(
+        f.Id,
+        f.Name,
+        f.MealType,
+        f.Objective,
+        f.Calories,
+        f.ProteinG,
+        f.CarbsG,
+        f.FatG,
+        f.SugarsG,
+        f.Portions,
+        f.Ingredients,
+        f.Steps,
+        f.Description);
 
     private static MealLogDto Map(MealLog log) => new(
         log.Id,
@@ -114,7 +136,7 @@ public class MealLogsController : ControllerBase
         log.Entries.Sum(e => e.ProteinG),
         log.Entries.Sum(e => e.CarbsG),
         log.Entries.Sum(e => e.FatG),
-        log.Entries.Select(e => new MealLogEntryDto(
+        log.Entries.Select(e => new MealLogEntryResponseDto(
             e.Id,
             e.FoodId,
             e.CustomName,
@@ -124,7 +146,8 @@ public class MealLogsController : ControllerBase
             e.ProteinG,
             e.CarbsG,
             e.FatG,
-            e.IsExtra)).ToArray());
+            e.IsExtra,
+            e.Food is null ? null : MapFood(e.Food))).ToArray());
 
     private Guid CurrentUserId() => Guid.Parse(User.FindFirst("sub")?.Value ?? Guid.Empty.ToString());
 }

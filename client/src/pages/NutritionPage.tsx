@@ -130,14 +130,14 @@ export default function NutritionPage() {
           >
             <div className="meal-card__type">{mealTypeName(item.mealType)}</div>
             <div className="meal-card__name">{item.food.name}</div>
-            <div className="meal-card__macros">
-              <span>
+            <div className="meal-card__macros" aria-label="Información nutricional">
+              <span className="meal-card__macro">
                 <strong>{Math.round(item.food.calories * item.servings)}</strong> kcal
               </span>
-              <span>
+              <span className="meal-card__macro">
                 <strong>{Math.round(item.food.proteinG * item.servings)}</strong>g P
               </span>
-              <span>
+              <span className="meal-card__macro">
                 <strong>{item.servings}</strong> porciones
               </span>
             </div>

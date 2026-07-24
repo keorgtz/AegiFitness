@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AegiFitness — Resumen de implementación 2026-07-24</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: #070b18;
+    color: #e2e8f0;
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 2rem 1rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  header {
+    text-align: center;
+    padding: 2.5rem 1rem 2rem;
+    border-bottom: 1px solid rgba(34, 211, 238, 0.15);
+    margin-bottom: 2rem;
+  }
+  header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #22d3ee 0%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+  }
+  header .sub {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .date-badge {
+    display: inline-block;
+    background: rgba(34, 211, 238, 0.1);
+    color: #22d3ee;
+    border: 1px solid rgba(34, 211, 238, 0.25);
+    padding: 0.25rem 1rem;
+    border-radius: 14px;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 0.75rem;
+  }
+  .section {
+    background: #0f172a;
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .section-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #22d3ee;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(34, 211, 238, 0.12);
+  }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 0.65rem; }
+  @media (min-width: 600px) { .grid { grid-template-columns: 1fr 1fr; } }
+  .card {
+    background: #16213d;
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    border-left: 3px solid #22d3ee;
+  }
+  .card.warn { border-left-color: #f59e0b; }
+  .card.ok { border-left-color: #10b981; }
+  .card .name { font-size: 0.95rem; font-weight: 600; color: #f1f5f9; margin-bottom: 0.25rem; }
+  .card .desc { font-size: 0.82rem; color: #94a3b8; }
+  .card code, li code {
+    background: rgba(34, 211, 238, 0.08);
+    color: #67e8f9;
+    padding: 0.1rem 0.4rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  }
+  ul.changes { list-style: none; }
+  ul.changes li {
+    padding: 0.55rem 0 0.55rem 1.5rem;
+    position: relative;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 0.88rem;
+    color: #cbd5e1;
+  }
+  ul.changes li:last-child { border-bottom: none; }
+  ul.changes li::before {
+    content: "›";
+    position: absolute;
+    left: 0.35rem;
+    color: #22d3ee;
+    font-weight: 700;
+  }
+  .verify-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+  @media (min-width: 600px) { .verify-grid { grid-template-columns: repeat(4, 1fr); } }
+  .verify {
+    background: #16213d;
+    border-radius: 10px;
+    padding: 0.85rem 0.75rem;
+    text-align: center;
+  }
+  .verify .val { font-size: 1.35rem; font-weight: 700; color: #10b981; font-variant-numeric: tabular-nums; }
+  .verify .lbl { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-top: 0.2rem; }
+  .files { font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace; font-size: 0.78rem; color: #94a3b8; }
+  .files div { padding: 0.3rem 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+  .files div:last-child { border-bottom: none; }
+  .files .tag { color: #22d3ee; font-weight: 600; margin-right: 0.5rem; }
+  footer { text-align: center; color: #475569; font-size: 0.78rem; padding: 1.5rem 0 0.5rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>AegiFitness</h1>
+    <div class="sub">Resumen de implementación</div>
+    <div class="date-badge">24 · Julio · 2026</div>
+  </header>
+
+  <div class="section">
+    <div class="section-title">Contexto</div>
+    <div class="card">
+      <div class="name">Cierre del pulido UI/UX + corrección de contratos API</div>
+      <div class="desc">
+        Se completaron los ajustes responsive pendientes de la revisión visual y se corrigieron
+        dos desajustes de contrato entre el backend y el frontend que causaban un crash en la
+        vista Hoy (<code>TypeError: reading 'name'</code>) y pérdida silenciosa de la referencia
+        a la comida al registrar comidas del plan.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Correcciones de contrato API</div>
+    <ul class="changes">
+      <li>
+        <code>WorkoutLogDto.entries</code> ahora incluye el objeto <code>exercise</code> completo
+        (nuevo <code>WorkoutLogEntryResponseDto</code>). El GET ya lo incluía en la consulta pero
+        el mapeo lo descartaba — era la causa del crash en Hoy y del fallo móvil del E2E.
+      </li>
+      <li>
+        <code>MealLogDto.entries</code> ahora incluye <code>food</code> (nuevo
+        <code>MealLogEntryResponseDto</code>, null para comidas custom). El frontend ya lo esperaba
+        como opcional.
+      </li>
+      <li>
+        <code>MealPlanItemDto</code> ahora expone <code>foodId</code>: el cliente lo declaraba en
+        su tipo pero el servidor no lo enviaba, así que "La comí" registraba comidas sin referencia
+        al alimento del plan.
+      </li>
+      <li>
+        Los POST de <code>workout-logs</code> y <code>meal-logs</code> recargan la entidad con sus
+        includes antes de responder, devolviendo el contrato completo.
+      </li>
+      <li>
+        Progreso: la adherencia ya no se multiplica por 100 en el cliente (el servidor devuelve
+        0–100). Antes mostraba 2900&nbsp;%; ahora 43&nbsp;% / 10&nbsp;% correctos.
+      </li>
+      <li>
+        <code>meal-plans/today</code> y <code>meal-plans/regenerate</code> recargan el plan con
+        <code>Include(Items → Food)</code> tras generarlo — el generador no trae la navegación
+        y <code>Map</code> lanzaba 500 al regenerar planes (detectado por el smoke de API).
+      </li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Smoke scripts versionados</div>
+    <ul class="changes">
+      <li>
+        <code>scripts/run-smoke.ps1</code> — 38 checks de API: auth, refresh, perfil, config,
+        planes, logs (con exercise/food), métricas, gamificación, metas, dashboard y catálogos.
+        Levanta la API, verifica y la detiene; exit 0/1.
+      </li>
+      <li>
+        <code>scripts/run-smoke-admin.ps1</code> — 17 checks de administración: filtros, approve,
+        edición, reset de contraseña con relogin, licencia con vencimiento/lifetime/extend,
+        roles (grant/revoke, autoprotección 400), suspend (bloqueo 403) y revoke.
+      </li>
+      <li>
+        Ambos aceptan <code>-Port</code> y <code>-SkipBuild</code>; por defecto compilan Debug
+        antes de ejecutar.
+      </li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Pulido UI / responsive</div>
+    <ul class="changes">
+      <li>Logros: contadores con <code>count-badge</code> en línea y metas sin decimales innecesarios (5 / 5 en vez de 5.0 / 5.0).</li>
+      <li>Admin móvil: tabla reemplazada por tarjetas <code>admin-user-card</code>; usuarios no activos sin vencimiento muestran "Sin licencia" en vez de "De por vida".</li>
+      <li>Nutrición: macros de cada comida con separadores y <code>flex-wrap</code> — fin del texto encimado "954 kcal43g P1.3 porciones".</li>
+      <li>Gráficas de barras: etiquetas a 9&nbsp;px con más separación; "Core" ya no se trunca.</li>
+      <li>Segmented control en móvil: padding y fuente reducidos bajo 480&nbsp;px para que "Pendientes" quepa sin truncarse.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Verificación</div>
+    <div class="verify-grid">
+      <div class="verify"><div class="val">38/38</div><div class="lbl">Smoke API</div></div>
+      <div class="verify"><div class="val">17/17</div><div class="lbl">Smoke admin</div></div>
+      <div class="verify"><div class="val">13/13</div><div class="lbl">E2E UI</div></div>
+      <div class="verify"><div class="val">OK</div><div class="lbl">Publish Release</div></div>
+    </div>
+    <ul class="changes" style="margin-top: 1rem;">
+      <li><code>npm run build</code> (tsc + vite + PWA) sin errores.</li>
+      <li><code>scripts/run-smoke.ps1</code>: 38/38 PASS — incluye contratos exercise/food/foodId y adherencia 0–100.</li>
+      <li><code>scripts/run-smoke-admin.ps1</code>: 17/17 PASS — flujo completo de licencias, roles y contraseñas.</li>
+      <li><code>e2e-smoke.mjs</code>: 13/13 PASS, sin errores JS en consola; puertos 5212/5173 liberados.</li>
+      <li><code>dotnet publish -c Release</code> correcto.</li>
+      <li>Capturas regeneradas en <code>shots/review/</code> (desktop + móvil) y revisadas visualmente; "Pendientes" ya no se trunca en admin móvil.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Archivos tocados</div>
+    <div class="files">
+      <div><span class="tag">API</span>server/AegiFitness.Api/Dtos/Dtos.cs</div>
+      <div><span class="tag">API</span>server/AegiFitness.Api/Controllers/WorkoutLogsController.cs</div>
+      <div><span class="tag">API</span>server/AegiFitness.Api/Controllers/MealLogsController.cs</div>
+      <div><span class="tag">API</span>server/AegiFitness.Api/Controllers/MealPlansController.cs</div>
+      <div><span class="tag">WEB</span>client/src/pages/AchievementsPage.tsx</div>
+      <div><span class="tag">WEB</span>client/src/pages/AdminPage.tsx</div>
+      <div><span class="tag">WEB</span>client/src/pages/NutritionPage.tsx</div>
+      <div><span class="tag">WEB</span>client/src/pages/ProgressPage.tsx</div>
+      <div><span class="tag">WEB</span>client/src/components/ui/charts.tsx</div>
+      <div><span class="tag">WEB</span>client/src/styles/app.css</div>
+      <div><span class="tag">OPS</span>scripts/run-smoke.ps1 (nuevo)</div>
+      <div><span class="tag">OPS</span>scripts/run-smoke-admin.ps1 (nuevo)</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Pendientes conocidos</div>
+    <ul class="changes">
+      <li>Los scripts de captura full-page muestran la bottom-nav flotando a mitad de página; es un artefacto del screenshot, no un bug del viewport real.</li>
+      <li>Sin cambios en Docker ni en <code>docker-compose.yml</code> en esta sesión; el publish Release queda listo para rebuild de imagen.</li>
+      <li>Cambios sin commit en el working tree, listos para revisión.</li>
+    </ul>
+  </div>
+
+  <footer>AegiFitness · Resumen generado el 2026-07-24</footer>
+
+</div>
+</body>
+</html>

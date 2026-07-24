@@ -4,7 +4,7 @@ import { Button, Card, EmptyState, ErrorState, Input, Loading } from "../compone
 import { BarChart, LineChart, StatCard } from "../components/ui/charts";
 import { useAsync } from "../hooks/useAsync";
 import { useToastCtx } from "../hooks/useToastContext";
-import { addDays, shortDayName, today } from "../utils/format";
+import { addDays, muscleGroupName, shortDayName, today } from "../utils/format";
 
 export default function ProgressPage() {
   const toast = useToastCtx();
@@ -19,7 +19,7 @@ export default function ProgressPage() {
   const load = useCallback(() => {
     const from = addDays(today(), -90);
     void run(
-      Promise.all([metricsApi.summary(), metricsApi.weight(from, today())]).then(
+      Promise.all([metricsApi.summary(today()), metricsApi.weight(from, today())]).then(
         ([summary, weights]) => ({ summary, weights }),
       ),
     );
@@ -67,10 +67,13 @@ export default function ProgressPage() {
     value,
   }));
 
-  const volumeData = Object.entries(summary.volumeByMuscle).map(([muscle, value]) => ({
-    label: muscle.slice(0, 3),
-    value,
-  }));
+  const volumeData = Object.entries(summary.volumeByMuscle).map(([muscle, value]) => {
+    const name = muscleGroupName(muscle);
+    return {
+      label: name.length > 6 ? `${name.slice(0, 4)}.` : name,
+      value,
+    };
+  });
 
   return (
     <div className="page">
@@ -117,13 +120,13 @@ export default function ProgressPage() {
         <StatCard
           icon="percent"
           label="Adherencia 7 días"
-          value={`${(summary.adherence7d * 100).toFixed(0)}%`}
+          value={`${summary.adherence7d.toFixed(0)}%`}
           variant="primary"
         />
         <StatCard
           icon="percent"
           label="Adherencia 30 días"
-          value={`${(summary.adherence30d * 100).toFixed(0)}%`}
+          value={`${summary.adherence30d.toFixed(0)}%`}
           variant="success"
         />
         <StatCard
