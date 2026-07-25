@@ -29,10 +29,23 @@ import type {
   MealPlanDto,
   MealPlanItemDto,
   MealType,
+  Modality,
+  MuscleGroup,
   WorkoutLogEntryRequest,
   WorkoutPlanDayDto,
 } from "../types/api";
 import { dayName, mealTypeName, modalityName, muscleGroupName, today } from "../utils/format";
+
+// Acento por grupo muscular (tokens semánticos existentes, sin colores nuevos)
+const MUSCLE_VARIANT: Record<MuscleGroup, string> = {
+  Chest: "info",
+  Back: "primary",
+  Legs: "success",
+  Shoulders: "warning",
+  Biceps: "danger",
+  Triceps: "accent",
+  Core: "accent",
+};
 
 interface WorkoutEntry {
   exerciseId: number;
@@ -69,6 +82,7 @@ export default function TodayPage() {
   const [saving, setSaving] = useState(false);
   const [mealTab, setMealTab] = useState<"recommended" | "log">("recommended");
   const [exerciseModal, setExerciseModal] = useState(false);
+  const [swapIndex, setSwapIndex] = useState<number | null>(null);
   const [foodModal, setFoodModal] = useState(false);
   const [quickMealModal, setQuickMealModal] = useState(false);
   const [guide, setGuide] = useState<ExerciseDto | null>(null);
@@ -277,6 +291,28 @@ export default function TodayPage() {
     setExerciseModal(false);
   };
 
+  // El plan es una recomendación: el usuario puede sustituir un ejercicio
+  // por otro del mismo grupo muscular y registrar lo que realmente hizo.
+  const swapExercise = (index: number, exercise: ExerciseDto) => {
+    setWorkoutEntries((prev) =>
+      prev.map((e, i) =>
+        i === index
+          ? {
+              ...e,
+              exerciseId: exercise.id,
+              exercise,
+              completed: false,
+              actualSets: e.plannedSets,
+              actualReps: e.plannedReps,
+              actualWeightKg: 0,
+            }
+          : e,
+      ),
+    );
+    setSwapIndex(null);
+    toast.add(`Cambiado a ${exercise.name}`, "success");
+  };
+
   const eatRecommended = (item: MealPlanItemDto) => {
     const servings = planServings[item.id] ?? item.servings;
     setMealEntries((prev) => [
@@ -384,73 +420,103 @@ export default function TodayPage() {
             </div>
           )}
 
-          {workoutEntries.map((entry, index) => (
-            <div
-              key={`${entry.exerciseId}-${index}`}
-              className={`exercise-card ${entry.completed ? "exercise-card--done" : ""}`}
-            >
-              <div className="exercise-card__head">
-                <button
-                  type="button"
-                  className="exercise-card__title-btn"
-                  onClick={() => setGuide(entry.exercise)}
-                >
-                  <span className="exercise-card__name">{entry.exercise.name}</span>
-                  <span className="icon">info</span>
-                </button>
-                {entry.isExtra && <Chip small>Extra</Chip>}
+          {workoutEntries.map((entry, index) => {
+            const variant = MUSCLE_VARIANT[entry.exercise.muscleGroup];
+            const planItem =
+              data.planDay?.items.find((i) => i.exerciseId === entry.exerciseId) ??
+              (data.planDay && index < data.planDay.items.length
+                ? data.planDay.items[index]
+                : undefined);
+            const swapped =
+              !entry.isExtra &&
+              hasPlan &&
+              !data.planDay!.items.some((i) => i.exerciseId === entry.exerciseId);
+            return (
+              <div
+                key={`${entry.exerciseId}-${index}`}
+                className={`exercise-card ${entry.completed ? "exercise-card--done" : ""}`}
+              >
+                <div className="exercise-card__head">
+                  <span className={`exercise-card__index exercise-card__index--${variant}`}>
+                    {index + 1}
+                  </span>
+                  <div className="exercise-card__heading">
+                    <span className="exercise-card__name">{entry.exercise.name}</span>
+                    <div className="exercise-card__tags">
+                      <span className={`muscle-tag muscle-tag--${variant}`}>
+                        {muscleGroupName(entry.exercise.muscleGroup)}
+                      </span>
+                      {entry.isExtra && <Chip small>Extra</Chip>}
+                      {swapped && <Chip small>Cambiado</Chip>}
+                    </div>
+                  </div>
+                  <div className="exercise-card__actions">
+                    <button
+                      type="button"
+                      className="icon-action"
+                      onClick={() => setSwapIndex(index)}
+                      aria-label={`Cambiar ${entry.exercise.name}`}
+                      title="Cambiar ejercicio"
+                    >
+                      <span className="icon">swap_horiz</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="icon-action"
+                      onClick={() => setGuide(entry.exercise)}
+                      aria-label={`Guía de ${entry.exercise.name}`}
+                      title="Ver guía"
+                    >
+                      <span className="icon">info</span>
+                    </button>
+                  </div>
+                </div>
+                <div className="exercise-card__plan">
+                  <span className="icon">exercise</span>
+                  <span>
+                    Plan {entry.plannedSets}×{entry.plannedReps} · Descanso{" "}
+                    {planItem?.restSeconds ?? 60}s · {entry.exercise.equipment}
+                  </span>
+                </div>
+                <div className="exercise-card__row">
+                  <Stepper
+                    label="Series"
+                    value={entry.actualSets}
+                    onChange={(v) => updateWorkoutEntry(index, { actualSets: v })}
+                    min={0}
+                    max={20}
+                    size="sm"
+                  />
+                  <Stepper
+                    label="Reps"
+                    value={entry.actualReps}
+                    onChange={(v) => updateWorkoutEntry(index, { actualReps: v })}
+                    min={0}
+                    max={100}
+                    size="sm"
+                  />
+                  <Stepper
+                    label="Peso"
+                    value={entry.actualWeightKg}
+                    onChange={(v) => updateWorkoutEntry(index, { actualWeightKg: v })}
+                    min={0}
+                    max={500}
+                    step={2.5}
+                    unit="kg"
+                    size="sm"
+                  />
+                  <button
+                    type="button"
+                    className={`check-btn ${entry.completed ? "check-btn--active" : ""}`}
+                    onClick={() => updateWorkoutEntry(index, { completed: !entry.completed })}
+                    aria-label={entry.completed ? "Marcar pendiente" : "Marcar hecho"}
+                  >
+                    <span className={`icon ${entry.completed ? "fill" : ""}`}>check</span>
+                  </button>
+                </div>
               </div>
-              <div className="exercise-card__meta mb-3">
-                {muscleGroupName(entry.exercise.muscleGroup)} · Plan {entry.plannedSets}×
-                {entry.plannedReps}
-                {data.planDay && (
-                  <>
-                    {" "}
-                    · Descanso{" "}
-                    {data.planDay.items.find((i) => i.exerciseId === entry.exerciseId)
-                      ?.restSeconds ?? 60}
-                    s
-                  </>
-                )}
-              </div>
-              <div className="exercise-card__row">
-                <Stepper
-                  label="Series"
-                  value={entry.actualSets}
-                  onChange={(v) => updateWorkoutEntry(index, { actualSets: v })}
-                  min={0}
-                  max={20}
-                  size="sm"
-                />
-                <Stepper
-                  label="Reps"
-                  value={entry.actualReps}
-                  onChange={(v) => updateWorkoutEntry(index, { actualReps: v })}
-                  min={0}
-                  max={100}
-                  size="sm"
-                />
-                <Stepper
-                  label="Peso"
-                  value={entry.actualWeightKg}
-                  onChange={(v) => updateWorkoutEntry(index, { actualWeightKg: v })}
-                  min={0}
-                  max={500}
-                  step={2.5}
-                  unit="kg"
-                  size="sm"
-                />
-                <button
-                  type="button"
-                  className={`check-btn ${entry.completed ? "check-btn--active" : ""}`}
-                  onClick={() => updateWorkoutEntry(index, { completed: !entry.completed })}
-                  aria-label={entry.completed ? "Marcar pendiente" : "Marcar hecho"}
-                >
-                  <span className={`icon ${entry.completed ? "fill" : ""}`}>check</span>
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
 
           {workoutEntries.length > 0 && (
             <>
@@ -620,6 +686,15 @@ export default function TodayPage() {
       </div>
 
       <ExercisePickerModal open={exerciseModal} onClose={() => setExerciseModal(false)} onSelect={addExercise} />
+      <ExerciseSwapModal
+        entry={swapIndex !== null ? (workoutEntries[swapIndex] ?? null) : null}
+        excludeIds={workoutEntries.map((e) => e.exerciseId)}
+        planModality={data.planDay?.modality ?? null}
+        onClose={() => setSwapIndex(null)}
+        onSelect={(ex) => {
+          if (swapIndex !== null) swapExercise(swapIndex, ex);
+        }}
+      />
       <FoodPickerModal open={foodModal} onClose={() => setFoodModal(false)} onSelect={addFoodToLog} />
       <QuickMealModal open={quickMealModal} onClose={() => setQuickMealModal(false)} onAdd={addQuickMeal} />
       <ExerciseGuideModal exercise={guide} onClose={() => setGuide(null)} />
@@ -675,6 +750,121 @@ function ExercisePickerModal({
               <div className="catalog-picker__item-title">{ex.name}</div>
               <div className="catalog-picker__item-meta">
                 {muscleGroupName(ex.muscleGroup)} · {ex.equipment}
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </Modal>
+  );
+}
+
+function ExerciseSwapModal({
+  entry,
+  excludeIds,
+  planModality,
+  onClose,
+  onSelect,
+}: {
+  entry: WorkoutEntry | null;
+  excludeIds: number[];
+  planModality: Modality | null;
+  onClose: () => void;
+  onSelect: (e: ExerciseDto) => void;
+}) {
+  const [items, setItems] = useState<ExerciseDto[]>([]);
+  const [search, setSearch] = useState("");
+  const [sameMuscle, setSameMuscle] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  // La modalidad del día acota el catálogo: gym ↔ gym, calistenia ↔ calistenia
+  const typeFilter =
+    planModality === "Gym" || planModality === "Calisthenics" ? planModality : undefined;
+
+  useEffect(() => {
+    if (!entry) return;
+    setSearch("");
+    setSameMuscle(true);
+  }, [entry]);
+
+  useEffect(() => {
+    if (!entry) return;
+    setLoading(true);
+    // Excluir el ejercicio actual y los ya presentes en otras tarjetas del
+    // entreno: sustituir no debe crear duplicados en la sesión.
+    const excluded = new Set(excludeIds);
+    exerciseCatalogApi
+      .search({
+        search,
+        muscleGroup: sameMuscle ? entry.exercise.muscleGroup : undefined,
+        type: typeFilter,
+        pageSize: 20,
+      })
+      .then((r) => {
+        // El catálogo seed tiene nombres repetidos (mismo ejercicio, otro
+        // objetivo): para sustituir, una sola fila por nombre.
+        const seen = new Set<string>();
+        setItems(
+          r.items.filter((ex) => {
+            if (excluded.has(ex.id) || seen.has(ex.name)) return false;
+            seen.add(ex.name);
+            return true;
+          }),
+        );
+      })
+      .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entry, search, sameMuscle]);
+
+  if (!entry) return null;
+  const variant = MUSCLE_VARIANT[entry.exercise.muscleGroup];
+
+  return (
+    <Modal open onClose={onClose} title="Cambiar ejercicio">
+      <div className="swap-modal__current">
+        <span className="label">Sustituyendo</span>
+        <div className="swap-modal__current-name">{entry.exercise.name}</div>
+        <div className="row gap-2 mt-2" style={{ flexWrap: "wrap" }}>
+          <button
+            type="button"
+            className={`muscle-tag muscle-tag--${variant} muscle-tag--btn ${sameMuscle ? "" : "muscle-tag--off"}`}
+            onClick={() => setSameMuscle((v) => !v)}
+            title={sameMuscle ? "Mostrando solo este músculo (clic para ver todos)" : "Mostrando todos los músculos"}
+          >
+            {muscleGroupName(entry.exercise.muscleGroup)}
+          </button>
+          {typeFilter && <span className="muscle-tag muscle-tag--info">{modalityName(typeFilter)}</span>}
+        </div>
+      </div>
+      <div className="catalog-picker__search">
+        <span className="icon">search</span>
+        <input
+          className="input"
+          placeholder="Buscar sustituto..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+      {loading ? (
+        <Loading message="Buscando..." />
+      ) : items.length === 0 ? (
+        <EmptyState
+          icon="exercise"
+          title="Sin alternativas"
+          description="No hay otros ejercicios con estos filtros. Desactiva el filtro de músculo para ver más."
+        />
+      ) : (
+        <div style={{ maxHeight: 340, overflowY: "auto" }}>
+          {items.map((ex) => (
+            <button
+              key={ex.id}
+              type="button"
+              className="catalog-picker__item"
+              onClick={() => onSelect(ex)}
+            >
+              <div className="catalog-picker__item-title">{ex.name}</div>
+              <div className="catalog-picker__item-meta">
+                {muscleGroupName(ex.muscleGroup)} · {ex.equipment} · Nivel {ex.difficulty}
               </div>
             </button>
           ))}

@@ -47,8 +47,9 @@ try {
     { dayOfWeek: 5, modality: "Both", muscleGroups: ["Chest", "Back"] },
     { dayOfWeek: 6, modality: "Calisthenics", muscleGroups: ["Core"] },
   ] } });
-  // datos de hoy para vistas ricas
-  const today = new Date().toISOString().slice(0, 10);
+  // datos de hoy para vistas ricas (fecha LOCAL, igual que today() del frontend)
+  const _d = new Date();
+  const today = `${_d.getFullYear()}-${String(_d.getMonth() + 1).padStart(2, "0")}-${String(_d.getDate()).padStart(2, "0")}`;
   const plan = await api("/workout-plans/current", { token: at });
   const dow = new Date().getDay();
   const pd = plan.days.find((d) => d.dayOfWeek === dow) ?? plan.days.find((d) => d.items.length > 0);

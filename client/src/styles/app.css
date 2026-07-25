@@ -2006,11 +2006,11 @@
 }
 
 .exercise-card {
-  padding: 14px;
-  border-radius: var(--radius-sm);
+  padding: 16px;
+  border-radius: var(--radius-md);
   background: rgba(15, 23, 42, 0.55);
   border: 1px solid var(--hairline);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   transition: border-color var(--transition-fast);
 }
 
@@ -2021,53 +2021,159 @@
 
 .exercise-card__head {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 12px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
-.exercise-card__title-btn {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  text-align: left;
+.exercise-card__index {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.exercise-card__index--primary { background: var(--primary-bg); color: var(--primary); }
+.exercise-card__index--success { background: var(--success-bg); color: var(--success); }
+.exercise-card__index--warning { background: var(--warning-bg); color: var(--warning); }
+.exercise-card__index--info { background: var(--info-bg); color: var(--info); }
+.exercise-card__index--accent { background: var(--accent-bg); color: var(--accent); }
+.exercise-card__index--danger { background: var(--danger-bg); color: var(--danger); }
+
+.exercise-card__heading {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .exercise-card__name {
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.25;
-  flex: 1;
-  min-width: 0;
   overflow-wrap: break-word;
 }
 
-.exercise-card__title-btn .icon {
-  font-size: 20px;
-  color: var(--text-muted);
+.exercise-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.exercise-card__actions {
+  display: flex;
+  gap: 6px;
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
 }
 
-.exercise-card__title-btn:hover .icon {
+.icon-action {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-xs);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-3);
+  border: 1px solid var(--hairline);
+  color: var(--text-muted);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.icon-action .icon {
+  font-size: 19px;
+}
+
+.icon-action:hover {
   color: var(--primary);
+  border-color: var(--primary-pale);
 }
 
-.exercise-card__meta {
+/* Etiqueta de grupo muscular (tokens semánticos, sin colores nuevos) */
+.muscle-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.muscle-tag--primary { background: var(--primary-bg); color: var(--primary); }
+.muscle-tag--success { background: var(--success-bg); color: var(--success); }
+.muscle-tag--warning { background: var(--warning-bg); color: var(--warning); }
+.muscle-tag--info { background: var(--info-bg); color: var(--info); }
+.muscle-tag--accent { background: var(--accent-bg); color: var(--accent); }
+.muscle-tag--danger { background: var(--danger-bg); color: var(--danger); }
+
+.muscle-tag--btn {
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: border-color var(--transition-fast), opacity var(--transition-fast);
+}
+
+.muscle-tag--off {
+  opacity: 0.45;
+  border-style: dashed;
+  border-color: var(--hairline-strong);
+}
+
+.exercise-card__plan {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-xs);
+  padding: 8px 12px;
   font-size: 0.78rem;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-bottom: 14px;
+}
+
+.exercise-card__plan .icon {
+  font-size: 16px;
+  color: var(--primary);
 }
 
 .exercise-card__row {
   display: grid;
   grid-template-columns: repeat(3, 1fr) auto;
-  gap: 10px;
+  gap: 12px;
   align-items: end;
+  border-top: 1px solid var(--hairline);
+  padding-top: 14px;
+}
+
+/* Modal de sustitución de ejercicio */
+.swap-modal__current {
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.swap-modal__current-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-top: 2px;
 }
 
 .check-btn {

@@ -209,12 +209,49 @@
   </div>
 
   <div class="section">
+    <div class="section-title">Entrenamiento: nueva UX + sustitución de ejercicios</div>
+    <ul class="changes">
+      <li>
+        <strong>Cambiar ejercicio</strong>: cada tarjeta del entreno tiene botón
+        <code>swap_horiz</code> que abre un modal de sustitución filtrado por el mismo grupo
+        muscular (con toggle para ver todos) y por la modalidad del día (gym/calistenia).
+        El plan sigue siendo recomendación; el log registra lo que realmente hizo el usuario.
+        Sin cambios de backend: el contrato de <code>workout-logs</code> ya acepta cualquier
+        ejercicio y devuelve <code>exercise</code> completo.
+      </li>
+      <li>
+        Anti-duplicados: el modal excluye los ejercicios ya presentes en otras tarjetas de la
+        sesión y deduplica filas por nombre (el seed repite nombres con distinto objetivo).
+      </li>
+      <li>
+        Chip <code>Cambiado</code> cuando el ejercicio registrado no es el del plan; persiste
+        tras guardar y recargar.
+      </li>
+      <li>
+        Tarjetas rediseñadas: badge numerado con acento por grupo muscular (tokens semánticos
+        existentes, 0 colores nuevos), <code>muscle-tag</code> por grupo, acciones guía/cambiar
+        como <code>icon-action</code>, franja de prescripción del plan (series×reps · descanso ·
+        equipamiento) y fila de tracking separada por divisor. Menos apretadas, menos monótonas.
+      </li>
+      <li>
+        <code>scripts/verify-swap.mjs</code> (nuevo): 13 checks E2E del flujo completo de
+        sustitución (UI → guardado → contrato API → persistencia tras recargar → móvil).
+      </li>
+      <li>
+        Fix en scripts de verificación: usaban fecha UTC (<code>toISOString</code>) mientras la app
+        trabaja en fecha local — entre las 18:00 y medianoche local los scripts limpiaban y leían
+        el día equivocado. Ahora usan fecha local <code>yyyy-MM-dd</code>.
+      </li>
+    </ul>
+  </div>
+
+  <div class="section">
     <div class="section-title">Verificación</div>
     <div class="verify-grid">
       <div class="verify"><div class="val">38/38</div><div class="lbl">Smoke API</div></div>
       <div class="verify"><div class="val">17/17</div><div class="lbl">Smoke admin</div></div>
       <div class="verify"><div class="val">13/13</div><div class="lbl">E2E UI</div></div>
-      <div class="verify"><div class="val">OK</div><div class="lbl">Publish Release</div></div>
+      <div class="verify"><div class="val">13/13</div><div class="lbl">Swap E2E</div></div>
     </div>
     <ul class="changes" style="margin-top: 1rem;">
       <li><code>npm run build</code> (tsc + vite + PWA) sin errores.</li>
@@ -244,6 +281,7 @@
       <div><span class="tag">OPS</span>docker-compose.yml (healthchecks + depends_on healthy)</div>
       <div><span class="tag">OPS</span>client/nginx.conf (resolver DNS dinámico + /healthz)</div>
       <div><span class="tag">OPS</span>server/AegiFitness.Api/Dockerfile (curl para healthcheck)</div>
+      <div><span class="tag">OPS</span>client/scripts/verify-swap.mjs (nuevo, 13 checks swap)</div>
       <div><span class="tag">DOC</span>deploy-guide.html (v1.1, troubleshooting ampliado)</div>
     </div>
   </div>
