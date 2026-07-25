@@ -50,6 +50,31 @@ public class MealPlansController : ControllerBase
         return Ok(Map(plan!));
     }
 
+    // El plan es recomendación: el usuario puede cambiar un platillo por otro
+    // del catálogo y registrar lo que realmente va a comer.
+    [HttpPut("items/{itemId:guid}/swap")]
+    public async Task<ActionResult<MealPlanDto>> SwapItem(Guid itemId, MealPlanSwapDto dto)
+    {
+        var userId = CurrentUserId();
+        var item = await _context.MealPlanItems
+            .Include(i => i.Plan)
+            .Include(i => i.Food)
+            .FirstOrDefaultAsync(i => i.Id == itemId && i.Plan.UserId == userId);
+        if (item is null) return NotFound();
+
+        var newFood = await _context.Foods.AsNoTracking().FirstOrDefaultAsync(f => f.Id == dto.FoodId);
+        if (newFood is null) return BadRequest(new { message = "Comida no encontrada." });
+
+        // Recalcular porciones para mantener las mismas calorías aproximadas
+        var currentCalories = item.Food.Calories * item.Servings;
+        item.FoodId = newFood.Id;
+        item.Servings = Math.Clamp(Math.Round(currentCalories / newFood.Calories, 1), 0.5m, 2.5m);
+        await _context.SaveChangesAsync();
+
+        var plan = await QueryWithFood(userId, item.Plan.Date);
+        return Ok(Map(plan!));
+    }
+
     private Task<MealPlan?> QueryWithFood(Guid userId, DateOnly date) =>
         _context.MealPlans
             .AsNoTracking()

@@ -145,6 +145,42 @@ try {
   const swappedCard = page.locator(".exercise-card", { hasText: newName }).first();
   check("nombre sustituto persiste tras recargar", (await swappedCard.count()) > 0);
   check("chip Cambiado persiste tras recargar", (await swappedCard.innerText()).includes("Cambiado"));
+
+  // ── Swap de platillo (desktop) ──
+  const mealCards = page.locator(".meal-rec-card");
+  const mealCount = await mealCards.count();
+  check("tarjetas de comida recomendada renderizan", mealCount > 0, `(${mealCount})`);
+  const firstMealName = (await mealCards.first().locator(".meal-rec-card__name").innerText()).trim();
+  await mealCards.first().locator("button[aria-label^='Cambiar']").click();
+  await delay(1200);
+  check("modal de platillo abre", await page.locator(".dialog").first().isVisible());
+  check(
+    "modal muestra platillo actual",
+    (await page.locator(".swap-modal__current-name").innerText()).trim() === firstMealName,
+  );
+  const mealAltCount = await page.locator(".catalog-picker__item").count();
+  check("alternativas del mismo tipo listadas", mealAltCount > 0, `(${mealAltCount})`);
+  await page.screenshot({ path: `${shots}/06-modal-swap-comida.png` });
+  const newMealName = (await page.locator(".catalog-picker__item-title").first().innerText()).trim();
+  await page.locator(".catalog-picker__item").first().click();
+  await delay(2000);
+  check(
+    "sustituto de platillo aplicado en tarjeta",
+    (await mealCards.first().locator(".meal-rec-card__name").innerText()).trim() === newMealName,
+    `(${newMealName})`,
+  );
+  const mp2 = await api(`/meal-plans/today?date=${today}`, { token: at });
+  check(
+    "plan persiste platillo sustituto (API)",
+    mp2.items.some((i) => i.food.name === newMealName),
+  );
+  await page.goto(`${WEB}/today`, NAV);
+  await delay(1500);
+  check(
+    "platillo sustituto persiste tras recargar",
+    (await page.locator(".meal-rec-card", { hasText: newMealName }).count()) > 0,
+  );
+  await page.screenshot({ path: `${shots}/08-comida-cambiada.png` });
   await page.screenshot({ path: `${shots}/04-persistencia.png` });
   await ctx.close();
 
@@ -164,6 +200,21 @@ try {
   await delay(1500);
   check("móvil: tarjetas renderizan", (await mp.locator(".exercise-card").count()) > 0);
   await mp.screenshot({ path: `${shots}/05-movil-cards.png` });
+
+  // Bottom-sheet: la guía de ejercicio debe cubrir pantalla completa de ancho,
+  // pegada abajo, sin encimarse con header/nav
+  await mp.locator(".exercise-card button[aria-label^='Guía']").first().click();
+  await delay(1000);
+  const sheet = mp.locator(".dialog").first();
+  check("móvil: diálogo abre", await sheet.isVisible());
+  const box = await sheet.boundingBox();
+  const vp = mp.viewportSize();
+  check(
+    "móvil: diálogo es bottom-sheet de ancho completo",
+    !!box && !!vp && Math.abs(box.width - vp.width) < 2 && box.y + box.height <= vp.height + 2,
+    box ? `(w=${Math.round(box.width)}, bottom=${Math.round(box.y + box.height)}/${vp?.height})` : "",
+  );
+  await mp.screenshot({ path: `${shots}/07-movil-dialog.png` });
   await mctx.close();
 
   check("sin errores JS en consola", errors.length === 0, errors.slice(0, 2).join(" | "));

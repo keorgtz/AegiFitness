@@ -1,7 +1,10 @@
 import type { ReactNode, ButtonHTMLAttributes } from "react";
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 
 export { Stepper } from "./Stepper";
 export { ExerciseGuideModal, RecipeModal } from "./GuideModals";
+export { FoodSwapModal } from "./FoodSwapModal";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "ghost" | "danger";
@@ -171,12 +174,28 @@ interface ModalProps {
 }
 
 export function Modal({ open, onClose, title, children, footer, wide }: ModalProps) {
+  // Bloquear el scroll del fondo mientras el diálogo está abierto
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   if (!open) return null;
 
-  return (
+  // Portal a <body>: si el modal se renderiza inline, cualquier ancestro con
+  // transform/filter convierte position:fixed en relativo a ese ancestro y
+  // el diálogo se encima con el contenido en vez de cubrir la pantalla.
+  return createPortal(
     <div className="dialog-backdrop" onClick={onClose}>
       <div
         className={`dialog ${wide ? "dialog--wide" : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="dialog__header">
@@ -188,7 +207,8 @@ export function Modal({ open, onClose, title, children, footer, wide }: ModalPro
         <div className="dialog__body">{children}</div>
         {footer && <div className="dialog__footer">{footer}</div>}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

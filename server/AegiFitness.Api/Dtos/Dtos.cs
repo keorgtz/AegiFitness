@@ -186,6 +186,9 @@ public record MealPlanDto(
     int TotalCarbsG,
     int TotalFatG);
 
+// Sustituir un platillo del plan por otro del catálogo
+public record MealPlanSwapDto([Required] int FoodId);
+
 public record MealLogEntryDto(
     Guid? Id,
     int? FoodId,

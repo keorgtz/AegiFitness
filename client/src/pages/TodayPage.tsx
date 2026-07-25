@@ -13,6 +13,7 @@ import {
   EmptyState,
   ErrorState,
   ExerciseGuideModal,
+  FoodSwapModal,
   Loading,
   Modal,
   RecipeModal,
@@ -85,6 +86,7 @@ export default function TodayPage() {
   const [swapIndex, setSwapIndex] = useState<number | null>(null);
   const [foodModal, setFoodModal] = useState(false);
   const [quickMealModal, setQuickMealModal] = useState(false);
+  const [swapMeal, setSwapMeal] = useState<MealPlanItemDto | null>(null);
   const [guide, setGuide] = useState<ExerciseDto | null>(null);
   const [recipe, setRecipe] = useState<FoodDto | null>(null);
 
@@ -496,13 +498,12 @@ export default function TodayPage() {
                     size="sm"
                   />
                   <Stepper
-                    label="Peso"
+                    label="Peso (kg)"
                     value={entry.actualWeightKg}
                     onChange={(v) => updateWorkoutEntry(index, { actualWeightKg: v })}
                     min={0}
                     max={500}
                     step={2.5}
-                    unit="kg"
                     size="sm"
                   />
                   <button
@@ -577,6 +578,15 @@ export default function TodayPage() {
                         <Button size="sm" onClick={() => eatRecommended(item)}>
                           La comí
                         </Button>
+                        <button
+                          type="button"
+                          className="icon-action"
+                          onClick={() => setSwapMeal(item)}
+                          aria-label={`Cambiar ${item.food.name}`}
+                          title="Cambiar platillo"
+                        >
+                          <span className="icon">swap_horiz</span>
+                        </button>
                         <button
                           type="button"
                           className="btn-icon"
@@ -696,6 +706,7 @@ export default function TodayPage() {
         }}
       />
       <FoodPickerModal open={foodModal} onClose={() => setFoodModal(false)} onSelect={addFoodToLog} />
+      <FoodSwapModal item={swapMeal} onClose={() => setSwapMeal(null)} onSwapped={load} />
       <QuickMealModal open={quickMealModal} onClose={() => setQuickMealModal(false)} onAdd={addQuickMeal} />
       <ExerciseGuideModal exercise={guide} onClose={() => setGuide(null)} />
       <RecipeModal food={recipe} onClose={() => setRecipe(null)} />

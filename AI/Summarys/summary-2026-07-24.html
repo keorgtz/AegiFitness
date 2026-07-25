@@ -246,12 +246,54 @@
   </div>
 
   <div class="section">
+    <div class="section-title">Segunda iteración UX: steppers, diálogos móviles y swap de platillos</div>
+    <ul class="changes">
+      <li>
+        <strong>Steppers sin encimado</strong>: en las tarjetas de ejercicio, Series/Reps/Peso
+        desbordaban su columna (~132px necesarios en ~80-118px disponibles) y los botones +/−
+        se tocaban entre tarjetas vecinas. Ahora son un control segmentado conectado
+        (un solo borde, botones de 34px, valor flexible, unidad en el label) — físicamente
+        imposible que se encimen, simétrico a cualquier ancho.
+      </li>
+      <li>
+        <strong>Diálogos móviles bottom-sheet</strong>: el Modal se renderizaba inline; cualquier
+        ancestro con <code>transform</code>/<code>filter</code> convertía <code>position:fixed</code>
+        en relativo a ese ancestro y el diálogo se encimaba con el contenido. Ahora usa
+        <code>createPortal</code> a <code>&lt;body&gt;</code> + bloqueo de scroll del fondo +
+        <code>role="dialog" aria-modal</code>. En móvil vertical los diálogos son bottom-sheet
+        de ancho completo (88dvh máx, safe-area, animación slide-up) — verificado: guía de
+        ejercicio y recetas ya no se solapan con header ni bottom-nav.
+      </li>
+      <li>
+        <strong>Cambiar platillo</strong> (como el de ejercicios): nuevo endpoint
+        <code>PUT /api/meal-plans/items/{id}/swap</code> que cambia el FoodId y recalcula las
+        porciones para mantener las calorías (954 kcal → sustituto de 420 kcal/u = 2.3 porciones
+        ≈ 966 kcal). Persiste en el plan del día.
+      </li>
+      <li>
+        <code>FoodSwapModal</code> compartido (Today + Nutrición): filtro por mismo tipo de
+        comida con toggle, dedupe por nombre y <strong>ordenado por proteína más cercana</strong>
+        al platillo original — para "comer otra cosa con protes similares".
+      </li>
+      <li>
+        Fix E2E: <code>Card interactive</code> renderiza <code>&lt;button&gt;</code> raíz y el
+        botón de swap anidado era HTML inválido (hydration error). Las tarjetas de Nutrición
+        ahora tienen acciones explícitas (cambiar / receta) y el nombre como botón de texto.
+      </li>
+      <li>
+        <code>verify-swap.mjs</code> ampliado a 22 checks: swap de ejercicio, swap de platillo
+        (UI → API → persistencia), bottom-sheet móvil (ancho completo, pegado abajo).
+      </li>
+    </ul>
+  </div>
+
+  <div class="section">
     <div class="section-title">Verificación</div>
     <div class="verify-grid">
       <div class="verify"><div class="val">38/38</div><div class="lbl">Smoke API</div></div>
       <div class="verify"><div class="val">17/17</div><div class="lbl">Smoke admin</div></div>
       <div class="verify"><div class="val">13/13</div><div class="lbl">E2E UI</div></div>
-      <div class="verify"><div class="val">13/13</div><div class="lbl">Swap E2E</div></div>
+      <div class="verify"><div class="val">22/22</div><div class="lbl">Swap E2E</div></div>
     </div>
     <ul class="changes" style="margin-top: 1rem;">
       <li><code>npm run build</code> (tsc + vite + PWA) sin errores.</li>
@@ -274,7 +316,11 @@
       <div><span class="tag">WEB</span>client/src/pages/AdminPage.tsx</div>
       <div><span class="tag">WEB</span>client/src/pages/NutritionPage.tsx</div>
       <div><span class="tag">WEB</span>client/src/pages/ProgressPage.tsx</div>
+      <div><span class="tag">WEB</span>client/src/pages/TodayPage.tsx</div>
+      <div><span class="tag">WEB</span>client/src/components/ui/index.tsx (Modal portal + bottom-sheet)</div>
+      <div><span class="tag">WEB</span>client/src/components/ui/FoodSwapModal.tsx (nuevo)</div>
       <div><span class="tag">WEB</span>client/src/components/ui/charts.tsx</div>
+      <div><span class="tag">WEB</span>client/src/api/resources.ts</div>
       <div><span class="tag">WEB</span>client/src/styles/app.css</div>
       <div><span class="tag">OPS</span>scripts/run-smoke.ps1 (nuevo)</div>
       <div><span class="tag">OPS</span>scripts/run-smoke-admin.ps1 (nuevo)</div>

@@ -58,6 +58,8 @@ export const mealPlanApi = {
   forDate: (date: string) => api.get<MealPlanDto>(`/meal-plans/today?date=${date}`),
   regenerate: (date?: string) =>
     api.post<MealPlanDto>(`/meal-plans/regenerate${date ? `?date=${date}` : ""}`),
+  swapItem: (itemId: number, foodId: number) =>
+    api.put<MealPlanDto>(`/meal-plans/items/${itemId}/swap`, { foodId }),
 };
 
 export const mealLogApi = {

@@ -800,6 +800,28 @@
 }
 
 /* Meal nutrition metadata remains readable at compact widths. */
+.meal-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.meal-card__name--btn {
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.25;
+  margin-bottom: 4px;
+  color: var(--text);
+  transition: color var(--transition-fast);
+}
+
+.meal-card__name--btn:hover {
+  color: var(--primary);
+}
+
 .meal-card__macros {
   display: flex;
   flex-wrap: wrap;
@@ -1040,6 +1062,42 @@
 
 .dialog--wide {
   max-width: 760px;
+}
+
+/* Móvil vertical: bottom-sheet en vez de diálogo centrado.
+   Evita el recorte por centrado flex y solapes con header/nav;
+   el body scrollea internamente y respeta el safe-area. */
+@media (max-width: 767px) {
+  .dialog-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .dialog,
+  .dialog--wide {
+    width: 100%;
+    max-width: 100%;
+    max-height: 88dvh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    border-bottom: none;
+    animation: dialogSheetIn 0.28s ease;
+  }
+
+  .dialog__body {
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    overscroll-behavior: contain;
+  }
+}
+
+@keyframes dialogSheetIn {
+  from {
+    transform: translateY(48px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .dialog__header {
@@ -2154,11 +2212,58 @@
 
 .exercise-card__row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr) auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
   gap: 12px;
   align-items: end;
   border-top: 1px solid var(--hairline);
   padding-top: 14px;
+}
+
+/* Steppers compactos conectados dentro de la tarjeta de ejercicio:
+   un solo control segmentado — imposible que los botones se encimen */
+.exercise-card__row .stepper {
+  width: 100%;
+}
+
+.exercise-card__row .stepper__controls {
+  width: 100%;
+  gap: 0;
+  height: 44px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+}
+
+.exercise-card__row .stepper__btn {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.exercise-card__row .stepper__btn:not(:disabled):hover {
+  color: var(--primary);
+  border-color: transparent;
+  background: var(--primary-bg);
+}
+
+.exercise-card__row .stepper__btn:not(:disabled):active {
+  transform: none;
+  background: var(--primary-bg);
+}
+
+.exercise-card__row .stepper__value {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.95rem;
+}
+
+.exercise-card__row .stepper__unit {
+  display: none;
 }
 
 /* Modal de sustitución de ejercicio */
@@ -2173,6 +2278,12 @@
 .swap-modal__current-name {
   font-weight: 700;
   font-size: 0.95rem;
+  margin-top: 2px;
+}
+
+.swap-modal__current-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
   margin-top: 2px;
 }
 
@@ -2211,7 +2322,8 @@
 
 @media (max-width: 480px) {
   .exercise-card__row {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .exercise-card__row .check-btn {

@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { mealLogApi, mealPlanApi } from "../api/resources";
 import { foodCatalogApi } from "../api/resources";
-import { Button, Card, EmptyState, ErrorState, Loading, Modal } from "../components/ui";
+import { Button, Card, EmptyState, ErrorState, FoodSwapModal, Loading, Modal } from "../components/ui";
 import { MacroBar } from "../components/ui/charts";
 import { useAsync } from "../hooks/useAsync";
 import { useToastCtx } from "../hooks/useToastContext";
-import type { CatalogObjective, FoodDto, MealPlanDto } from "../types/api";
+import type { CatalogObjective, FoodDto, MealPlanDto, MealPlanItemDto } from "../types/api";
 import { addDays, mealTypeName, today } from "../utils/format";
 
 const MEAL_TYPES = ["Breakfast", "Lunch", "Dinner", "Snack"] as const;
@@ -15,6 +15,7 @@ export default function NutritionPage() {
   const toast = useToastCtx();
   const [date, setDate] = useState(today());
   const [selectedFood, setSelectedFood] = useState<FoodDto | null>(null);
+  const [swapItem, setSwapItem] = useState<MealPlanItemDto | null>(null);
 
   const { data, loading, error, run } = useAsync<{
     plan: MealPlanDto;
@@ -122,14 +123,38 @@ export default function NutritionPage() {
         <EmptyState icon="no_meals" title="Sin comidas" description="No hay comidas planificadas para este día." />
       ) : (
         plan.items.map((item) => (
-          <Card
-            key={item.id}
-            interactive
-            className="meal-card"
-            onClick={() => setSelectedFood(item.food)}
-          >
-            <div className="meal-card__type">{mealTypeName(item.mealType)}</div>
-            <div className="meal-card__name">{item.food.name}</div>
+          <Card key={item.id} className="meal-card">
+            <div className="meal-card__top">
+              <div className="meal-card__type">{mealTypeName(item.mealType)}</div>
+              <div className="row gap-2">
+                <button
+                  type="button"
+                  className="icon-action"
+                  onClick={() => setSwapItem(item)}
+                  aria-label={`Cambiar ${item.food.name}`}
+                  title="Cambiar platillo"
+                >
+                  <span className="icon">swap_horiz</span>
+                </button>
+                <button
+                  type="button"
+                  className="icon-action"
+                  onClick={() => setSelectedFood(item.food)}
+                  aria-label={`Receta de ${item.food.name}`}
+                  title="Ver receta"
+                >
+                  <span className="icon">menu_book</span>
+                </button>
+                <div className="badge badge--info">{item.eaten ? "Registrada" : "Pendiente"}</div>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="meal-card__name meal-card__name--btn"
+              onClick={() => setSelectedFood(item.food)}
+            >
+              {item.food.name}
+            </button>
             <div className="meal-card__macros" aria-label="Información nutricional">
               <span className="meal-card__macro">
                 <strong>{Math.round(item.food.calories * item.servings)}</strong> kcal
@@ -141,10 +166,11 @@ export default function NutritionPage() {
                 <strong>{item.servings}</strong> porciones
               </span>
             </div>
-            <div className="badge badge--info">{item.eaten ? "Registrada" : "Pendiente"}</div>
           </Card>
         ))
       )}
+
+      <FoodSwapModal item={swapItem} onClose={() => setSwapItem(null)} onSwapped={load} />
 
       <div className="section-title mt-4">
         <span>Explorar catálogo</span>
