@@ -241,7 +241,36 @@
       <div><span class="tag">WEB</span>client/src/styles/app.css</div>
       <div><span class="tag">OPS</span>scripts/run-smoke.ps1 (nuevo)</div>
       <div><span class="tag">OPS</span>scripts/run-smoke-admin.ps1 (nuevo)</div>
+      <div><span class="tag">OPS</span>docker-compose.yml (healthchecks + depends_on healthy)</div>
+      <div><span class="tag">OPS</span>client/nginx.conf (resolver DNS dinámico + /healthz)</div>
+      <div><span class="tag">OPS</span>server/AegiFitness.Api/Dockerfile (curl para healthcheck)</div>
+      <div><span class="tag">DOC</span>deploy-guide.html (v1.1, troubleshooting ampliado)</div>
     </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Docker: resiliencia de deploy</div>
+    <ul class="changes">
+      <li>
+        <code>client/nginx.conf</code>: eliminado el bloque <code>upstream</code> (DNS resuelto una sola vez
+        al arrancar → 502 permanente si <code>api</code> se recreaba con otra IP, y crash-loop de nginx
+        si <code>api</code> aún no existía en DNS). Ahora usa <code>resolver 127.0.0.11 valid=10s</code> +
+        <code>proxy_pass</code> con variable: re-resuelve en cada request. Añadido endpoint <code>/healthz</code>.
+      </li>
+      <li>
+        <code>server/AegiFitness.Api/Dockerfile</code>: instalado <code>curl</code> en la imagen runtime
+        para el healthcheck.
+      </li>
+      <li>
+        <code>docker-compose.yml</code>: healthcheck de <code>api</code> (<code>/api/health</code>,
+        <code>start_period: 90s</code> para las migraciones con reintentos), healthcheck de
+        <code>web</code> (<code>/healthz</code>) y <code>web depends_on api: service_healthy</code>.
+      </li>
+      <li>
+        <code>deploy-guide.html</code> v1.1: nuevos modos de fallo documentados (502 tras reinicio,
+        bucle de nginx, api unhealthy) y comandos de verificación post-deploy.
+      </li>
+    </ul>
   </div>
 
   <div class="section">

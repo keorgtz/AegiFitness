@@ -61,6 +61,14 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      # start_period largo: las migraciones automáticas reintentan hasta 60s
+      # si la BD aún no está lista tras un deploy.
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 90s
     networks:
       - internal
 
@@ -73,7 +81,14 @@ services:
     container_name: aegifit-web
     restart: unless-stopped
     depends_on:
-      - api
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost/healthz || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     networks:
       - internal
       - proxy

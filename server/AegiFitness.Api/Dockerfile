@@ -11,6 +11,12 @@ RUN dotnet publish AegiFitness.Api/AegiFitness.Api.csproj -c Release -o /app/pub
 # ── Runtime ───────────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
+
+# curl para el healthcheck de Docker Compose (la imagen base no lo trae)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY --from=build /app/publish .
 
 ENV ASPNETCORE_HTTP_PORTS=8080

@@ -97,7 +97,7 @@
 <header class="header">
   <h1>AegiFitness</h1>
   <p>Guía completa de despliegue en tu servidor: Docker + Nginx Proxy Manager + Cloudflare Tunnel</p>
-  <span class="version">v1.0</span>
+  <span class="version">v1.1</span>
 </header>
 
 <div class="container">
@@ -367,6 +367,21 @@ docker compose up -d --build</code></pre>
         <table>
           <tr><th>Síntoma</th><th>Causa probable</th><th>Solución</th></tr>
           <tr>
+            <td>502 Bad Gateway después de reiniciar o redeplegar</td>
+            <td>Nginx resolvía la IP de <code>api</code> una sola vez al arrancar; al recrearse <code>api</code> con otra IP, el proxy quedaba apuntando a una IP muerta</td>
+            <td><strong>Corregido en v1.1</strong>: <code>nginx.conf</code> ahora usa el DNS de Docker (<code>resolver 127.0.0.11</code>) y re-resuelve en cada request. Redeploy: <code>docker compose up -d --build --force-recreate</code></td>
+          </tr>
+          <tr>
+            <td><code>aegifit-web</code> en bucle de reinicios</td>
+            <td>Nginx moría al arrancar ("host not found in upstream") si <code>api</code> aún no existía en DNS</td>
+            <td><strong>Corregido en v1.1</strong>: <code>web</code> ahora espera a <code>api: service_healthy</code> y el proxy ya no depende del DNS de arranque</td>
+          </tr>
+          <tr>
+            <td><code>aegifit-api</code> aparece <em>unhealthy</em> en <code>docker compose ps</code></td>
+            <td>Las migraciones automáticas aún corren (hasta ~60s) o fallaron contra una BD con esquema viejo</td>
+            <td><code>docker logs aegifit-api --tail 100</code>. Si es error de migración por esquema viejo: <code>docker compose down -v</code> (borra datos) o migra la BD a mano</td>
+          </tr>
+          <tr>
             <td>La página carga pero dice "Error de conexión"</td>
             <td>La API no está sana o NPM no alcanza <code>aegifit-web</code></td>
             <td><code>docker compose ps</code> y <code>docker logs aegifit-api --tail 50</code>; verifica que <code>aegifit-web</code> está en la red <code>proxy</code>: <code>docker network inspect proxy | grep aegifit</code></td>
@@ -401,7 +416,11 @@ docker compose up -d --build</code></pre>
         <pre><code>docker logs aegifit-api --tail 100 -f    # API (migraciones, seed, errores)
 docker logs aegifit-web --tail 50        # Nginx del frontend
 docker logs aegifit-db --tail 50         # PostgreSQL
-docker compose ps                        # estado general</code></pre>
+docker compose ps                        # estado general (todos deben decir "healthy")</code></pre>
+        <h3>Verificación post-deploy</h3>
+        <pre><code>docker exec aegifit-api curl -fsS http://localhost:8080/api/health   # {"status":"ok"}
+docker exec aegifit-web wget -q -O- http://localhost/healthz             # ok
+docker exec aegifit-web wget -q -O- http://localhost/api/health          # proxy web → api</code></pre>
       </section>
 
     </main>
