@@ -80,7 +80,9 @@ public record ExerciseDto(
     string Description,
     string Instructions,
     string Target,
-    string Effect);
+    string Effect,
+    string? ImageSlug,
+    string? ImageVariants);
 
 public record ExerciseListDto(ExerciseDto[] Items, int TotalCount, int Page, int PageSize);
 

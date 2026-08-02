@@ -127,7 +127,7 @@
   <header>
     <h1>AegiFitness</h1>
     <div class="sub">Resumen de implementación</div>
-    <div class="date-badge">24 · Julio · 2026</div>
+    <div class="date-badge">24 jul — 1 ago · 2026</div>
   </header>
 
   <div class="section">
@@ -138,7 +138,9 @@
         Se completaron los ajustes responsive pendientes de la revisión visual y se corrigieron
         dos desajustes de contrato entre el backend y el frontend que causaban un crash en la
         vista Hoy (<code>TypeError: reading 'name'</code>) y pérdida silenciosa de la referencia
-        a la comida al registrar comidas del plan.
+        a la comida al registrar comidas del plan. En la última iteración se integró el catálogo
+        <strong>RepDB</strong> (400 ejercicios reales en español con 745 imágenes) y se añadió la
+        sustitución de ejercicios y platillos recomendados por alternativas reales del catálogo.
       </div>
     </div>
   </div>
@@ -288,20 +290,66 @@
   </div>
 
   <div class="section">
+    <div class="section-title">Catálogo RepDB: 400 ejercicios reales con imágenes</div>
+    <ul class="changes">
+      <li>
+        <strong>Dataset RepDB free tier</strong> integrado (<code>repdb-free/free.es.json</code>):
+        400 ejercicios en español con instrucciones, músculo objetivo, equipamiento y 745 imágenes
+        WebP (inicio / pico del movimiento). Distribución: 294 gym · 106 calistenia.
+      </li>
+      <li>
+        <code>scripts/transform-repdb.mjs</code> (nuevo): transforma el dataset a
+        <code>server/AegiFitness.Api/Data/Seed/exercises.seed.json</code> mapeando
+        muscleGroup, type, objective, difficulty, equipment, target, effect,
+        <code>imageSlug</code> e <code>imageVariants</code>; imprime stats por tipo/músculo.
+      </li>
+      <li>
+        Entidad <code>Exercise</code> ampliada con <code>ImageSlug</code> e <code>ImageVariants</code>
+        (text, nullable) + migración <code>ExerciseImages</code>. El JSON se copia al output vía csproj.
+      </li>
+      <li>
+        Seeder <strong>merge no destructivo por nombre</strong>: BD vacía → catálogo RepDB completo;
+        BD existente → solo inserta los que faltan (dev quedó con 564 ejercicios: seed original + RepDB).
+        Las migraciones se aplican solas al arrancar (<code>MigrateAsync</code> con reintentos).
+      </li>
+      <li>
+        Cliente: 745 WebP servidas estáticas desde <code>client/public/exercises/flat/</code> (11.6 MB),
+        <strong>excluidas del precache</strong> PWA (<code>globIgnores</code> — el precache sigue en
+        370 KiB) y cacheadas en runtime con CacheFirst 30 días (<code>runtimeCaching</code>).
+      </li>
+      <li>
+        <code>exerciseImageUrl</code> / <code>exerciseImageVariants</code> en <code>utils/format.ts</code>;
+        guía de ejercicio con imágenes inicio/pico (<code>guide-images</code>), thumbnails en los
+        pickers de sustitución (<code>catalog-picker__thumb</code>) y <code>ExerciseDto</code> con
+        los campos de imagen.
+      </li>
+      <li>
+        Los planes nuevos ya seleccionan ejercicios RepDB automáticamente (mismo pipeline de
+        generación, catálogo más amplio y filtrado por modalidad).
+      </li>
+      <li>
+        <strong>Atribución</strong> (requisito de la licencia free): "Exercise data by RepDB
+        (repdb.co)" visible en la guía de ejercicio, en Ajustes → Acerca de y en el README.
+      </li>
+    </ul>
+  </div>
+
+  <div class="section">
     <div class="section-title">Verificación</div>
     <div class="verify-grid">
       <div class="verify"><div class="val">38/38</div><div class="lbl">Smoke API</div></div>
       <div class="verify"><div class="val">17/17</div><div class="lbl">Smoke admin</div></div>
       <div class="verify"><div class="val">13/13</div><div class="lbl">E2E UI</div></div>
-      <div class="verify"><div class="val">22/22</div><div class="lbl">Swap E2E</div></div>
+      <div class="verify"><div class="val">26/26</div><div class="lbl">Swap E2E</div></div>
     </div>
     <ul class="changes" style="margin-top: 1rem;">
       <li><code>npm run build</code> (tsc + vite + PWA) sin errores.</li>
       <li><code>scripts/run-smoke.ps1</code>: 38/38 PASS — incluye contratos exercise/food/foodId y adherencia 0–100.</li>
       <li><code>scripts/run-smoke-admin.ps1</code>: 17/17 PASS — flujo completo de licencias, roles y contraseñas.</li>
       <li><code>e2e-smoke.mjs</code>: 13/13 PASS, sin errores JS en consola; puertos 5212/5173 liberados.</li>
-      <li><code>dotnet publish -c Release</code> correcto.</li>
-      <li>Capturas regeneradas en <code>shots/review/</code> (desktop + móvil) y revisadas visualmente; "Pendientes" ya no se trunca en admin móvil.</li>
+      <li><code>verify-swap.mjs</code>: 26/26 PASS — swap de ejercicio y platillo, imágenes RepDB en guía y pickers, bottom-sheet móvil.</li>
+      <li><code>dotnet publish -c Release</code> correcto; migración <code>ExerciseImages</code> generada y aplicada en dev.</li>
+      <li>Capturas regeneradas en <code>shots/review/</code> (desktop + móvil) y <code>shots/swap/09-guia-imagenes.png</code> (guía con imágenes RepDB) revisadas visualmente.</li>
     </ul>
   </div>
 
@@ -312,6 +360,10 @@
       <div><span class="tag">API</span>server/AegiFitness.Api/Controllers/WorkoutLogsController.cs</div>
       <div><span class="tag">API</span>server/AegiFitness.Api/Controllers/MealLogsController.cs</div>
       <div><span class="tag">API</span>server/AegiFitness.Api/Controllers/MealPlansController.cs</div>
+      <div><span class="tag">API</span>server/AegiFitness.Api/Domain/Entities.cs (Exercise.ImageSlug/ImageVariants)</div>
+      <div><span class="tag">API</span>server/AegiFitness.Api/Data/Seed/DbSeeder.cs (merge RepDB por nombre)</div>
+      <div><span class="tag">API</span>server/AegiFitness.Api/Data/Seed/exercises.seed.json (nuevo, 400 ejercicios)</div>
+      <div><span class="tag">API</span>server/AegiFitness.Api/Migrations/20260801024020_ExerciseImages.cs (nuevo)</div>
       <div><span class="tag">WEB</span>client/src/pages/AchievementsPage.tsx</div>
       <div><span class="tag">WEB</span>client/src/pages/AdminPage.tsx</div>
       <div><span class="tag">WEB</span>client/src/pages/NutritionPage.tsx</div>
@@ -319,7 +371,13 @@
       <div><span class="tag">WEB</span>client/src/pages/TodayPage.tsx</div>
       <div><span class="tag">WEB</span>client/src/components/ui/index.tsx (Modal portal + bottom-sheet)</div>
       <div><span class="tag">WEB</span>client/src/components/ui/FoodSwapModal.tsx (nuevo)</div>
+      <div><span class="tag">WEB</span>client/src/components/ui/GuideModals.tsx (imágenes RepDB + atribución)</div>
       <div><span class="tag">WEB</span>client/src/components/ui/charts.tsx</div>
+      <div><span class="tag">WEB</span>client/src/utils/format.ts (exerciseImageUrl/Variants)</div>
+      <div><span class="tag">WEB</span>client/src/types/api.ts</div>
+      <div><span class="tag">WEB</span>client/src/pages/SettingsPage.tsx (Acerca de, atribución RepDB)</div>
+      <div><span class="tag">WEB</span>client/vite.config.ts (PWA globIgnores + runtimeCaching imágenes)</div>
+      <div><span class="tag">WEB</span>client/public/exercises/flat/ (745 WebP, 11.6 MB)</div>
       <div><span class="tag">WEB</span>client/src/api/resources.ts</div>
       <div><span class="tag">WEB</span>client/src/styles/app.css</div>
       <div><span class="tag">OPS</span>scripts/run-smoke.ps1 (nuevo)</div>
@@ -327,8 +385,10 @@
       <div><span class="tag">OPS</span>docker-compose.yml (healthchecks + depends_on healthy)</div>
       <div><span class="tag">OPS</span>client/nginx.conf (resolver DNS dinámico + /healthz)</div>
       <div><span class="tag">OPS</span>server/AegiFitness.Api/Dockerfile (curl para healthcheck)</div>
-      <div><span class="tag">OPS</span>client/scripts/verify-swap.mjs (nuevo, 13 checks swap)</div>
+      <div><span class="tag">OPS</span>scripts/transform-repdb.mjs (nuevo, dataset → seed JSON)</div>
+      <div><span class="tag">OPS</span>client/scripts/verify-swap.mjs (ampliado a 26 checks)</div>
       <div><span class="tag">DOC</span>deploy-guide.html (v1.1, troubleshooting ampliado)</div>
+      <div><span class="tag">DOC</span>README.md (atribución RepDB)</div>
     </div>
   </div>
 
@@ -360,13 +420,13 @@
   <div class="section">
     <div class="section-title">Pendientes conocidos</div>
     <ul class="changes">
-      <li>Los scripts de captura full-page muestran la bottom-nav flotando a mitad de página; es un artefacto del screenshot, no un bug del viewport real.</li>
-      <li>Sin cambios en Docker ni en <code>docker-compose.yml</code> en esta sesión; el publish Release queda listo para rebuild de imagen.</li>
+      <li>Los scripts de captura full-page muestran la bottom-nav flotando a mitad de página; es un artefacto del screenshot, no un bug del viewport real (verificado: <code>app-content</code> reserva <code>--nav-h + 32px</code> de padding inferior).</li>
+      <li>Deploy pendiente en el servidor: <code>docker compose up -d --build</code> (cambian ambos contenedores). La migración <code>ExerciseImages</code> se aplica sola al arrancar y el merge RepDB es no destructivo (564 ejercicios tras el seed).</li>
       <li>Cambios sin commit en el working tree, listos para revisión.</li>
     </ul>
   </div>
 
-  <footer>AegiFitness · Resumen generado el 2026-07-24</footer>
+  <footer>AegiFitness · Resumen actualizado el 2026-08-01</footer>
 
 </div>
 </body>

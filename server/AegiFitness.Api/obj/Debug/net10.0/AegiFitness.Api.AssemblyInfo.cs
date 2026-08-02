@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AegiFitness.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d159c42b1745e1f166b5e4c47a1f4ea8b9c95919")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+09f97b0079e39f071652fc5de152ec4c850e587e")]
 [assembly: System.Reflection.AssemblyProductAttribute("AegiFitness.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AegiFitness.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

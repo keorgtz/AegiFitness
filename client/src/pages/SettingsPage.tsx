@@ -445,6 +445,23 @@ function AccountSection({ username, displayName, email, license, onSaved, onLogo
         </div>
       </Card>
 
+      <Card title="Acerca de" icon="info" style={{ marginBottom: 16 }}>
+        <p style={{ color: "var(--text-muted)", fontSize: 13, lineHeight: 1.6, marginBottom: 8 }}>
+          AegiFitness · Rutinas, nutrición y progreso gamificados.
+        </p>
+        <p style={{ color: "var(--text-muted)", fontSize: 13, lineHeight: 1.6 }}>
+          Datos e imágenes de ejercicios por{" "}
+          <a
+            href="https://repdb.co/free-exercise-dataset"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: "var(--primary)", textDecoration: "none" }}
+          >
+            RepDB (repdb.co)
+          </a>
+        </p>
+      </Card>
+
       <Button variant="danger" block onClick={onLogout}>
         Cerrar sesión
       </Button>

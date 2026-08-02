@@ -38,7 +38,23 @@ export default defineConfig({
       },
       workbox: {
         navigateFallbackDenylist: [/^\/api\//],
-        runtimeCaching: [],
+        // Las imágenes de ejercicios (745 WebP, ~12 MB) NO se precachean:
+        // se cachean en runtime bajo demanda (offline real sin inflar el SW install)
+        globIgnores: ["**/exercises/**"],
+        runtimeCaching: [
+          {
+            urlPattern: /\/exercises\/flat\/.*\.webp$/,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "exercise-images",
+              expiration: {
+                maxEntries: 500,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 días
+              },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
       },
     }),
   ],

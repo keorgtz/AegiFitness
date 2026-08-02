@@ -115,15 +115,34 @@ try {
   check("modal muestra ejercicio actual", (await page.locator(".swap-modal__current-name").innerText()).trim() === firstName);
   const altCount = await page.locator(".catalog-picker__item").count();
   check("alternativas del mismo músculo listadas", altCount > 0, `(${altCount})`);
+  const thumbCount = await page.locator(".catalog-picker__thumb").count();
+  check("alternativas con thumbnail RepDB", thumbCount > 0, `(${thumbCount})`);
   await page.screenshot({ path: `${shots}/02-modal-swap.png` });
 
-  // Elegir sustituto
-  const newName = (await page.locator(".catalog-picker__item-title").first().innerText()).trim();
-  await page.locator(".catalog-picker__item").first().click();
+  // Elegir sustituto con imagen (determinista para el check de la guía visual)
+  const withThumb = page.locator(".catalog-picker__item", { has: page.locator("img") });
+  const pick = (await withThumb.count()) > 0 ? withThumb.first() : page.locator(".catalog-picker__item").first();
+  const newName = (await pick.locator(".catalog-picker__item-title").innerText()).trim();
+  await pick.click();
   await delay(900);
   check("sustituto aplicado en tarjeta", (await cards.first().locator(".exercise-card__name").innerText()).trim() === newName, `(${newName})`);
   check("chip Cambiado visible", (await cards.first().innerText()).includes("Cambiado"));
   await page.screenshot({ path: `${shots}/03-tarjeta-cambiada.png` });
+
+  // Guía visual: el sustituto (RepDB) debe mostrar imágenes start/peak o main
+  await cards.first().locator("button[aria-label^='Guía']").click();
+  await delay(1200);
+  const guideImgs = await page.locator(".guide-images img").count();
+  check("guía muestra imágenes del ejercicio", guideImgs > 0, `(${guideImgs})`);
+  if (guideImgs > 0) {
+    const src = await page.locator(".guide-images img").first().getAttribute("src");
+    const imgResp = await page.request.get(`${WEB}${src}`);
+    check("imagen de guía responde 200", imgResp.ok(), `(${src})`);
+  }
+  check("atribución RepDB visible en guía", (await page.locator(".guide-attribution").count()) > 0);
+  await page.screenshot({ path: `${shots}/09-guia-imagenes.png` });
+  await page.locator(".dialog__close").first().click();
+  await delay(500);
 
   // Guardar y verificar persistencia del contrato (exercise incluido).
   // Ojo: EF no garantiza el orden de Entries (PK Guid) — buscar en todas.

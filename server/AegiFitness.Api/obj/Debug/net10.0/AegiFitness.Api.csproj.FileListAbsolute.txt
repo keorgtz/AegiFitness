@@ -136,3 +136,4 @@ C:\Users\kevin\KeorSoft\Development\Web\AegiFitness\server\AegiFitness.Api\bin\D
 C:\Users\kevin\KeorSoft\Development\Web\AegiFitness\server\AegiFitness.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\kevin\KeorSoft\Development\Web\AegiFitness\server\AegiFitness.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\kevin\KeorSoft\Development\Web\AegiFitness\server\AegiFitness.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\kevin\KeorSoft\Development\Web\AegiFitness\server\AegiFitness.Api\bin\Debug\net10.0\Data\Seed\exercises.seed.json

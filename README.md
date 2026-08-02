@@ -88,3 +88,7 @@ cd client && npm run build   # frontend (tsc + vite + PWA)
 
 - Smoke de API (36 pruebas: auth, licencias, catálogos, TDEE, generación de planes, tracking, gamificación, métricas): `client/scripts` + PowerShell sobre la API en ejecución.
 - E2E de UI (13 pruebas Playwright: login, vistas desktop/móvil, flujo de licencia pendiente): `node client/scripts/e2e-smoke.mjs` (requiere API y Vite levantados por el propio script).
+
+## Créditos
+
+Exercise data by [RepDB](https://repdb.co/free-exercise-dataset) (datos e imágenes de ejercicios, free tier con licencia de atribución).

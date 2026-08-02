@@ -87,6 +87,10 @@ public class Exercise
     public string Instructions { get; set; } = string.Empty;
     public string Target { get; set; } = string.Empty;
     public string Effect { get; set; } = string.Empty;
+    // Slug base de imagen (RepDB) y variantes disponibles separadas por coma
+    // ("start,peak" o "main"). El cliente construye /exercises/flat/{slug}-{variant}.webp
+    public string? ImageSlug { get; set; }
+    public string? ImageVariants { get; set; }
 }
 
 public class Food

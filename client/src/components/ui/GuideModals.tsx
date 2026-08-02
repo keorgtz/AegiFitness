@@ -1,6 +1,12 @@
 import type { ExerciseDto, FoodDto } from "../../types/api";
 import { Chip, Modal } from "./index";
-import { muscleGroupName, modalityName } from "../../utils/format";
+import { exerciseImageUrl, exerciseImageVariants, muscleGroupName, modalityName } from "../../utils/format";
+
+const VARIANT_LABEL: Record<string, string> = {
+  start: "Inicio",
+  peak: "Pico del movimiento",
+  main: "Postura",
+};
 
 interface ExerciseGuideModalProps {
   exercise: ExerciseDto | null;
@@ -11,6 +17,7 @@ export function ExerciseGuideModal({ exercise, onClose }: ExerciseGuideModalProp
   if (!exercise) return null;
 
   const difficultyLabel = exercise.difficulty === 1 ? "Fácil" : exercise.difficulty === 2 ? "Media" : "Difícil";
+  const variants = exerciseImageVariants(exercise);
 
   return (
     <Modal open onClose={onClose} title={exercise.name} wide>
@@ -25,6 +32,21 @@ export function ExerciseGuideModal({ exercise, onClose }: ExerciseGuideModalProp
         </div>
       </div>
 
+      {variants.length > 0 && (
+        <div className={`guide-images ${variants.length > 1 ? "guide-images--pair" : ""}`}>
+          {variants.map((v) => (
+            <figure key={v} className="guide-images__figure">
+              <img
+                src={exerciseImageUrl(exercise, v) ?? undefined}
+                alt={`${exercise.name} — ${VARIANT_LABEL[v] ?? v}`}
+                loading="lazy"
+              />
+              <figcaption>{VARIANT_LABEL[v] ?? v}</figcaption>
+            </figure>
+          ))}
+        </div>
+      )}
+
       <div className="dialog__description">{exercise.description}</div>
 
       <div className="section-title">Instrucciones</div>
@@ -38,7 +60,16 @@ export function ExerciseGuideModal({ exercise, onClose }: ExerciseGuideModalProp
       <p style={{ color: "var(--text-muted)", marginBottom: 16 }}>{exercise.target}</p>
 
       <div className="section-title">Efecto</div>
-      <p style={{ color: "var(--text-muted)" }}>{exercise.effect}</p>
+      <p style={{ color: "var(--text-muted)", whiteSpace: "pre-line" }}>{exercise.effect}</p>
+
+      {variants.length > 0 && (
+        <div className="guide-attribution">
+          Imágenes y datos de ejercicios por{" "}
+          <a href="https://repdb.co/free-exercise-dataset" target="_blank" rel="noreferrer">
+            RepDB (repdb.co)
+          </a>
+        </div>
+      )}
     </Modal>
   );
 }

@@ -96,7 +96,9 @@ public class WorkoutPlansController : ControllerBase
                     i.Exercise.Description,
                     i.Exercise.Instructions,
                     i.Exercise.Target,
-                    i.Exercise.Effect))).ToArray())).ToArray());
+                    i.Exercise.Effect,
+                    i.Exercise.ImageSlug,
+                    i.Exercise.ImageVariants))).ToArray())).ToArray());
 
     private Guid CurrentUserId() => Guid.Parse(User.FindFirst("sub")?.Value ?? Guid.Empty.ToString());
 }

@@ -35,7 +35,7 @@ import type {
   WorkoutLogEntryRequest,
   WorkoutPlanDayDto,
 } from "../types/api";
-import { dayName, mealTypeName, modalityName, muscleGroupName, today } from "../utils/format";
+import { dayName, exerciseImageUrl, mealTypeName, modalityName, muscleGroupName, today } from "../utils/format";
 
 // Acento por grupo muscular (tokens semánticos existentes, sin colores nuevos)
 const MUSCLE_VARIANT: Record<MuscleGroup, string> = {
@@ -751,19 +751,25 @@ function ExercisePickerModal({
         <Loading message="Buscando..." />
       ) : (
         <div style={{ maxHeight: 360, overflowY: "auto" }}>
-          {items.map((ex) => (
-            <button
-              key={ex.id}
-              type="button"
-              className="catalog-picker__item"
-              onClick={() => onSelect(ex)}
-            >
-              <div className="catalog-picker__item-title">{ex.name}</div>
-              <div className="catalog-picker__item-meta">
-                {muscleGroupName(ex.muscleGroup)} · {ex.equipment}
-              </div>
-            </button>
-          ))}
+          {items.map((ex) => {
+            const thumb = exerciseImageUrl(ex);
+            return (
+              <button
+                key={ex.id}
+                type="button"
+                className={`catalog-picker__item ${thumb ? "catalog-picker__item--media" : ""}`}
+                onClick={() => onSelect(ex)}
+              >
+                {thumb && <img className="catalog-picker__thumb" src={thumb} alt="" loading="lazy" />}
+                <div className="catalog-picker__item-body">
+                  <div className="catalog-picker__item-title">{ex.name}</div>
+                  <div className="catalog-picker__item-meta">
+                    {muscleGroupName(ex.muscleGroup)} · {ex.equipment}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
       )}
     </Modal>
@@ -866,19 +872,25 @@ function ExerciseSwapModal({
         />
       ) : (
         <div style={{ maxHeight: 340, overflowY: "auto" }}>
-          {items.map((ex) => (
-            <button
-              key={ex.id}
-              type="button"
-              className="catalog-picker__item"
-              onClick={() => onSelect(ex)}
-            >
-              <div className="catalog-picker__item-title">{ex.name}</div>
-              <div className="catalog-picker__item-meta">
-                {muscleGroupName(ex.muscleGroup)} · {ex.equipment} · Nivel {ex.difficulty}
-              </div>
-            </button>
-          ))}
+          {items.map((ex) => {
+            const thumb = exerciseImageUrl(ex);
+            return (
+              <button
+                key={ex.id}
+                type="button"
+                className={`catalog-picker__item ${thumb ? "catalog-picker__item--media" : ""}`}
+                onClick={() => onSelect(ex)}
+              >
+                {thumb && <img className="catalog-picker__thumb" src={thumb} alt="" loading="lazy" />}
+                <div className="catalog-picker__item-body">
+                  <div className="catalog-picker__item-title">{ex.name}</div>
+                  <div className="catalog-picker__item-meta">
+                    {muscleGroupName(ex.muscleGroup)} · {ex.equipment} · Nivel {ex.difficulty}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
       )}
     </Modal>

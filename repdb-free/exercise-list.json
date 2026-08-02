@@ -1,0 +1,3362 @@
+{
+  "dataset": "RepDB",
+  "url": "https://repdb.co",
+  "note": "Coverage manifest — slug + name + category for every exercise in the full RepDB dataset (not just the 400 exercises in this archive). The full dataset (images, instructions, translations, muscles, equipment, relations, embeddings) is commercially licensed.",
+  "license": "https://repdb.co/license",
+  "count": 479,
+  "exercises": [
+    {
+      "slug": "ab-wheel-rollout",
+      "name_en": "Ab Wheel Rollout",
+      "name_de": "Bauchroller",
+      "name_es": "Rueda Abdominal",
+      "category": "strength"
+    },
+    {
+      "slug": "air-bike",
+      "name_en": "Air Bike",
+      "name_de": "Air Bike",
+      "name_es": "Bicicleta de Aire",
+      "category": "strength"
+    },
+    {
+      "slug": "archer-pull-ups",
+      "name_en": "Archer Pull Ups",
+      "name_de": "Archer-Klimmzüge",
+      "name_es": "Dominadas Arquero",
+      "category": "strength"
+    },
+    {
+      "slug": "archer-push-ups",
+      "name_en": "Archer Push Ups",
+      "name_de": "Archer-Liegestütze",
+      "name_es": "Push-Ups Arquero",
+      "category": "strength"
+    },
+    {
+      "slug": "arnold-press",
+      "name_en": "Arnold Press",
+      "name_de": "Arnold Press",
+      "name_es": "Press Arnold",
+      "category": "strength"
+    },
+    {
+      "slug": "assisted-dips",
+      "name_en": "Machine Assisted Dips",
+      "name_de": "Dips an der Assistenzmaschine",
+      "name_es": "Fondos en Máquina Asistida",
+      "category": "strength"
+    },
+    {
+      "slug": "assisted-pull-ups",
+      "name_en": "Assisted Pull Ups",
+      "name_de": "Unterstützte Klimmzüge",
+      "name_es": "Dominadas Asistidas",
+      "category": "strength"
+    },
+    {
+      "slug": "back-extension",
+      "name_en": "Back Extension",
+      "name_de": "Rückenstreckung",
+      "name_es": "Extensión de Espalda",
+      "category": "strength"
+    },
+    {
+      "slug": "back-lever",
+      "name_en": "Back Lever",
+      "name_de": "Back Lever",
+      "name_es": "Back lever",
+      "category": "strength"
+    },
+    {
+      "slug": "ball-leg-curl",
+      "name_en": "Stability Ball Leg Curl",
+      "name_de": "Stability-Ball-Beinbeuger",
+      "name_es": "Curl de Piernas con Pelota de Estabilidad",
+      "category": "strength"
+    },
+    {
+      "slug": "ball-pike",
+      "name_en": "Ball Pike",
+      "name_de": "Ball Pike",
+      "name_es": "Pike con Pelota",
+      "category": "strength"
+    },
+    {
+      "slug": "band-assisted-pull-ups",
+      "name_en": "Band Assisted Pull Ups",
+      "name_de": "Klimmzüge mit Widerstandsband",
+      "name_es": "Dominadas Asistidas con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "band-pull-apart",
+      "name_en": "Band Pull Apart",
+      "name_de": "Band-Pull-Apart",
+      "name_es": "Separación de Banda Elástica",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-adductor-stretch",
+      "name_en": "Banded Adductor Stretch",
+      "name_de": "Adduktoren-Dehnung mit Band",
+      "name_es": "Estiramiento de Aductores con Banda",
+      "category": "stretching"
+    },
+    {
+      "slug": "banded-ankle-stretch",
+      "name_en": "Banded Ankle Stretch",
+      "name_de": "Sprunggelenk-Dehnung mit Band",
+      "name_es": "Estiramiento de Tobillo con Banda",
+      "category": "stretching"
+    },
+    {
+      "slug": "banded-calf-stretch",
+      "name_en": "Banded Calf Stretch",
+      "name_de": "Wadendehnung mit Band",
+      "name_es": "Estiramiento de Pantorrilla con Banda",
+      "category": "stretching"
+    },
+    {
+      "slug": "banded-chest-stretch",
+      "name_en": "Banded Chest Stretch",
+      "name_de": "Brustdehnung mit Band",
+      "name_es": "Estiramiento de Pecho con Banda",
+      "category": "stretching"
+    },
+    {
+      "slug": "banded-clamshell",
+      "name_en": "Banded Clamshell",
+      "name_de": "Clamshell mit Band",
+      "name_es": "Almeja con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-figure-4-stretch",
+      "name_en": "Banded Figure-4 Stretch",
+      "name_de": "Vierer-Dehnung mit Band",
+      "name_es": "Estiramiento Figura 4 con Banda",
+      "category": "stretching"
+    },
+    {
+      "slug": "banded-fire-hydrant",
+      "name_en": "Banded Fire Hydrant",
+      "name_de": "Banded Fire Hydrant",
+      "name_es": "Hidrante de Fuego con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-glute-bridge",
+      "name_en": "Banded Glute Bridge",
+      "name_de": "Glute Bridge mit Band",
+      "name_es": "Puente de Glúteos con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-good-morning",
+      "name_en": "Banded Good Morning",
+      "name_de": "Banded Good Morning",
+      "name_es": "Buenos Días con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-hamstring-stretch",
+      "name_en": "Banded Hamstring Stretch",
+      "name_de": "Hamstring-Dehnung mit Band",
+      "name_es": "Estiramiento de Isquiotibiales con Banda",
+      "category": "stretching"
+    },
+    {
+      "slug": "banded-hip-thrust",
+      "name_en": "Banded Hip Thrust",
+      "name_de": "Band-Hüftstoß",
+      "name_es": "Empuje de Cadera con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-it-band-stretch",
+      "name_en": "Banded IT-Band Stretch",
+      "name_de": "IT-Band-Dehnung mit Band",
+      "name_es": "Estiramiento de Banda Iliotibial con Banda",
+      "category": "stretching"
+    },
+    {
+      "slug": "banded-kneeling-hip-thrust",
+      "name_en": "Banded Kneeling Hip Thrust",
+      "name_de": "Kniender Hüftstoß mit Band",
+      "name_es": "Empuje de Cadera Arrodillado con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-lat-stretch",
+      "name_en": "Banded Lat Stretch",
+      "name_de": "Lat-Dehnung mit Band",
+      "name_es": "Estiramiento de Dorsales con Banda",
+      "category": "stretching"
+    },
+    {
+      "slug": "banded-lateral-walk",
+      "name_en": "Banded Lateral Walk",
+      "name_de": "Lateral Walk mit Band",
+      "name_es": "Caminata Lateral con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-rear-delt-stretch",
+      "name_en": "Banded Rear Delt Stretch",
+      "name_de": "Hintere-Schulter-Dehnung mit Band",
+      "name_es": "Estiramiento de Deltoides Posterior con Banda",
+      "category": "stretching"
+    },
+    {
+      "slug": "banded-romanian-deadlift",
+      "name_en": "Banded Romanian Deadlift",
+      "name_de": "Banded Romanian Deadlift",
+      "name_es": "Peso Muerto Rumano con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-seated-hip-abduction",
+      "name_en": "Banded Seated Hip Abduction",
+      "name_de": "Bandgestütztes sitzendes Hüftabduktion",
+      "name_es": "Abducción de Cadera Sentado con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-shoulder-stretch",
+      "name_en": "Banded Shoulder Stretch",
+      "name_de": "Schulterdehnung mit Band",
+      "name_es": "Estiramiento de Hombros con Banda",
+      "category": "stretching"
+    },
+    {
+      "slug": "banded-squat",
+      "name_en": "Banded Squat",
+      "name_de": "Banded Squat",
+      "name_es": "Sentadilla con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-standing-curl",
+      "name_en": "Banded Standing Curl",
+      "name_de": "Banded Standing Curl",
+      "name_es": "Curl de Pierna de Pie con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-standing-hip-abduction",
+      "name_en": "Banded Standing Hip Abduction",
+      "name_de": "Bandgestütztes Stehendes Hüftabduktion",
+      "name_es": "Abducción de Cadera de Pie con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-standing-hip-adduction",
+      "name_en": "Banded Standing Hip Adduction",
+      "name_de": "Banded Standing Hip Adduction",
+      "name_es": "Aducción de Cadera de Pie con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-sumo-walk",
+      "name_en": "Banded Sumo Walk",
+      "name_de": "Banded Sumo Walk",
+      "name_es": "Caminata Sumo con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-terminal-knee-extension",
+      "name_en": "Banded Terminal Knee Extension",
+      "name_de": "Banded Terminal Knee Extension",
+      "name_es": "Extensión Terminal de Rodilla con Banda",
+      "category": "strength"
+    },
+    {
+      "slug": "banded-triceps-stretch",
+      "name_en": "Banded Triceps Stretch",
+      "name_de": "Trizeps-Dehnung mit Band",
+      "name_es": "Estiramiento de Tríceps con Banda",
+      "category": "stretching"
+    },
+    {
+      "slug": "barbell-ab-rollout",
+      "name_en": "Barbell Ab Rollout",
+      "name_de": "Langhantel-Ab-Rollout",
+      "name_es": "Rueda Abdominal con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "barbell-calf-raise",
+      "name_en": "Barbell Calf Raise",
+      "name_de": "Langhantel-Wadenheben",
+      "name_es": "Elevación de Talones con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "barbell-curl",
+      "name_en": "Barbell Curl",
+      "name_de": "Langhantel-Curl",
+      "name_es": "Curl con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "barbell-front-raise",
+      "name_en": "Barbell Front Raise",
+      "name_de": "Langhantel-Frontheben",
+      "name_es": "Elevación Frontal con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "barbell-glute-bridge",
+      "name_en": "Barbell Glute Bridge",
+      "name_de": "Langhantel-Gesäßbrücke",
+      "name_es": "Puente de Glúteos con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "barbell-lunge",
+      "name_en": "Barbell Lunge",
+      "name_de": "Langhantel-Ausfallschritt",
+      "name_es": "Zancada con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "barbell-overhead-extension",
+      "name_en": "Barbell Overhead Extension",
+      "name_de": "Langhantel-Überkopf-Extension",
+      "name_es": "Extensión de Barra por Encima de la Cabeza",
+      "category": "strength"
+    },
+    {
+      "slug": "barbell-preacher-curl",
+      "name_en": "Barbell Preacher Curl",
+      "name_de": "Langhantel-Preacher-Curl",
+      "name_es": "Curl Predicador con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "barbell-pullover",
+      "name_en": "Barbell Pullover",
+      "name_de": "Langhantel-Pullover",
+      "name_es": "Pullover con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "barbell-rear-delt-row",
+      "name_en": "Barbell Rear Delt Row",
+      "name_de": "Langhantel-Hinterer-Delt-Rudern",
+      "name_es": "Remo con Barra para Deltoides Posterior",
+      "category": "strength"
+    },
+    {
+      "slug": "barbell-reverse-lunge",
+      "name_en": "Barbell Reverse Lunge",
+      "name_de": "Langhantel-Rückwärtsausfallschritt",
+      "name_es": "Zancada Inversa con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "barbell-row",
+      "name_en": "Bent-Over Barbell Row",
+      "name_de": "Vorgebeugtes Langhantelrudern",
+      "name_es": "Remo con Barra Inclinado",
+      "category": "strength"
+    },
+    {
+      "slug": "barbell-wrist-curl",
+      "name_en": "Barbell Wrist Curl",
+      "name_de": "Langhantel Handgelenk-Curl",
+      "name_es": "Curl de Muñeca con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "battle-ropes",
+      "name_en": "Battle Ropes",
+      "name_de": "Battle Ropes",
+      "name_es": "Cuerdas de Batalla",
+      "category": "cardio"
+    },
+    {
+      "slug": "bear-crawl",
+      "name_en": "Bear Crawl",
+      "name_de": "Bärengang",
+      "name_es": "Caminata del Oso",
+      "category": "strength"
+    },
+    {
+      "slug": "behind-the-back-barbell-shrug",
+      "name_en": "Behind the Back Barbell Shrug",
+      "name_de": "Langhantel-Shrug hinter dem Rücken",
+      "name_es": "Encogimiento de Hombros con Barra Detrás de la Espalda",
+      "category": "strength"
+    },
+    {
+      "slug": "behind-the-neck-lat-pulldown",
+      "name_en": "Behind-the-Neck Lat Pulldown",
+      "name_de": "Nacken-Lat-Pulldown",
+      "name_es": "Jalón al Cuello Detrás de la Cabeza",
+      "category": "strength"
+    },
+    {
+      "slug": "behind-the-neck-press",
+      "name_en": "Behind the Neck Press",
+      "name_de": "Nackendrücken",
+      "name_es": "Press Detrás del Cuello",
+      "category": "strength"
+    },
+    {
+      "slug": "bench-adductor-stretch",
+      "name_en": "Bench Adductor Stretch",
+      "name_de": "Adduktoren-Dehnung an der Bank",
+      "name_es": "Estiramiento de Aductores en Banco",
+      "category": "stretching"
+    },
+    {
+      "slug": "bench-ankle-stretch",
+      "name_en": "Bench Ankle Stretch",
+      "name_de": "Sprunggelenk-Dehnung an der Bank",
+      "name_es": "Estiramiento de Tobillo en Banco",
+      "category": "stretching"
+    },
+    {
+      "slug": "bench-bulgarian-split-stretch",
+      "name_en": "Bench Bulgarian Split Stretch",
+      "name_de": "Bulgarische Split-Dehnung an der Bank",
+      "name_es": "Estiramiento Búlgaro en Banco",
+      "category": "stretching"
+    },
+    {
+      "slug": "bench-calf-stretch",
+      "name_en": "Bench Calf Stretch",
+      "name_de": "Wadendehnung an der Bank",
+      "name_es": "Estiramiento de Pantorrilla en Banco",
+      "category": "stretching"
+    },
+    {
+      "slug": "bench-chest-stretch",
+      "name_en": "Bench Chest Stretch",
+      "name_de": "Brustdehnung an der Bank",
+      "name_es": "Estiramiento de Pecho en Banco",
+      "category": "stretching"
+    },
+    {
+      "slug": "bench-childs-pose",
+      "name_en": "Bench Child's Pose",
+      "name_de": "Stellung des Kindes an der Bank",
+      "name_es": "Postura del Niño en Banco",
+      "category": "stretching"
+    },
+    {
+      "slug": "bench-couch-stretch",
+      "name_en": "Bench Couch Stretch",
+      "name_de": "Couch-Dehnung an der Bank",
+      "name_es": "Estiramiento Couch en Banco",
+      "category": "stretching"
+    },
+    {
+      "slug": "bench-dips",
+      "name_en": "Bench Dips",
+      "name_de": "Bank-Dips",
+      "name_es": "Fondos en Banco",
+      "category": "strength"
+    },
+    {
+      "slug": "bench-figure-4-glute-stretch",
+      "name_en": "Bench Figure-4 Glute Stretch",
+      "name_de": "Vierer-Gesäßdehnung an der Bank",
+      "name_es": "Estiramiento Figura 4 de Glúteos en Banco",
+      "category": "stretching"
+    },
+    {
+      "slug": "bench-hamstring-stretch",
+      "name_en": "Bench Hamstring Stretch",
+      "name_de": "Hamstring-Dehnung an der Bank",
+      "name_es": "Estiramiento de Isquiotibiales en Banco",
+      "category": "stretching"
+    },
+    {
+      "slug": "bench-lat-stretch",
+      "name_en": "Bench Lat Stretch",
+      "name_de": "Lat-Dehnung an der Bank",
+      "name_es": "Estiramiento de Dorsales en Banco",
+      "category": "stretching"
+    },
+    {
+      "slug": "bench-leg-pull-in",
+      "name_en": "Bench Leg Pull-In",
+      "name_de": "Bank-Beinzug",
+      "name_es": "Encogimiento de Piernas en Banco",
+      "category": "strength"
+    },
+    {
+      "slug": "bench-press",
+      "name_en": "Barbell Bench Press",
+      "name_de": "Langhantel-Bankdrücken",
+      "name_es": "Press de Banca con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "bench-pull",
+      "name_en": "Bench Pull",
+      "name_de": "Bench-Pull",
+      "name_es": "Remo en Banco",
+      "category": "strength"
+    },
+    {
+      "slug": "bent-arm-barbell-pullover",
+      "name_en": "Bent Arm Barbell Pullover",
+      "name_de": "Langhantel-Pullover mit gebeugten Armen",
+      "name_es": "Pullover con Barra y Brazos Flexionados",
+      "category": "strength"
+    },
+    {
+      "slug": "bent-arm-ez-bar-pullover",
+      "name_en": "Bent-Arm EZ-Bar Pullover",
+      "name_de": "SZ-Stangen-Pullover mit gebeugten Armen",
+      "name_es": "Pullover con Barra Z y Brazos Flexionados",
+      "category": "strength"
+    },
+    {
+      "slug": "bent-over-db-row",
+      "name_en": "Bent-Over Dumbbell Row",
+      "name_de": "Vorgebeugtes Kurzhantel-Rudern",
+      "name_es": "Remo con Mancuernas Inclinado",
+      "category": "strength"
+    },
+    {
+      "slug": "bent-over-ez-bar-row",
+      "name_en": "Bent-Over EZ-Bar Row",
+      "name_de": "Vorgebeugtes SZ-Stangen-Rudern",
+      "name_es": "Remo con Barra Z Inclinado",
+      "category": "strength"
+    },
+    {
+      "slug": "bicep-curl",
+      "name_en": "Dumbbell Bicep Curl",
+      "name_de": "Kurzhantel-Bizepscurl",
+      "name_es": "Curl de Bíceps con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "bicycle-crunch",
+      "name_en": "Bicycle Crunch",
+      "name_de": "Fahrrad-Crunch",
+      "name_es": "Crunch de Bicicleta",
+      "category": "strength"
+    },
+    {
+      "slug": "bird-dog-hold",
+      "name_en": "Bird Dog Hold",
+      "name_de": "Bird-Dog-Halt",
+      "name_es": "Bird-Dog Isométrico",
+      "category": "strength"
+    },
+    {
+      "slug": "bodyweight-calf-raise",
+      "name_en": "Bodyweight Calf Raise",
+      "name_de": "Bodyweight Wadenheben",
+      "name_es": "Elevación de Talones con Peso Corporal",
+      "category": "strength"
+    },
+    {
+      "slug": "bodyweight-good-morning",
+      "name_en": "Bodyweight Good Morning",
+      "name_de": "Bodyweight Good Morning",
+      "name_es": "Buenos Días con Peso Corporal",
+      "category": "strength"
+    },
+    {
+      "slug": "bodyweight-lateral-raise",
+      "name_en": "Bodyweight Lateral Raise",
+      "name_de": "Körpergewicht Seitheben",
+      "name_es": "Elevación Lateral con Peso Corporal",
+      "category": "strength"
+    },
+    {
+      "slug": "bodyweight-overhead-press",
+      "name_en": "Bodyweight Overhead Press",
+      "name_de": "Bodyweight Overhead Press",
+      "name_es": "Press por Encima de la Cabeza con Peso Corporal",
+      "category": "strength"
+    },
+    {
+      "slug": "bodyweight-reverse-lunge",
+      "name_en": "Bodyweight Reverse Lunge",
+      "name_de": "Ausfallschritt rückwärts (Körpergewicht)",
+      "name_es": "Zancada Inversa con Peso Corporal",
+      "category": "strength"
+    },
+    {
+      "slug": "bodyweight-squat",
+      "name_en": "Bodyweight Squat",
+      "name_de": "Bodyweight Kniebeuge",
+      "name_es": "Sentadilla con Peso Corporal",
+      "category": "strength"
+    },
+    {
+      "slug": "box-jump",
+      "name_en": "Box Jump",
+      "name_de": "Box Jump",
+      "name_es": "Salto al Cajón",
+      "category": "plyometrics"
+    },
+    {
+      "slug": "box-squat",
+      "name_en": "Box Squat",
+      "name_de": "Box Squat",
+      "name_es": "Sentadilla en Caja",
+      "category": "strength"
+    },
+    {
+      "slug": "bulgarian-split-squat",
+      "name_en": "Bulgarian Split Squat",
+      "name_de": "Bulgarische Kniebeuge",
+      "name_es": "Sentadilla Búlgara",
+      "category": "strength"
+    },
+    {
+      "slug": "burpees",
+      "name_en": "Burpees",
+      "name_de": "Burpees",
+      "name_es": "Burpees",
+      "category": "cardio"
+    },
+    {
+      "slug": "butterfly-stretch",
+      "name_en": "Butterfly Stretch",
+      "name_de": "Schmetterlings-Dehnung",
+      "name_es": "Estiramiento de Mariposa",
+      "category": "stretching"
+    },
+    {
+      "slug": "cable-bent-over-row",
+      "name_en": "Cable Bent-Over Row",
+      "name_de": "Kabelzug Vorgebeugtes Rudern",
+      "name_es": "Remo Inclinado con Cable",
+      "category": "strength"
+    },
+    {
+      "slug": "cable-chest-press",
+      "name_en": "Cable Chest Press",
+      "name_de": "Kabelzug Brustdrücken",
+      "name_es": "Press de Pecho con Cable",
+      "category": "strength"
+    },
+    {
+      "slug": "cable-crunch",
+      "name_en": "Cable Crunch",
+      "name_de": "Kabelzug Crunch",
+      "name_es": "Crunch con Cable",
+      "category": "strength"
+    },
+    {
+      "slug": "cable-curl",
+      "name_en": "Cable Curl",
+      "name_de": "Kabelzug-Curl",
+      "name_es": "Curl con Cable",
+      "category": "strength"
+    },
+    {
+      "slug": "cable-external-rotation",
+      "name_en": "Cable External Rotation",
+      "name_de": "Kabelzug Außenrotation",
+      "name_es": "Rotación Externa con Cable",
+      "category": "strength"
+    },
+    {
+      "slug": "cable-fly",
+      "name_en": "Cable Fly",
+      "name_de": "Kabelzug Fly",
+      "name_es": "Aperturas con Cable",
+      "category": "strength"
+    },
+    {
+      "slug": "cable-front-raise",
+      "name_en": "Cable Front Raise",
+      "name_de": "Kabelzug Frontheben",
+      "name_es": "Elevación Frontal con Cable",
+      "category": "strength"
+    },
+    {
+      "slug": "cable-hammer-curl",
+      "name_en": "Cable Hammer Curl",
+      "name_de": "Kabelzug Hammer Curl",
+      "name_es": "Curl de Martillo en Cable",
+      "category": "strength"
+    },
+    {
+      "slug": "cable-kickback",
+      "name_en": "Cable Glute Kickback",
+      "name_de": "Kabelzug-Gesäßkick",
+      "name_es": "Patada Trasera de Glúteos en Cable",
+      "category": "strength"
+    },
+    {
+      "slug": "cable-lateral-raise",
+      "name_en": "Cable Lateral Raise",
+      "name_de": "Kabel-Seitheben",
+      "name_es": "Elevación Lateral en Polea",
+      "category": "strength"
+    },
+    {
+      "slug": "cable-tricep-kickback",
+      "name_en": "Cable Tricep Kickback",
+      "name_de": "Kabelzug Trizeps-Kickback",
+      "name_es": "Patada de Tríceps con Cable",
+      "category": "strength"
+    },
+    {
+      "slug": "cable-upright-row",
+      "name_en": "Cable Upright Row",
+      "name_de": "Kabelzug Hochziehen",
+      "name_es": "Remo al Mentón con Cable",
+      "category": "strength"
+    },
+    {
+      "slug": "cable-wrist-curl",
+      "name_en": "Cable Wrist Curl",
+      "name_de": "Kabelzug Handgelenks-Curl",
+      "name_es": "Curl de Muñeca con Cable",
+      "category": "strength"
+    },
+    {
+      "slug": "captains-chair-knee-raise",
+      "name_en": "Captain's Chair Knee Raise",
+      "name_de": "Knieheben am Stütz",
+      "name_es": "Elevación de Rodillas en Silla Romana",
+      "category": "strength"
+    },
+    {
+      "slug": "captains-chair-leg-raise",
+      "name_en": "Captain's Chair Leg Raise",
+      "name_de": "Beinheben am Stütz",
+      "name_es": "Elevación de Piernas en Silla Romana",
+      "category": "strength"
+    },
+    {
+      "slug": "cat-stretch",
+      "name_en": "Cat Stretch",
+      "name_de": "Katzen-Dehnung",
+      "name_es": "Estiramiento del Gato",
+      "category": "stretching"
+    },
+    {
+      "slug": "cheat-curl",
+      "name_en": "Cheat Curl",
+      "name_de": "Cheat Curl",
+      "name_es": "Curl con Impulso",
+      "category": "strength"
+    },
+    {
+      "slug": "chest-press-machine",
+      "name_en": "Machine Chest Press",
+      "name_de": "Maschinen-Brustdrücken",
+      "name_es": "Press de Pecho en Máquina",
+      "category": "strength"
+    },
+    {
+      "slug": "chest-supported-db-row",
+      "name_en": "Chest-Supported Dumbbell Row",
+      "name_de": "Brustgestütztes Kurzhantel-Rudern",
+      "name_es": "Remo con Mancuernas con Apoyo en el Pecho",
+      "category": "strength"
+    },
+    {
+      "slug": "chest-supported-dumbbell-shrug",
+      "name_en": "Chest Supported Dumbbell Shrug",
+      "name_de": "Brustgestütztes Kurzhantel-Schulterheben",
+      "name_es": "Encogimiento de Hombros con Mancuernas y Apoyo en el Pecho",
+      "category": "strength"
+    },
+    {
+      "slug": "chest-supported-kettlebell-row",
+      "name_en": "Chest-Supported Kettlebell Row",
+      "name_de": "Brustgestütztes Kettlebell-Rudern",
+      "name_es": "Remo con Kettlebell Apoyado en el Pecho",
+      "category": "strength"
+    },
+    {
+      "slug": "childs-pose",
+      "name_en": "Child's Pose",
+      "name_de": "Stellung des Kindes",
+      "name_es": "Postura del Niño",
+      "category": "stretching"
+    },
+    {
+      "slug": "chin-tuck-hold",
+      "name_en": "Chin Tuck Hold",
+      "name_de": "Kinn-zurück-Halten",
+      "name_es": "Retracción de Mentón Sostenida",
+      "category": "strength"
+    },
+    {
+      "slug": "chin-ups",
+      "name_en": "Chin-Ups",
+      "name_de": "Chin-Ups",
+      "name_es": "Dominadas en Supinación",
+      "category": "strength"
+    },
+    {
+      "slug": "clamshells",
+      "name_en": "Clamshells",
+      "name_de": "Clamshells",
+      "name_es": "Almejas",
+      "category": "strength"
+    },
+    {
+      "slug": "clap-push-ups",
+      "name_en": "Clap Push-Ups",
+      "name_de": "Klatschen-Push-Ups",
+      "name_es": "Flexiones con Palmada",
+      "category": "strength"
+    },
+    {
+      "slug": "clean",
+      "name_en": "Clean",
+      "name_de": "Clean",
+      "name_es": "Clean",
+      "category": "olympic"
+    },
+    {
+      "slug": "clean-and-jerk",
+      "name_en": "Clean and Jerk",
+      "name_de": "Clean and Jerk",
+      "name_es": "Clean and Jerk",
+      "category": "olympic"
+    },
+    {
+      "slug": "close-grip-barbell-curl",
+      "name_en": "Close-Grip Barbell Curl",
+      "name_de": "Langhantel-Curl enger Griff",
+      "name_es": "Curl de Barra con Agarre Cerrado",
+      "category": "strength"
+    },
+    {
+      "slug": "close-grip-bench-press",
+      "name_en": "Close-Grip Bench Press",
+      "name_de": "Bankdrücken enger Griff",
+      "name_es": "Press de Banca con Agarre Cerrado",
+      "category": "strength"
+    },
+    {
+      "slug": "close-grip-db-bench-press",
+      "name_en": "Close-Grip Dumbbell Bench Press",
+      "name_de": "Kurzhantel-Bankdrücken enger Griff",
+      "name_es": "Press de Banca con Mancuernas y Agarre Cerrado",
+      "category": "strength"
+    },
+    {
+      "slug": "close-grip-ez-bar-bench-press",
+      "name_en": "Close-Grip EZ-Bar Bench Press",
+      "name_de": "SZ-Stangen-Bankdrücken enger Griff",
+      "name_es": "Press de Banca con Barra Z y Agarre Cerrado",
+      "category": "strength"
+    },
+    {
+      "slug": "close-grip-ez-bar-curl",
+      "name_en": "Close-Grip EZ-Bar Curl",
+      "name_de": "Eng-Griff EZ-Stange Curl",
+      "name_es": "Curl con Barra Z y Agarre Cerrado",
+      "category": "strength"
+    },
+    {
+      "slug": "close-grip-incline-bench",
+      "name_en": "Close-Grip Incline Bench Press",
+      "name_de": "Schrägbankdrücken enger Griff",
+      "name_es": "Press de Banca Inclinado con Agarre Cerrado",
+      "category": "strength"
+    },
+    {
+      "slug": "close-grip-lat-pulldown",
+      "name_en": "Close Grip Lat Pulldown",
+      "name_de": "Enger Latzug",
+      "name_es": "Jalón al Pecho con Agarre Cerrado",
+      "category": "strength"
+    },
+    {
+      "slug": "close-grip-pull-ups",
+      "name_en": "Close-Grip Pull-Ups",
+      "name_de": "Klimmzüge enger Griff",
+      "name_es": "Dominadas con Agarre Cerrado",
+      "category": "strength"
+    },
+    {
+      "slug": "close-grip-push-ups",
+      "name_en": "Close Grip Push Ups",
+      "name_de": "Enger Liegestütz",
+      "name_es": "Flexiones con Agarre Cerrado",
+      "category": "strength"
+    },
+    {
+      "slug": "cobra-stretch",
+      "name_en": "Cobra Stretch",
+      "name_de": "Kobra-Dehnung",
+      "name_es": "Estiramiento de la Cobra",
+      "category": "stretching"
+    },
+    {
+      "slug": "cocoons",
+      "name_en": "Cocoons",
+      "name_de": "Cocoons",
+      "name_es": "Cocoons",
+      "category": "strength"
+    },
+    {
+      "slug": "concentration-curl",
+      "name_en": "Concentration Curl",
+      "name_de": "Concentration Curl",
+      "name_es": "Curl de Concentración",
+      "category": "strength"
+    },
+    {
+      "slug": "cossack-squat",
+      "name_en": "Cossack Squat",
+      "name_de": "Kosakenkniebeuge",
+      "name_es": "Sentadilla cosaca",
+      "category": "strength"
+    },
+    {
+      "slug": "cross-body-crunch",
+      "name_en": "Cross-Body Crunch",
+      "name_de": "Cross-Body-Crunch",
+      "name_es": "Crunch Cruzado",
+      "category": "strength"
+    },
+    {
+      "slug": "cross-body-hammer-curl",
+      "name_en": "Cross Body Hammer Curl",
+      "name_de": "Cross-Body-Hammer-Curl",
+      "name_es": "Curl Martillo Cruzado",
+      "category": "strength"
+    },
+    {
+      "slug": "cross-body-shoulder-stretch",
+      "name_en": "Cross-Body Shoulder Stretch",
+      "name_de": "Schulterdehnung über den Körper",
+      "name_es": "Estiramiento de Hombro Cruzado",
+      "category": "stretching"
+    },
+    {
+      "slug": "crunches",
+      "name_en": "Crunches",
+      "name_de": "Crunches",
+      "name_es": "Crunches",
+      "category": "strength"
+    },
+    {
+      "slug": "db-bench-press",
+      "name_en": "Dumbbell Bench Press",
+      "name_de": "Kurzhantel-Bankdrücken",
+      "name_es": "Press de Banca con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "db-fly",
+      "name_en": "Dumbbell Fly",
+      "name_de": "Kurzhantel-Flys",
+      "name_es": "Aperturas con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "db-kickstand-deadlift",
+      "name_en": "Dumbbell Kickstand Deadlift",
+      "name_de": "Kurzhantel-Kickstand-Kreuzheben",
+      "name_es": "Peso Muerto Kickstand con Mancuerna",
+      "category": "strength"
+    },
+    {
+      "slug": "db-lunge",
+      "name_en": "Dumbbell Lunge",
+      "name_de": "Kurzhantel-Ausfallschritt",
+      "name_es": "Zancada con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "db-pullover",
+      "name_en": "Dumbbell Pullover",
+      "name_de": "Kurzhantel-Pullover",
+      "name_es": "Pullover con Mancuerna",
+      "category": "strength"
+    },
+    {
+      "slug": "db-reverse-curl",
+      "name_en": "Dumbbell Reverse Curl",
+      "name_de": "Kurzhantel-Reverse-Curl",
+      "name_es": "Curl Inverso con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "db-reverse-wrist-curl",
+      "name_en": "Dumbbell Reverse Wrist Curl",
+      "name_de": "Kurzhantel Reverse Handgelenk-Curl",
+      "name_es": "Curl de Muñeca Inverso con Mancuerna",
+      "category": "strength"
+    },
+    {
+      "slug": "db-shrug",
+      "name_en": "Dumbbell Shrug",
+      "name_de": "Kurzhantel-Schulterzucken",
+      "name_es": "Encogimiento de Hombros con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "db-skull-crusher",
+      "name_en": "Dumbbell Skull Crusher",
+      "name_de": "Kurzhantel-Skull-Crusher",
+      "name_es": "Skull Crusher con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "db-somersault-squat",
+      "name_en": "Dumbbell Somersault Squat",
+      "name_de": "Dumbbell Somersault Squat",
+      "name_es": "Sentadilla Somersault con Mancuerna",
+      "category": "strength"
+    },
+    {
+      "slug": "db-squat",
+      "name_en": "Dumbbell Squat",
+      "name_de": "Kurzhantel-Kniebeuge",
+      "name_es": "Sentadilla con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "db-sumo-squat",
+      "name_en": "Dumbbell Sumo Squat",
+      "name_de": "Kurzhantel-Sumo-Kniebeuge",
+      "name_es": "Sentadilla Sumo con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "db-svend-press",
+      "name_en": "Dumbbell Svend Press",
+      "name_de": "Kurzhantel Svend Press",
+      "name_es": "Press Svend con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dead-bug",
+      "name_en": "Dead Bug",
+      "name_de": "Dead Bug",
+      "name_es": "Dead Bug",
+      "category": "strength"
+    },
+    {
+      "slug": "dead-hang",
+      "name_en": "Dead Hang",
+      "name_de": "Dead Hang",
+      "name_es": "Colgado Pasivo",
+      "category": "strength"
+    },
+    {
+      "slug": "deadlift",
+      "name_en": "Barbell Deadlift",
+      "name_de": "Langhantel-Kreuzheben",
+      "name_es": "Peso Muerto con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "decline-bench-press",
+      "name_en": "Decline Bench Press",
+      "name_de": "Negativbankdrücken",
+      "name_es": "Press de Banca Declinado",
+      "category": "strength"
+    },
+    {
+      "slug": "decline-bench-press-barbell",
+      "name_en": "Decline Barbell Bench Press",
+      "name_de": "Negativbank-Langhanteldrücken",
+      "name_es": "Press de Banca Declinado con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "decline-bench-press-ez-bar",
+      "name_en": "Decline EZ-Bar Bench Press",
+      "name_de": "Negativbank-SZ-Stangen-Drücken",
+      "name_es": "Press de Banca Declinado con Barra Z",
+      "category": "strength"
+    },
+    {
+      "slug": "decline-crunch",
+      "name_en": "Decline Crunch",
+      "name_de": "Negativbank-Crunch",
+      "name_es": "Crunch Declinado",
+      "category": "strength"
+    },
+    {
+      "slug": "decline-db-fly",
+      "name_en": "Decline Dumbbell Fly",
+      "name_de": "Negativbank-Kurzhantel-Flys",
+      "name_es": "Aperturas con Mancuernas en Banco Declinado",
+      "category": "strength"
+    },
+    {
+      "slug": "decline-push-up",
+      "name_en": "Decline Push-Up",
+      "name_de": "Negativer Push-Up",
+      "name_es": "Flexión Declinada",
+      "category": "strength"
+    },
+    {
+      "slug": "deficit-deadlift",
+      "name_en": "Deficit Deadlift",
+      "name_de": "Defizit-Kreuzheben",
+      "name_es": "Peso Muerto en Déficit",
+      "category": "strength"
+    },
+    {
+      "slug": "deficit-push-ups",
+      "name_en": "Deficit Push Ups",
+      "name_de": "Defizit-Push-Ups",
+      "name_es": "Flexiones en Déficit",
+      "category": "strength"
+    },
+    {
+      "slug": "diamond-push-ups",
+      "name_en": "Diamond Push Ups",
+      "name_de": "Diamant-Push-Ups",
+      "name_es": "Flexiones en Diamante",
+      "category": "strength"
+    },
+    {
+      "slug": "dips",
+      "name_en": "Chest Dips",
+      "name_de": "Chest Dips",
+      "name_es": "Fondos para Pecho",
+      "category": "strength"
+    },
+    {
+      "slug": "donkey-calf-raise",
+      "name_en": "Donkey Calf Raise",
+      "name_de": "Esel-Wadenheben",
+      "name_es": "Elevación de Pantorrilla a la Burra",
+      "category": "strength"
+    },
+    {
+      "slug": "doorway-chest-stretch",
+      "name_en": "Doorway Chest Stretch",
+      "name_de": "Türrahmen-Brustdehnung",
+      "name_es": "Estiramiento de Pecho en el Marco",
+      "category": "stretching"
+    },
+    {
+      "slug": "double-db-kickstand-deadlift",
+      "name_en": "Double Dumbbell Kickstand Deadlift",
+      "name_de": "Doppeltes Kurzhantel-Kickstand-Kreuzheben",
+      "name_es": "Peso Muerto Kickstand con Doble Mancuerna",
+      "category": "strength"
+    },
+    {
+      "slug": "double-kettlebell-bicep-curl",
+      "name_en": "Double Kettlebell Bicep Curl",
+      "name_de": "Double Kettlebell Bizeps-Curl",
+      "name_es": "Curl de Bíceps con Dos Pesas Rusas",
+      "category": "strength"
+    },
+    {
+      "slug": "double-kettlebell-clean",
+      "name_en": "Double Kettlebell Clean",
+      "name_de": "Double Kettlebell Clean",
+      "name_es": "Clean con Dos Pesas Rusas",
+      "category": "strength"
+    },
+    {
+      "slug": "double-kettlebell-dead-clean",
+      "name_en": "Double Kettlebell Dead Clean",
+      "name_de": "Double Kettlebell Dead Clean",
+      "name_es": "Dead Clean con Dos Pesas Rusas",
+      "category": "olympic"
+    },
+    {
+      "slug": "double-kettlebell-dead-split-snatch",
+      "name_en": "Double Kettlebell Dead Split Snatch",
+      "name_de": "Double Kettlebell Dead Split Snatch",
+      "name_es": "Dead Split Snatch con Dos Pesas Rusas",
+      "category": "olympic"
+    },
+    {
+      "slug": "double-kettlebell-jerk",
+      "name_en": "Double Kettlebell Jerk",
+      "name_de": "Double Kettlebell Jerk",
+      "name_es": "Jerk con Dos Pesas Rusas",
+      "category": "strength"
+    },
+    {
+      "slug": "double-kettlebell-overhead-press",
+      "name_en": "Double Kettlebell Overhead Press",
+      "name_de": "Double Kettlebell Schulterdrücken",
+      "name_es": "Press por Encima de la Cabeza con Dos Pesas Rusas",
+      "category": "strength"
+    },
+    {
+      "slug": "double-kettlebell-push-press",
+      "name_en": "Double Kettlebell Push Press",
+      "name_de": "Double Kettlebell Push Press",
+      "name_es": "Push Press con Dos Pesas Rusas",
+      "category": "strength"
+    },
+    {
+      "slug": "double-kettlebell-row",
+      "name_en": "Double Kettlebell Row",
+      "name_de": "Double Kettlebell Rudern",
+      "name_es": "Remo con Dos Pesas Rusas",
+      "category": "strength"
+    },
+    {
+      "slug": "double-kettlebell-split-jerk",
+      "name_en": "Double Kettlebell Split Jerk",
+      "name_de": "Double Kettlebell Split Jerk",
+      "name_es": "Split Jerk con Dos Pesas Rusas",
+      "category": "olympic"
+    },
+    {
+      "slug": "double-kettlebell-swing-snatch",
+      "name_en": "Double Kettlebell Swing Snatch",
+      "name_de": "Double Kettlebell Swing Snatch",
+      "name_es": "Swing Snatch con Dos Pesas Rusas",
+      "category": "olympic"
+    },
+    {
+      "slug": "downward-dog",
+      "name_en": "Downward-Facing Dog",
+      "name_de": "Herabschauender Hund",
+      "name_es": "Perro Boca Abajo",
+      "category": "stretching"
+    },
+    {
+      "slug": "drag-curl",
+      "name_en": "Drag Curl",
+      "name_de": "Drag Curl",
+      "name_es": "Drag Curl",
+      "category": "strength"
+    },
+    {
+      "slug": "dragon-flag",
+      "name_en": "Dragon Flag",
+      "name_de": "Dragon Flag",
+      "name_es": "Dragon Flag",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-bench-pull",
+      "name_en": "Dumbbell Bench Pull",
+      "name_de": "Kurzhantel Bench Pull",
+      "name_es": "Remo en Banco con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-calf-raise",
+      "name_en": "Dumbbell Calf Raise",
+      "name_de": "Kurzhantel Wadenheben",
+      "name_es": "Elevación de Talones con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-deadlift",
+      "name_en": "Dumbbell Deadlift",
+      "name_de": "Kurzhantel Kreuzheben",
+      "name_es": "Peso Muerto con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-face-pull",
+      "name_en": "Dumbbell Face Pull",
+      "name_de": "Kurzhantel Face Pull",
+      "name_es": "Face Pull con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-farmers-walk",
+      "name_en": "Dumbbell Farmer's Walk",
+      "name_de": "Kurzhantel-Farmer's Walk",
+      "name_es": "Caminata del Granjero con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-floor-press",
+      "name_en": "Dumbbell Floor Press",
+      "name_de": "Kurzhantel Floor Press",
+      "name_es": "Press de Suelo con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-front-raise",
+      "name_en": "Dumbbell Front Raise",
+      "name_de": "Kurzhantel Frontheben",
+      "name_es": "Elevación Frontal con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-front-squat",
+      "name_en": "Dumbbell Front Squat",
+      "name_de": "Kurzhantel Front-Kniebeuge",
+      "name_es": "Sentadilla Frontal con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-hip-thrust",
+      "name_en": "Dumbbell Hip Thrust",
+      "name_de": "Dumbbell-Hip-Thrust",
+      "name_es": "Empuje de Cadera con Mancuerna",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-pistol-squat",
+      "name_en": "Dumbbell Pistol Squat",
+      "name_de": "Kurzhantel-Pistol-Squat",
+      "name_es": "Sentadilla Pistola con Mancuerna",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-push-press",
+      "name_en": "Dumbbell Push Press",
+      "name_de": "Kurzhantel Push Press",
+      "name_es": "Press de Empuje con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-reverse-fly",
+      "name_en": "Dumbbell Reverse Fly",
+      "name_de": "Kurzhantel Reverse Fly",
+      "name_es": "Pájaro Invertido con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-romanian-deadlift",
+      "name_en": "Dumbbell Romanian Deadlift",
+      "name_de": "Kurzhantel Rumänisches Kreuzheben",
+      "name_es": "Peso Muerto Rumano con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-shoulder-press",
+      "name_en": "Dumbbell Shoulder Press",
+      "name_de": "Kurzhantel Schulterdrücken",
+      "name_es": "Press de Hombros con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-side-bend",
+      "name_en": "Dumbbell Side Bend",
+      "name_de": "Kurzhantel Seitbeuge",
+      "name_es": "Flexión Lateral con Mancuerna",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-snatch",
+      "name_en": "Dumbbell Snatch",
+      "name_de": "Kurzhantel Snatch",
+      "name_es": "Snatch con Mancuerna",
+      "category": "olympic"
+    },
+    {
+      "slug": "dumbbell-split-squat",
+      "name_en": "Dumbbell Split Squat",
+      "name_de": "Kurzhantel Split-Kniebeuge",
+      "name_es": "Sentadilla en Postura Dividida con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-tricep-extension",
+      "name_en": "Dumbbell Tricep Extension",
+      "name_de": "Kurzhantel Trizeps-Extension",
+      "name_es": "Extensión de Tríceps con Mancuerna",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-upright-row",
+      "name_en": "Dumbbell Upright Row",
+      "name_de": "Kurzhantel Hochziehen",
+      "name_es": "Remo al Mentón con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-windmill",
+      "name_en": "Dumbbell Windmill",
+      "name_de": "Kurzhantel-Windmühle",
+      "name_es": "Molino con Mancuerna",
+      "category": "strength"
+    },
+    {
+      "slug": "dumbbell-wrist-curl",
+      "name_en": "Dumbbell Wrist Curl",
+      "name_de": "Kurzhantel Handgelenk-Curl",
+      "name_es": "Curl de Muñeca con Mancuerna",
+      "category": "strength"
+    },
+    {
+      "slug": "ez-bar-curl",
+      "name_en": "EZ-Bar Curl",
+      "name_de": "SZ-Stangen-Curl",
+      "name_es": "Curl con Barra Z",
+      "category": "strength"
+    },
+    {
+      "slug": "ez-bar-front-raise",
+      "name_en": "EZ-Bar Front Raise",
+      "name_de": "SZ-Stangen Frontheben",
+      "name_es": "Elevación Frontal con Barra Z",
+      "category": "strength"
+    },
+    {
+      "slug": "ez-bar-overhead-extension",
+      "name_en": "EZ-Bar Overhead Tricep Extension",
+      "name_de": "SZ-Stangen Überkopf-Trizeps-Extension",
+      "name_es": "Extensión de Tríceps por Encima de la Cabeza con Barra Z",
+      "category": "strength"
+    },
+    {
+      "slug": "ez-bar-pullover",
+      "name_en": "EZ Bar Pullover",
+      "name_de": "EZ-Stange Pullover",
+      "name_es": "Pullover con Barra EZ",
+      "category": "strength"
+    },
+    {
+      "slug": "ez-bar-reverse-curl",
+      "name_en": "EZ-Bar Reverse Curl",
+      "name_de": "SZ-Stange Reverse Curl",
+      "name_es": "Curl Inverso con Barra Z",
+      "category": "strength"
+    },
+    {
+      "slug": "ez-bar-reverse-grip-row",
+      "name_en": "EZ Bar Reverse Grip Row",
+      "name_de": "EZ-Stange Rudern mit Untergriff",
+      "name_es": "Remo con Barra EZ y Agarre Supino",
+      "category": "strength"
+    },
+    {
+      "slug": "ez-bar-romanian-deadlift",
+      "name_en": "EZ-Bar Romanian Deadlift",
+      "name_de": "SZ-Stange Romanian Deadlift",
+      "name_es": "Peso Muerto Rumano con Barra Z",
+      "category": "strength"
+    },
+    {
+      "slug": "ez-bar-shrug",
+      "name_en": "EZ-Bar Shrug",
+      "name_de": "SZ-Stangen-Shrug",
+      "name_es": "Encogimiento de Hombros con Barra Z",
+      "category": "strength"
+    },
+    {
+      "slug": "ez-bar-spider-curl",
+      "name_en": "EZ Bar Spider Curl",
+      "name_de": "SZ-Stangen Spider Curl",
+      "name_es": "Spider Curl con Barra Z",
+      "category": "strength"
+    },
+    {
+      "slug": "ez-bar-upright-row",
+      "name_en": "EZ-Bar Upright Row",
+      "name_de": "SZ-Stangen Upright Row",
+      "name_es": "Remo al Mentón con Barra Z",
+      "category": "strength"
+    },
+    {
+      "slug": "ez-bar-wrist-curl",
+      "name_en": "EZ-Bar Wrist Curl",
+      "name_de": "EZ-Stange Handgelenk-Curl",
+      "name_es": "Curl de Muñeca con Barra Z",
+      "category": "strength"
+    },
+    {
+      "slug": "face-pull",
+      "name_en": "Cable Face Pull",
+      "name_de": "Kabel Face Pull",
+      "name_es": "Face Pull en Polea",
+      "category": "strength"
+    },
+    {
+      "slug": "floor-ez-bar-press",
+      "name_en": "Floor EZ-Bar Press",
+      "name_de": "Boden SZ-Stangen-Press",
+      "name_es": "Press en Suelo con Barra Z",
+      "category": "strength"
+    },
+    {
+      "slug": "floor-kettlebell-pullover",
+      "name_en": "Floor Kettlebell Pullover",
+      "name_de": "Boden Kettlebell Pullover",
+      "name_es": "Pullover con Pesa Rusa en Suelo",
+      "category": "strength"
+    },
+    {
+      "slug": "floor-press",
+      "name_en": "Floor Press",
+      "name_de": "Floor Press",
+      "name_es": "Press en Suelo",
+      "category": "strength"
+    },
+    {
+      "slug": "flutter-kicks",
+      "name_en": "Flutter Kicks",
+      "name_de": "Flutter Kicks",
+      "name_es": "Flutter Kicks",
+      "category": "strength"
+    },
+    {
+      "slug": "front-lever",
+      "name_en": "Front Lever",
+      "name_de": "Front Lever",
+      "name_es": "Front Lever",
+      "category": "strength"
+    },
+    {
+      "slug": "front-squat",
+      "name_en": "Front Squat",
+      "name_de": "Front Squat",
+      "name_es": "Sentadilla Frontal",
+      "category": "strength"
+    },
+    {
+      "slug": "glute-bridge",
+      "name_en": "Glute Bridge",
+      "name_de": "Glute Bridge",
+      "name_es": "Puente de Glúteos",
+      "category": "strength"
+    },
+    {
+      "slug": "glute-kickback",
+      "name_en": "Glute Kickback",
+      "name_de": "Gluteus Kickback",
+      "name_es": "Patada de Glúteo",
+      "category": "strength"
+    },
+    {
+      "slug": "goblet-squat",
+      "name_en": "Goblet Squat",
+      "name_de": "Goblet Squat",
+      "name_es": "Sentadilla Goblet",
+      "category": "strength"
+    },
+    {
+      "slug": "good-morning",
+      "name_en": "Good Morning",
+      "name_de": "Good Morning",
+      "name_es": "Buenos Días",
+      "category": "strength"
+    },
+    {
+      "slug": "hack-squat",
+      "name_en": "Hack Squat",
+      "name_de": "Hack Squat",
+      "name_es": "Hack Squat",
+      "category": "strength"
+    },
+    {
+      "slug": "hack-squat-calf-raise",
+      "name_en": "Hack Squat Calf Raise",
+      "name_de": "Hack Squat Wadenheben",
+      "name_es": "Elevación de Talones en Máquina Hack Squat",
+      "category": "strength"
+    },
+    {
+      "slug": "hammer-curl",
+      "name_en": "Dumbbell Hammer Curl",
+      "name_de": "Kurzhantel Hammer Curl",
+      "name_es": "Curl de Martillo con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "handstand-push-ups",
+      "name_en": "Handstand Push Ups",
+      "name_de": "Handstand Push-Ups",
+      "name_es": "Flexiones en Pino",
+      "category": "strength"
+    },
+    {
+      "slug": "hang-clean",
+      "name_en": "Hang Clean",
+      "name_de": "Hang Clean",
+      "name_es": "Cargada desde Colgante",
+      "category": "olympic"
+    },
+    {
+      "slug": "hang-power-clean",
+      "name_en": "Hang Power Clean",
+      "name_de": "Hang Power Clean",
+      "name_es": "Power Clean desde Colgante",
+      "category": "olympic"
+    },
+    {
+      "slug": "hanging-knee-raise",
+      "name_en": "Hanging Knee Raise",
+      "name_de": "Hängendes Knieheben",
+      "name_es": "Elevación de Rodillas Colgado",
+      "category": "strength"
+    },
+    {
+      "slug": "hanging-leg-raise",
+      "name_en": "Hanging Leg Raise",
+      "name_de": "Hängendes Beinheben",
+      "name_es": "Elevación de Piernas Colgado",
+      "category": "strength"
+    },
+    {
+      "slug": "hanging-pike",
+      "name_en": "Hanging Pike",
+      "name_de": "Hängender Pike",
+      "name_es": "Pike Colgado",
+      "category": "strength"
+    },
+    {
+      "slug": "heel-elevated-squat",
+      "name_en": "Heel-Elevated Squat",
+      "name_de": "Kniebeuge mit erhöhten Fersen",
+      "name_es": "Sentadilla con Talones Elevados",
+      "category": "strength"
+    },
+    {
+      "slug": "hex-bar-deadlift",
+      "name_en": "Hex Bar Deadlift",
+      "name_de": "Hex-Bar Deadlift",
+      "name_es": "Peso Muerto con Barra Hexagonal",
+      "category": "strength"
+    },
+    {
+      "slug": "high-knees",
+      "name_en": "High Knees",
+      "name_de": "High Knees",
+      "name_es": "Rodillas Altas",
+      "category": "cardio"
+    },
+    {
+      "slug": "high-plank",
+      "name_en": "High Plank",
+      "name_de": "High Plank",
+      "name_es": "Plancha Alta",
+      "category": "strength"
+    },
+    {
+      "slug": "hip-abduction",
+      "name_en": "Machine Hip Abduction",
+      "name_de": "Maschinen-Hüftabduktion",
+      "name_es": "Abducción de Cadera en Máquina",
+      "category": "strength"
+    },
+    {
+      "slug": "hip-adduction",
+      "name_en": "Hip Adduction",
+      "name_de": "Hüftadduktion",
+      "name_es": "Aducción de cadera",
+      "category": "strength"
+    },
+    {
+      "slug": "hip-thrust",
+      "name_en": "Barbell Hip Thrust",
+      "name_de": "Langhantel Hip Thrust",
+      "name_es": "Hip thrust con barra",
+      "category": "strength"
+    },
+    {
+      "slug": "hollow-body-hold",
+      "name_en": "Hollow Body Hold",
+      "name_de": "Hollow Body Hold",
+      "name_es": "Mantenimiento del Cuerpo Hueco",
+      "category": "strength"
+    },
+    {
+      "slug": "horizontal-leg-press",
+      "name_en": "Horizontal Leg Press",
+      "name_de": "Horizontale Beinpresse",
+      "name_es": "Prensa de piernas horizontal",
+      "category": "strength"
+    },
+    {
+      "slug": "human-flag",
+      "name_en": "Human Flag",
+      "name_de": "Human Flag",
+      "name_es": "Human Flag",
+      "category": "strength"
+    },
+    {
+      "slug": "incline-bench-ez-bar-press",
+      "name_en": "Incline EZ-Bar Bench Press",
+      "name_de": "Schrägbankdrücken mit SZ-Stange",
+      "name_es": "Press en banco inclinado con barra Z",
+      "category": "strength"
+    },
+    {
+      "slug": "incline-bench-press",
+      "name_en": "Incline Barbell Bench Press",
+      "name_de": "Schrägbankdrücken mit Langhantel",
+      "name_es": "Press en banco inclinado con barra",
+      "category": "strength"
+    },
+    {
+      "slug": "incline-db-curl",
+      "name_en": "Incline Dumbbell Curl",
+      "name_de": "Schrägbank-Kurzhantelcurl",
+      "name_es": "Curl con mancuernas en banco inclinado",
+      "category": "strength"
+    },
+    {
+      "slug": "incline-db-press",
+      "name_en": "Incline Dumbbell Press",
+      "name_de": "Schrägbankdrücken mit Kurzhanteln",
+      "name_es": "Press con mancuernas en banco inclinado",
+      "category": "strength"
+    },
+    {
+      "slug": "incline-dumbbell-fly",
+      "name_en": "Incline Dumbbell Fly",
+      "name_de": "Schrägbank-Kurzhantelflys",
+      "name_es": "Apertura con mancuernas en banco inclinado",
+      "category": "strength"
+    },
+    {
+      "slug": "incline-hammer-curl",
+      "name_en": "Incline Hammer Curl",
+      "name_de": "Schrägbank-Hammer-Curl",
+      "name_es": "Curl martillo en banco inclinado",
+      "category": "strength"
+    },
+    {
+      "slug": "incline-push-ups",
+      "name_en": "Incline Push-Up",
+      "name_de": "Incline Push-Up",
+      "name_es": "Push-up inclinado",
+      "category": "strength"
+    },
+    {
+      "slug": "inverted-row",
+      "name_en": "Inverted Row",
+      "name_de": "Inverted Row",
+      "name_es": "Remo invertido",
+      "category": "strength"
+    },
+    {
+      "slug": "isometric-neck-side",
+      "name_en": "Isometric Neck Lateral Flexion",
+      "name_de": "Isometrische seitliche Halsbeugung",
+      "name_es": "Flexión Lateral Isométrica de Cuello",
+      "category": "strength"
+    },
+    {
+      "slug": "jackknife-sit-up",
+      "name_en": "Jackknife Sit-Up",
+      "name_de": "Jackknife Sit-Up",
+      "name_es": "Abdominal navaja",
+      "category": "strength"
+    },
+    {
+      "slug": "jefferson-curl",
+      "name_en": "Jefferson Curl",
+      "name_de": "Jefferson Curl",
+      "name_es": "Jefferson curl",
+      "category": "strength"
+    },
+    {
+      "slug": "jump-rope",
+      "name_en": "Jump Rope",
+      "name_de": "Seilspringen",
+      "name_es": "Saltar la Cuerda",
+      "category": "cardio"
+    },
+    {
+      "slug": "jump-squat",
+      "name_en": "Jump Squat",
+      "name_de": "Jump Squat",
+      "name_es": "Sentadilla con Salto",
+      "category": "plyometrics"
+    },
+    {
+      "slug": "jumping-jacks",
+      "name_en": "Jumping Jacks",
+      "name_de": "Hampelmann",
+      "name_es": "Saltos de Tijera",
+      "category": "cardio"
+    },
+    {
+      "slug": "kettlebell-bulgarian-split-squat",
+      "name_en": "Kettlebell Bulgarian Split Squat",
+      "name_de": "Kettlebell Bulgarian Split Squat",
+      "name_es": "Sentadilla Búlgara con Kettlebell",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-close-grip-floor-press",
+      "name_en": "Kettlebell Close-Grip Floor Press",
+      "name_de": "Kettlebell Floor Press enger Griff",
+      "name_es": "Press de Suelo con Agarre Cerrado con Pesa Rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-concentration-curl",
+      "name_en": "Kettlebell Concentration Curl",
+      "name_de": "Kettlebell-Konzentrationscurl",
+      "name_es": "Curl de concentración con kettlebell",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-deadlift",
+      "name_en": "Kettlebell Deadlift",
+      "name_de": "Kettlebell-Kreuzheben",
+      "name_es": "Peso muerto con pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-farmers-walk",
+      "name_en": "Kettlebell Farmer's Walk",
+      "name_de": "Kettlebell-Farmer's Walk",
+      "name_es": "Paseo del Granjero con Pesa Rusa",
+      "category": "strongman"
+    },
+    {
+      "slug": "kettlebell-floor-press",
+      "name_en": "Kettlebell Floor Press",
+      "name_de": "Kettlebell Floor Press",
+      "name_es": "Press de suelo con pesas rusas",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-goblet-lunge",
+      "name_en": "Kettlebell Goblet Lunge",
+      "name_de": "Kettlebell Goblet Ausfallschritt",
+      "name_es": "Zancada Goblet con Kettlebell",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-halo",
+      "name_en": "Kettlebell Halo",
+      "name_de": "Kettlebell Halo",
+      "name_es": "Halo con pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-hammer-curl",
+      "name_en": "Kettlebell Hammer Curl",
+      "name_de": "Kettlebell-Hammer-Curl",
+      "name_es": "Curl martillo con pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-hip-thrust",
+      "name_en": "Kettlebell Hip Thrust",
+      "name_de": "Kettlebell-Hip-Thrust",
+      "name_es": "Empuje de Cadera con Kettlebell",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-kickstand-deadlift",
+      "name_en": "Kettlebell Kickstand Deadlift",
+      "name_de": "Kettlebell-Kickstand-Kreuzheben",
+      "name_es": "Peso Muerto Kickstand con Kettlebell",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-lunge-press",
+      "name_en": "Kettlebell Lunge Press",
+      "name_de": "Kettlebell-Ausfallschritt mit Drücken",
+      "name_es": "Zancada con press de pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-offset-reverse-lunge-and-press",
+      "name_en": "Kettlebell Offset Reverse Lunge and Press",
+      "name_de": "Kettlebell-Rückwärtsausfallschritt und Drücken (versetzt)",
+      "name_es": "Zancada inversa con press desequilibrado de pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-overhead-tricep-extension",
+      "name_en": "Kettlebell Overhead Tricep Extension",
+      "name_de": "Kettlebell-Trizepsdrücken über Kopf",
+      "name_es": "Extensión de tríceps por encima de la cabeza con pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-pistol-squat",
+      "name_en": "Kettlebell Pistol Squat",
+      "name_de": "Kettlebell-Pistolkniebeuge",
+      "name_es": "Sentadilla pistola con pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-pullover",
+      "name_en": "Kettlebell Pullover",
+      "name_de": "Kettlebell-Pullover",
+      "name_es": "Pullover con pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-reverse-lunge",
+      "name_en": "Kettlebell Reverse Lunge",
+      "name_de": "Kettlebell-Ausfallschritt nach hinten",
+      "name_es": "Zancada Inversa con Kettlebell",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-reverse-wrist-curl",
+      "name_en": "Kettlebell Reverse Wrist Curl",
+      "name_de": "Kettlebell Reverse Handgelenk-Curl",
+      "name_es": "Curl de Muñeca Inverso con Kettlebell",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-rotational-lunge",
+      "name_en": "Kettlebell Rotational Lunge",
+      "name_de": "Kettlebell-Rotationsausfallschritt",
+      "name_es": "Zancada rotacional con pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-russian-twist",
+      "name_en": "Kettlebell Russian Twist",
+      "name_de": "Kettlebell Russian Twist",
+      "name_es": "Giro ruso con pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-shrug",
+      "name_en": "Kettlebell Shrug",
+      "name_de": "Kettlebell-Schulterheben",
+      "name_es": "Encogimiento de Hombros con Kettlebell",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-single-leg-deadlift",
+      "name_en": "Kettlebell Single Leg Deadlift",
+      "name_de": "Kettlebell-Einbein-Kreuzheben",
+      "name_es": "Peso muerto a una pierna con pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-skull-crusher",
+      "name_en": "Kettlebell Skull Crusher",
+      "name_de": "Kettlebell-Skull-Crusher",
+      "name_es": "Skull crusher con pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-squat",
+      "name_en": "Kettlebell Squat",
+      "name_de": "Kettlebell-Kniebeuge",
+      "name_es": "Sentadilla con Kettlebell",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-sumo-deadlift",
+      "name_en": "Kettlebell Sumo Deadlift",
+      "name_de": "Kettlebell-Sumo-Kreuzheben",
+      "name_es": "Peso muerto sumo con pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-sumo-high-pull",
+      "name_en": "Kettlebell Sumo High Pull",
+      "name_de": "Kettlebell-Sumo-High-Pull",
+      "name_es": "Jalón sumo al mentón con pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-svend-press",
+      "name_en": "Kettlebell Svend Press",
+      "name_de": "Kettlebell Svend Press",
+      "name_es": "Press Svend con Kettlebells",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-swing",
+      "name_en": "Kettlebell Swing",
+      "name_de": "Kettlebell-Swing",
+      "name_es": "Swing con pesa rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-swing-clean",
+      "name_en": "Kettlebell Swing Clean",
+      "name_de": "Kettlebell-Swing-Clean",
+      "name_es": "Swing y cargada con pesa rusa",
+      "category": "olympic"
+    },
+    {
+      "slug": "kettlebell-turkish-get-ups",
+      "name_en": "Kettlebell Turkish Get Ups",
+      "name_de": "Türkisch Aufstehen mit Kettlebell",
+      "name_es": "Levantamiento Turco con Kettlebell",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-windmills",
+      "name_en": "Kettlebell Windmills",
+      "name_de": "Kettlebell Windmill",
+      "name_es": "Molino de Viento con Pesa Rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "kettlebell-wrist-curl",
+      "name_en": "Kettlebell Wrist Curl",
+      "name_de": "Kettlebell Handgelenk-Curl",
+      "name_es": "Curl de Muñeca con Kettlebell",
+      "category": "strength"
+    },
+    {
+      "slug": "knee-push-ups",
+      "name_en": "Knee Push Ups",
+      "name_de": "Knie Push-Up",
+      "name_es": "Push-Up en Rodillas",
+      "category": "strength"
+    },
+    {
+      "slug": "knee-to-chest-stretch",
+      "name_en": "Knee-to-Chest Stretch",
+      "name_de": "Knie-zur-Brust-Dehnung",
+      "name_es": "Estiramiento Rodilla al Pecho",
+      "category": "stretching"
+    },
+    {
+      "slug": "kneeling-cable-row",
+      "name_en": "Kneeling Cable Row",
+      "name_de": "Kniender Kabelzug-Rudern",
+      "name_es": "Remo en Polea Arrodillado",
+      "category": "strength"
+    },
+    {
+      "slug": "kneeling-hip-flexor-stretch",
+      "name_en": "Kneeling Hip Flexor Stretch",
+      "name_de": "Kniende Hüftbeuger-Dehnung",
+      "name_es": "Estiramiento de Flexores de Cadera Arrodillado",
+      "category": "stretching"
+    },
+    {
+      "slug": "kneeling-wrist-stretch",
+      "name_en": "Kneeling Wrist Stretch",
+      "name_de": "Kniende Handgelenkdehnung",
+      "name_es": "Estiramiento de Muñecas Arrodillado",
+      "category": "stretching"
+    },
+    {
+      "slug": "l-sit",
+      "name_en": "L Sit",
+      "name_de": "L-Sit",
+      "name_es": "L-Sit",
+      "category": "strength"
+    },
+    {
+      "slug": "landmine-press",
+      "name_en": "Landmine Press",
+      "name_de": "Landmine Press",
+      "name_es": "Press Landmine",
+      "category": "strength"
+    },
+    {
+      "slug": "lat-pulldown",
+      "name_en": "Lat Pulldown",
+      "name_de": "Latzug",
+      "name_es": "Jalón al Pecho",
+      "category": "strength"
+    },
+    {
+      "slug": "lateral-raise",
+      "name_en": "Dumbbell Lateral Raise",
+      "name_de": "Kurzhantel Seitheben",
+      "name_es": "Elevación Lateral con Mancuernas",
+      "category": "strength"
+    },
+    {
+      "slug": "leg-curl",
+      "name_en": "Lying Leg Curl",
+      "name_de": "Liegender Beinbeuger",
+      "name_es": "Curl de Piernas Tumbado",
+      "category": "strength"
+    },
+    {
+      "slug": "leg-extension",
+      "name_en": "Leg Extension",
+      "name_de": "Beinstrecker",
+      "name_es": "Extensión de Piernas",
+      "category": "strength"
+    },
+    {
+      "slug": "leg-press",
+      "name_en": "Leg Press",
+      "name_de": "Beinpresse",
+      "name_es": "Prensa de Piernas",
+      "category": "strength"
+    },
+    {
+      "slug": "lizard-stretch",
+      "name_en": "Lizard Stretch",
+      "name_de": "Eidechsen-Dehnung",
+      "name_es": "Estiramiento del Lagarto",
+      "category": "stretching"
+    },
+    {
+      "slug": "lunge",
+      "name_en": "Lunge",
+      "name_de": "Ausfallschritt",
+      "name_es": "Zancada",
+      "category": "strength"
+    },
+    {
+      "slug": "lying-leg-raise",
+      "name_en": "Lying Leg Raise",
+      "name_de": "Liegendes Beinheben",
+      "name_es": "Elevación de Piernas Acostado",
+      "category": "strength"
+    },
+    {
+      "slug": "lying-tricep-extension",
+      "name_en": "Lying Tricep Extension",
+      "name_de": "Liegend Trizeps-Strecken",
+      "name_es": "Extensión de Tríceps Tumbado",
+      "category": "strength"
+    },
+    {
+      "slug": "machine-bicep-curl",
+      "name_en": "Machine Bicep Curl",
+      "name_de": "Maschine Bizeps-Curl",
+      "name_es": "Curl de Bíceps en Máquina",
+      "category": "strength"
+    },
+    {
+      "slug": "machine-calf-raise",
+      "name_en": "Machine Calf Raise",
+      "name_de": "Maschine Wadenhebenmaschine",
+      "name_es": "Elevación de Pantorrillas en Máquina",
+      "category": "strength"
+    },
+    {
+      "slug": "machine-chest-fly",
+      "name_en": "Machine Chest Fly",
+      "name_de": "Butterfly-Maschine",
+      "name_es": "Aperturas en Máquina",
+      "category": "strength"
+    },
+    {
+      "slug": "machine-preacher-curl",
+      "name_en": "Machine Preacher Curl",
+      "name_de": "Maschinen-Scottcurl",
+      "name_es": "Curl en Máquina de Predicador",
+      "category": "strength"
+    },
+    {
+      "slug": "machine-seated-crunch",
+      "name_en": "Machine Seated Crunch",
+      "name_de": "Bauchmaschine sitzend",
+      "name_es": "Abdominales en Máquina Sentado",
+      "category": "strength"
+    },
+    {
+      "slug": "machine-shoulder-press",
+      "name_en": "Machine Shoulder Press",
+      "name_de": "Maschine Schulterdrücken",
+      "name_es": "Press de Hombros en Máquina",
+      "category": "strength"
+    },
+    {
+      "slug": "medicine-ball-slam",
+      "name_en": "Medicine Ball Slam",
+      "name_de": "Medizinball-Slam",
+      "name_es": "Golpe con Balón Medicinal",
+      "category": "strength"
+    },
+    {
+      "slug": "mountain-climbers",
+      "name_en": "Mountain Climbers",
+      "name_de": "Mountain Climbers",
+      "name_es": "Mountain Climbers",
+      "category": "cardio"
+    },
+    {
+      "slug": "muscle-snatch",
+      "name_en": "Muscle Snatch",
+      "name_de": "Muskel-Reißen",
+      "name_es": "Muscle Snatch",
+      "category": "olympic"
+    },
+    {
+      "slug": "muscle-ups",
+      "name_en": "Muscle Ups",
+      "name_de": "Muscle-Up",
+      "name_es": "Muscle-Ups",
+      "category": "strength"
+    },
+    {
+      "slug": "neck-side-stretch",
+      "name_en": "Neck Side Stretch",
+      "name_de": "Seitliche Nackendehnung",
+      "name_es": "Estiramiento Lateral de Cuello",
+      "category": "stretching"
+    },
+    {
+      "slug": "negative-pull-ups",
+      "name_en": "Negative Pull Ups",
+      "name_de": "Negative Pull-Ups",
+      "name_es": "Dominadas Negativas",
+      "category": "strength"
+    },
+    {
+      "slug": "neutral-grip-pull-ups",
+      "name_en": "Neutral Grip Pull Ups",
+      "name_de": "Klimmzüge im Neutralgriff",
+      "name_es": "Dominadas en Agarre Neutro",
+      "category": "strength"
+    },
+    {
+      "slug": "nordic-hamstring-curl",
+      "name_en": "Nordic Hamstring Curl",
+      "name_de": "Nordic Hamstring Curl",
+      "name_es": "Curl Nórdico de Isquiotibiales",
+      "category": "strength"
+    },
+    {
+      "slug": "ohp",
+      "name_en": "Barbell Overhead Press",
+      "name_de": "Langhantel-Schulterdrücken (OHP)",
+      "name_es": "Press Militar con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-dumbbell-push-press",
+      "name_en": "One-Arm Dumbbell Push Press",
+      "name_de": "Einarmiger Kurzhantel-Push Press",
+      "name_es": "Push Press con Mancuerna a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-dumbbell-swing",
+      "name_en": "One-Arm Dumbbell Swing",
+      "name_de": "Einarmiges Kurzhantel-Swing",
+      "name_es": "Swing con Mancuerna a un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-kettlebell-bicep-curl",
+      "name_en": "One Arm Kettlebell Bicep Curl",
+      "name_de": "Einarmige Kettlebell-Bizepsbeugung",
+      "name_es": "Curl de Bíceps con Pesa Rusa a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-kettlebell-bottoms-up-press",
+      "name_en": "One-Arm Kettlebell Bottoms-Up Press",
+      "name_de": "Einarmiges Kettlebell-Bodenaufsatz-Drücken",
+      "name_es": "Press Strict con Pesa Rusa Invertida a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-kettlebell-floor-glute-bridge-press",
+      "name_en": "One Arm Kettlebell Floor Glute Bridge Press",
+      "name_de": "Einarmiges Kettlebell-Bodendrücken mit Glute Bridge",
+      "name_es": "Press en Puente de Glúteos en Suelo con Pesa Rusa a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-kettlebell-floor-press",
+      "name_en": "One Arm Kettlebell Floor Press",
+      "name_de": "Einarmiges Kettlebell-Bodendrücken",
+      "name_es": "Press en Suelo con Pesa Rusa a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-kettlebell-front-squat",
+      "name_en": "One Arm Kettlebell Front Squat",
+      "name_de": "Einarmige Kettlebell-Kniebeuge vorne",
+      "name_es": "Sentadilla Frontal con Pesa Rusa a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-kettlebell-push-press",
+      "name_en": "One Arm Kettlebell Push Press",
+      "name_de": "Einarmiger Kettlebell-Push Press",
+      "name_es": "Push Press con Pesa Rusa a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-kettlebell-row",
+      "name_en": "One Arm Kettlebell Row",
+      "name_de": "Einarmiges Kettlebell-Rudern",
+      "name_es": "Remo con Pesa Rusa a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-kettlebell-shoulder-press",
+      "name_en": "One Arm Kettlebell Shoulder Press",
+      "name_de": "Einarmiges Kettlebell-Schulterdrücken",
+      "name_es": "Press de Hombro con Pesa Rusa a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-kettlebell-swing",
+      "name_en": "One Arm Kettlebell Swing",
+      "name_de": "Einarmiger Kettlebell-Swing",
+      "name_es": "Swing con Pesa Rusa a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-kettlebell-tricep-kickback",
+      "name_en": "One-Arm Kettlebell Tricep Kickback",
+      "name_de": "Einarmiger Kettlebell-Trizeps-Kickback",
+      "name_es": "Extensión de Tríceps a Un Brazo con Pesa Rusa",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-landmine-press",
+      "name_en": "One-Arm Landmine Press",
+      "name_de": "Einarmiger Landmine Press",
+      "name_es": "Press Landmine con Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-lat-pulldown",
+      "name_en": "One-Arm Lat Pulldown",
+      "name_de": "Einarmiges Lat-Pulldown",
+      "name_es": "Jalón al Pecho con Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-single-leg-dumbbell-romanian-deadlift",
+      "name_en": "One-Arm Single-Leg Dumbbell Romanian Deadlift",
+      "name_de": "Einarmiges einbeiniges Kurzhantel-Romanian Deadlift",
+      "name_es": "Peso Muerto Rumano a Una Pierna con Mancuerna a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "one-arm-single-leg-kettlebell-romanian-deadlift",
+      "name_en": "One-Arm Single-Leg Kettlebell Romanian Deadlift",
+      "name_de": "Einarmiges einbeiniges Kettlebell-Romanian Deadlift",
+      "name_es": "Peso Muerto Rumano a Una Pierna con Pesa Rusa a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "overhead-squat",
+      "name_en": "Overhead Squat",
+      "name_de": "Überkopf-Kniebeuge",
+      "name_es": "Sentadilla con Barra en Alto",
+      "category": "strength"
+    },
+    {
+      "slug": "overhead-tricep-extension",
+      "name_en": "Overhead Tricep Extension",
+      "name_de": "Überkopf-Trizepsstreckung",
+      "name_es": "Extensión de Tríceps por Encima de la Cabeza",
+      "category": "strength"
+    },
+    {
+      "slug": "overhead-triceps-stretch",
+      "name_en": "Overhead Triceps Stretch",
+      "name_de": "Trizeps-Dehnung über Kopf",
+      "name_es": "Estiramiento de Tríceps sobre la Cabeza",
+      "category": "stretching"
+    },
+    {
+      "slug": "pause-deadlift",
+      "name_en": "Pause Deadlift",
+      "name_de": "Deadlift mit Pause",
+      "name_es": "Peso Muerto con Pausa",
+      "category": "strength"
+    },
+    {
+      "slug": "pause-pull-up",
+      "name_en": "Pause Pull-Up",
+      "name_de": "Klimmzug mit Pause",
+      "name_es": "Dominada con Pausa",
+      "category": "strength"
+    },
+    {
+      "slug": "pause-squat",
+      "name_en": "Pause Squat",
+      "name_de": "Kniebeuge mit Pause",
+      "name_es": "Sentadilla con Pausa",
+      "category": "strength"
+    },
+    {
+      "slug": "paused-bench-press",
+      "name_en": "Paused Bench Press",
+      "name_de": "Bankdrücken mit Pause",
+      "name_es": "Press de Banca con Pausa",
+      "category": "strength"
+    },
+    {
+      "slug": "paused-incline-bench-press",
+      "name_en": "Paused Incline Bench Press",
+      "name_de": "Schrägbankdrücken mit Pause",
+      "name_es": "Press Inclinado con Pausa",
+      "category": "strength"
+    },
+    {
+      "slug": "paused-ohp",
+      "name_en": "Paused Overhead Press",
+      "name_de": "Pausiertes Überkopfdrücken",
+      "name_es": "Press militar con pausa",
+      "category": "strength"
+    },
+    {
+      "slug": "pec-deck",
+      "name_en": "Pec Deck",
+      "name_de": "Pec Deck",
+      "name_es": "Pec Deck",
+      "category": "strength"
+    },
+    {
+      "slug": "pendlay-row",
+      "name_en": "Pendlay Row",
+      "name_de": "Pendlay-Rudern",
+      "name_es": "Remo Pendlay",
+      "category": "strength"
+    },
+    {
+      "slug": "pigeon-stretch",
+      "name_en": "Pigeon Stretch",
+      "name_de": "Tauben-Dehnung",
+      "name_es": "Estiramiento de la Paloma",
+      "category": "stretching"
+    },
+    {
+      "slug": "pike-push-ups",
+      "name_en": "Pike Push Ups",
+      "name_de": "Pike Push-Ups",
+      "name_es": "Flexiones en Pica",
+      "category": "strength"
+    },
+    {
+      "slug": "pistol-squat",
+      "name_en": "Pistol Squat",
+      "name_de": "Pistol Squat",
+      "name_es": "Sentadilla a una Pierna (Pistol)",
+      "category": "strength"
+    },
+    {
+      "slug": "planche",
+      "name_en": "Planche",
+      "name_de": "Planche",
+      "name_es": "Plancha Calisténica",
+      "category": "strength"
+    },
+    {
+      "slug": "plank",
+      "name_en": "Plank",
+      "name_de": "Plank",
+      "name_es": "Plancha",
+      "category": "strength"
+    },
+    {
+      "slug": "plate-pinch",
+      "name_en": "Plate Pinch",
+      "name_de": "Plate Pinch",
+      "name_es": "Agarre de Discos",
+      "category": "strength"
+    },
+    {
+      "slug": "plate-pullover",
+      "name_en": "Plate Pullover",
+      "name_de": "Pullover mit Hantelscheibe",
+      "name_es": "Pullover con Disco",
+      "category": "strength"
+    },
+    {
+      "slug": "plyo-lunge",
+      "name_en": "Plyo Lunge",
+      "name_de": "Plyometrischer Ausfallschritt",
+      "name_es": "Zancada Pliométrica",
+      "category": "plyometrics"
+    },
+    {
+      "slug": "plyo-push-up",
+      "name_en": "Plyo Push-Up",
+      "name_de": "Plyometrischer Liegestütz",
+      "name_es": "Flexión Pliométrica",
+      "category": "plyometrics"
+    },
+    {
+      "slug": "preacher-curl",
+      "name_en": "Preacher Curl",
+      "name_de": "Preacher Curl",
+      "name_es": "Curl en Banco Scott",
+      "category": "strength"
+    },
+    {
+      "slug": "preacher-hammer-curl",
+      "name_en": "Preacher Hammer Curl",
+      "name_de": "Hammer-Curl am Scott-Pult",
+      "name_es": "Curl Martillo en Banco Scott",
+      "category": "strength"
+    },
+    {
+      "slug": "pseudo-planche-push-ups",
+      "name_en": "Pseudo Planche Push Ups",
+      "name_de": "Pseudo Planche Push-Ups",
+      "name_es": "Push-Ups de Pseudo Plancha",
+      "category": "strength"
+    },
+    {
+      "slug": "pull-up",
+      "name_en": "Pull-Up",
+      "name_de": "Klimmzug",
+      "name_es": "Dominada",
+      "category": "strength"
+    },
+    {
+      "slug": "push-jerk",
+      "name_en": "Push Jerk",
+      "name_de": "Push Jerk",
+      "name_es": "Jerk de Empuje",
+      "category": "olympic"
+    },
+    {
+      "slug": "push-press",
+      "name_en": "Push Press",
+      "name_de": "Push Press",
+      "name_es": "Press de Empuje",
+      "category": "strength"
+    },
+    {
+      "slug": "push-up",
+      "name_en": "Push-Up",
+      "name_de": "Push-Up",
+      "name_es": "Push-Up",
+      "category": "strength"
+    },
+    {
+      "slug": "rack-pull",
+      "name_en": "Rack Pull",
+      "name_de": "Rack Pull",
+      "name_es": "Rack Pull",
+      "category": "strength"
+    },
+    {
+      "slug": "rear-delt-fly",
+      "name_en": "Rear Delt Fly",
+      "name_de": "Hinterer Deltamuskel Fly",
+      "name_es": "Apertura de Deltoides Posterior",
+      "category": "strength"
+    },
+    {
+      "slug": "reverse-crunches",
+      "name_en": "Reverse Crunches",
+      "name_de": "Reverse Crunches",
+      "name_es": "Crunches Inversos",
+      "category": "strength"
+    },
+    {
+      "slug": "reverse-curl",
+      "name_en": "Reverse Curl",
+      "name_de": "Reverse Curl",
+      "name_es": "Curl Inverso",
+      "category": "strength"
+    },
+    {
+      "slug": "reverse-grip-bent-over-row",
+      "name_en": "Reverse Grip Bent Over Row",
+      "name_de": "Reverse Grip Vorgebeugtes Rudern",
+      "name_es": "Remo Inclinado con Agarre Invertido",
+      "category": "strength"
+    },
+    {
+      "slug": "reverse-grip-lat-pulldown",
+      "name_en": "Reverse Grip Lat Pulldown",
+      "name_de": "Latzug im Untergriff",
+      "name_es": "Jalón al Pecho Agarre Supino",
+      "category": "strength"
+    },
+    {
+      "slug": "reverse-lunge",
+      "name_en": "Reverse Lunge",
+      "name_de": "Rückwärts-Ausfallschritt",
+      "name_es": "Zancada Inversa",
+      "category": "strength"
+    },
+    {
+      "slug": "reverse-nordic-curl",
+      "name_en": "Reverse Nordic Curl",
+      "name_de": "Reverse Nordic Curl",
+      "name_es": "Nordic Curl Inverso",
+      "category": "strength"
+    },
+    {
+      "slug": "reverse-plank",
+      "name_en": "Reverse Plank",
+      "name_de": "Reverse Plank",
+      "name_es": "Plancha Inversa",
+      "category": "strength"
+    },
+    {
+      "slug": "ring-dead-hang",
+      "name_en": "Ring Dead Hang",
+      "name_de": "Ring Dead Hang",
+      "name_es": "Cuelgue Estático en Anillas",
+      "category": "strength"
+    },
+    {
+      "slug": "ring-dips",
+      "name_en": "Ring Dips",
+      "name_de": "Ring Dips",
+      "name_es": "Fondos en Anillas",
+      "category": "strength"
+    },
+    {
+      "slug": "ring-face-pull",
+      "name_en": "Ring Face Pull",
+      "name_de": "Ring Face Pull",
+      "name_es": "Face Pull en Anillas",
+      "category": "strength"
+    },
+    {
+      "slug": "ring-muscle-up",
+      "name_en": "Ring Muscle-Up",
+      "name_de": "Ring Muscle-Up",
+      "name_es": "Muscle-Up en Anillas",
+      "category": "strength"
+    },
+    {
+      "slug": "ring-push-up",
+      "name_en": "Ring Push-Up",
+      "name_de": "Ring Push-Up",
+      "name_es": "Flexión en Anillas",
+      "category": "strength"
+    },
+    {
+      "slug": "ring-row",
+      "name_en": "Ring Row",
+      "name_de": "Ring Row",
+      "name_es": "Remo en Anillas",
+      "category": "strength"
+    },
+    {
+      "slug": "rings-inverted-row",
+      "name_en": "Rings Inverted Row",
+      "name_de": "Rings Inverted Row",
+      "name_es": "Remo Invertido en Anillas",
+      "category": "strength"
+    },
+    {
+      "slug": "romanian-deadlift",
+      "name_en": "Romanian Deadlift",
+      "name_de": "Rumänisches Kreuzheben",
+      "name_es": "Peso Muerto Rumano",
+      "category": "strength"
+    },
+    {
+      "slug": "rope-climb",
+      "name_en": "Rope Climb",
+      "name_de": "Seilklettern",
+      "name_es": "Trepa de Cuerda",
+      "category": "strength"
+    },
+    {
+      "slug": "russian-twist",
+      "name_en": "Russian Twist",
+      "name_de": "Russian Twist",
+      "name_es": "Giro Ruso",
+      "category": "strength"
+    },
+    {
+      "slug": "scapular-pull-ups",
+      "name_en": "Scapular Pull Ups",
+      "name_de": "Scapular Pull-Ups",
+      "name_es": "Dominadas Escapulares",
+      "category": "strength"
+    },
+    {
+      "slug": "scissor-kicks",
+      "name_en": "Scissor Kicks",
+      "name_de": "Scherenbeine",
+      "name_es": "Tijeras",
+      "category": "strength"
+    },
+    {
+      "slug": "seated-barbell-overhead-press",
+      "name_en": "Seated Barbell Overhead Press",
+      "name_de": "Sitzende Langhantel-Schulterdrücken",
+      "name_es": "Press de Barra sobre la Cabeza Sentado",
+      "category": "strength"
+    },
+    {
+      "slug": "seated-cable-row",
+      "name_en": "Seated Cable Row",
+      "name_de": "Sitzendes Rudern am Kabelzug",
+      "name_es": "Remo Sentado en Polea",
+      "category": "strength"
+    },
+    {
+      "slug": "seated-calf-raise",
+      "name_en": "Seated Calf Raise",
+      "name_de": "Sitzende Wadenübung",
+      "name_es": "Elevación de Talones Sentado",
+      "category": "strength"
+    },
+    {
+      "slug": "seated-db-press",
+      "name_en": "Seated Dumbbell Shoulder Press",
+      "name_de": "Sitzende Kurzhantel-Schulterdrücken",
+      "name_es": "Press de Hombro con Mancuernas Sentado",
+      "category": "strength"
+    },
+    {
+      "slug": "seated-dumbbell-curl",
+      "name_en": "Seated Dumbbell Curl",
+      "name_de": "Sitzende Kurzhantel-Curl",
+      "name_es": "Curl con Mancuernas Sentado",
+      "category": "strength"
+    },
+    {
+      "slug": "seated-dumbbell-lateral-raise",
+      "name_en": "Seated Dumbbell Lateral Raise",
+      "name_de": "Seated Dumbbell Lateral Raise",
+      "name_es": "Elevación Lateral con Mancuerna Sentado",
+      "category": "strength"
+    },
+    {
+      "slug": "seated-dumbbell-tricep-extension",
+      "name_en": "Seated Dumbbell Tricep Extension",
+      "name_de": "Seated Dumbbell Trizeps Extension",
+      "name_es": "Extensión de Tríceps con Mancuerna Sentado",
+      "category": "strength"
+    },
+    {
+      "slug": "seated-forward-fold",
+      "name_en": "Seated Forward Fold",
+      "name_de": "Sitzende Vorbeuge",
+      "name_es": "Flexión Sentado hacia Adelante",
+      "category": "stretching"
+    },
+    {
+      "slug": "seated-leg-curl",
+      "name_en": "Seated Leg Curl",
+      "name_de": "Sitzende Beinbeuge",
+      "name_es": "Curl de Piernas Sentado",
+      "category": "strength"
+    },
+    {
+      "slug": "seated-smith-machine-shoulder-press",
+      "name_en": "Seated Smith Machine Shoulder Press",
+      "name_de": "Seated Smith Machine Schulterdrücken",
+      "name_es": "Press de Hombros en Máquina Smith Sentado",
+      "category": "strength"
+    },
+    {
+      "slug": "seated-spinal-twist",
+      "name_en": "Seated Spinal Twist",
+      "name_de": "Sitzende Wirbelsäulendrehung",
+      "name_es": "Giro Espinal Sentado",
+      "category": "stretching"
+    },
+    {
+      "slug": "seated-straddle-stretch",
+      "name_en": "Seated Straddle Stretch",
+      "name_de": "Sitzende Grätsche",
+      "name_es": "Estiramiento en Apertura Sentado",
+      "category": "stretching"
+    },
+    {
+      "slug": "shrug",
+      "name_en": "Barbell Shrug",
+      "name_de": "Langhantel Shrug",
+      "name_es": "Encogimiento con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "side-lunge",
+      "name_en": "Side Lunge",
+      "name_de": "Side Lunge",
+      "name_es": "Zancada Lateral",
+      "category": "strength"
+    },
+    {
+      "slug": "side-lying-hip-abduction",
+      "name_en": "Side-Lying Hip Abduction",
+      "name_de": "Side-Lying Hip Abduction",
+      "name_es": "Abducción de Cadera Acostado de Lado",
+      "category": "strength"
+    },
+    {
+      "slug": "side-lying-hip-adduction",
+      "name_en": "Side Lying Hip Adduction",
+      "name_de": "Side Lying Hip Adduktion",
+      "name_es": "Aducción de Cadera Acostado de Lado",
+      "category": "strength"
+    },
+    {
+      "slug": "side-lying-lateral-raise",
+      "name_en": "Side-Lying Lateral Raise",
+      "name_de": "Seitheben Seitliegend",
+      "name_es": "Elevación Lateral Tumbado de Lado",
+      "category": "strength"
+    },
+    {
+      "slug": "side-plank",
+      "name_en": "Side Plank",
+      "name_de": "Side Plank",
+      "name_es": "Plancha Lateral",
+      "category": "strength"
+    },
+    {
+      "slug": "side-plank-leg-lift",
+      "name_en": "Side Plank with Leg Lift",
+      "name_de": "Side Plank mit Beinheben",
+      "name_es": "Plancha Lateral con Elevación de Pierna",
+      "category": "strength"
+    },
+    {
+      "slug": "single-arm-chest-supported-dumbbell-row",
+      "name_en": "Single-Arm Chest-Supported Dumbbell Row",
+      "name_de": "Einarmiges Kurzhantelrudern mit Bruststütze",
+      "name_es": "Remo con Mancuerna a Una Mano con Pecho Apoyado",
+      "category": "strength"
+    },
+    {
+      "slug": "single-arm-db-row",
+      "name_en": "Single-Arm Dumbbell Row",
+      "name_de": "Einarmiges Kurzhantel-Rudern",
+      "name_es": "Remo con Mancuerna a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "single-arm-dumbbell-overhead-tricep-extension",
+      "name_en": "Single-Arm Dumbbell Overhead Tricep Extension",
+      "name_de": "Einarmige Kurzhantel Overhead Trizeps Extension",
+      "name_es": "Extensión de Tríceps sobre la Cabeza con Mancuerna a Un Brazo",
+      "category": "strength"
+    },
+    {
+      "slug": "single-arm-tricep-pushdown",
+      "name_en": "Single Arm Tricep Pushdown",
+      "name_de": "Einarmiges Trizepsdrücken am Kabelzug",
+      "name_es": "Extensión de Tríceps a Un Brazo en Polea",
+      "category": "strength"
+    },
+    {
+      "slug": "single-leg-calf-raise",
+      "name_en": "Single Leg Calf Raise",
+      "name_de": "Einbeiniges Wadenheben",
+      "name_es": "Elevación de Pantorrilla a Una Pierna",
+      "category": "strength"
+    },
+    {
+      "slug": "single-leg-extension",
+      "name_en": "Single Leg Extension",
+      "name_de": "Einbeiniges Beinstrecken",
+      "name_es": "Extensión de Cuádriceps a Una Pierna",
+      "category": "strength"
+    },
+    {
+      "slug": "single-leg-glute-bridge",
+      "name_en": "Single Leg Glute Bridge",
+      "name_de": "Einbeinige Glute Bridge",
+      "name_es": "Puente de Glúteo a Una Pierna",
+      "category": "strength"
+    },
+    {
+      "slug": "single-leg-lying-leg-curl",
+      "name_en": "Single Leg Lying Leg Curl",
+      "name_de": "Einbeiniger Liegender Leg Curl",
+      "name_es": "Curl de Pierna Tumbado a Una Pierna",
+      "category": "strength"
+    },
+    {
+      "slug": "single-leg-press",
+      "name_en": "Single Leg Press",
+      "name_de": "Einbeinige Beinpresse",
+      "name_es": "Prensa de Piernas a Una Pierna",
+      "category": "strength"
+    },
+    {
+      "slug": "single-leg-romanian-deadlift",
+      "name_en": "Single Leg Romanian Deadlift",
+      "name_de": "Einbeiniges Romanian Deadlift",
+      "name_es": "Peso Muerto Rumano a Una Pierna",
+      "category": "strength"
+    },
+    {
+      "slug": "sit-ups",
+      "name_en": "Sit-Ups",
+      "name_de": "Sit-Ups",
+      "name_es": "Abdominales",
+      "category": "strength"
+    },
+    {
+      "slug": "skull-crusher",
+      "name_en": "Skull Crusher",
+      "name_de": "Skull Crusher",
+      "name_es": "Skull Crusher",
+      "category": "strength"
+    },
+    {
+      "slug": "sled-row",
+      "name_en": "Sled Row",
+      "name_de": "Sled Row",
+      "name_es": "Remo con Trineo",
+      "category": "strength"
+    },
+    {
+      "slug": "smith-machine-bench-press",
+      "name_en": "Smith Machine Bench Press",
+      "name_de": "Smith Machine Bankdrücken",
+      "name_es": "Press de Banca en Máquina Smith",
+      "category": "strength"
+    },
+    {
+      "slug": "smith-machine-bent-over-row",
+      "name_en": "Smith Machine Bent Over Row",
+      "name_de": "Smith Machine Bent Over Row",
+      "name_es": "Remo Inclinado en Máquina Smith",
+      "category": "strength"
+    },
+    {
+      "slug": "smith-machine-bulgarian-split",
+      "name_en": "Smith Machine Bulgarian Split Squat",
+      "name_de": "Smith Machine Bulgarische Kniebeuge",
+      "name_es": "Sentadilla Búlgara en Máquina Smith",
+      "category": "strength"
+    },
+    {
+      "slug": "smith-machine-calf-raise",
+      "name_en": "Smith Machine Calf Raise",
+      "name_de": "Smith Machine Wadenheben",
+      "name_es": "Elevación de Talón en Máquina Smith",
+      "category": "strength"
+    },
+    {
+      "slug": "smith-machine-incline-bench-press",
+      "name_en": "Smith Machine Incline Bench Press",
+      "name_de": "Smith Machine Schrägbankdrücken",
+      "name_es": "Press Inclinado en Máquina Smith",
+      "category": "strength"
+    },
+    {
+      "slug": "smith-machine-rdl",
+      "name_en": "Smith Machine Romanian Deadlift",
+      "name_de": "Smith Machine Romanian Deadlift",
+      "name_es": "Peso Muerto Rumano en Máquina Smith",
+      "category": "strength"
+    },
+    {
+      "slug": "smith-machine-reverse-grip-bent-over-row",
+      "name_en": "Smith Machine Reverse Grip Bent Over Row",
+      "name_de": "Smith Machine Reverse Grip Bent Over Row",
+      "name_es": "Remo Inclinado con Agarre Inverso en Máquina Smith",
+      "category": "strength"
+    },
+    {
+      "slug": "smith-machine-shoulder-press",
+      "name_en": "Smith Machine Shoulder Press",
+      "name_de": "Smith-Maschine Schulterdrücken",
+      "name_es": "Press de Hombros en Máquina Smith",
+      "category": "strength"
+    },
+    {
+      "slug": "smith-machine-shrug",
+      "name_en": "Smith Machine Shrug",
+      "name_de": "Smith-Maschine Schulterzucken",
+      "name_es": "Encogimiento de Hombros en Máquina Smith",
+      "category": "strength"
+    },
+    {
+      "slug": "smith-machine-squat",
+      "name_en": "Smith Machine Squat",
+      "name_de": "Smith-Maschine Kniebeuge",
+      "name_es": "Sentadilla en Máquina Smith",
+      "category": "strength"
+    },
+    {
+      "slug": "snatch",
+      "name_en": "Snatch",
+      "name_de": "Reißen",
+      "name_es": "Arrancada",
+      "category": "olympic"
+    },
+    {
+      "slug": "spider-curl",
+      "name_en": "Spider Curl",
+      "name_de": "Spider Curl",
+      "name_es": "Curl Araña",
+      "category": "strength"
+    },
+    {
+      "slug": "split-jerk",
+      "name_en": "Split Jerk",
+      "name_de": "Split-Stoßen",
+      "name_es": "Jerk con Tijera",
+      "category": "olympic"
+    },
+    {
+      "slug": "split-squat",
+      "name_en": "Split Squat",
+      "name_de": "Ausfallschritt-Kniebeuge",
+      "name_es": "Sentadilla en Tijera",
+      "category": "strength"
+    },
+    {
+      "slug": "spoto-press",
+      "name_en": "Spoto Press",
+      "name_de": "Spoto Press",
+      "name_es": "Press Spoto",
+      "category": "strength"
+    },
+    {
+      "slug": "squat",
+      "name_en": "Barbell Back Squat",
+      "name_de": "Langhantel-Kniebeuge",
+      "name_es": "Sentadilla Trasera con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "stability-ball-hip-bridge",
+      "name_en": "Stability Ball Hip Bridge",
+      "name_de": "Stability-Ball-Hüftbrücke",
+      "name_es": "Puente de Cadera con Balón de Estabilidad",
+      "category": "strength"
+    },
+    {
+      "slug": "stability-ball-knee-tuck",
+      "name_en": "Stability Ball Knee Tuck",
+      "name_de": "Stability-Ball-Knee-Tuck",
+      "name_es": "Encogimiento de Rodillas con Balón de Estabilidad",
+      "category": "strength"
+    },
+    {
+      "slug": "stability-ball-push-up",
+      "name_en": "Stability Ball Push-Up",
+      "name_de": "Stability-Ball-Push-Up",
+      "name_es": "Push-Up con Balón de Estabilidad",
+      "category": "strength"
+    },
+    {
+      "slug": "stability-ball-wall-squat",
+      "name_en": "Stability Ball Wall Squat",
+      "name_de": "Wandkniebeuge mit Gymnastikball",
+      "name_es": "Sentadilla en Pared con Pelota",
+      "category": "strength"
+    },
+    {
+      "slug": "standing-calf-raise",
+      "name_en": "Standing Calf Raise",
+      "name_de": "Stehende Wadenhebeübung",
+      "name_es": "Elevación de Talones de Pie",
+      "category": "strength"
+    },
+    {
+      "slug": "standing-calf-stretch",
+      "name_en": "Standing Calf Stretch",
+      "name_de": "Stehende Wadendehnung",
+      "name_es": "Estiramiento de Pantorrilla de Pie",
+      "category": "stretching"
+    },
+    {
+      "slug": "standing-forward-fold",
+      "name_en": "Standing Forward Fold",
+      "name_de": "Stehende Vorbeuge",
+      "name_es": "Flexión de Pie hacia Adelante",
+      "category": "stretching"
+    },
+    {
+      "slug": "standing-quad-stretch",
+      "name_en": "Standing Quad Stretch",
+      "name_de": "Stehende Quadrizeps-Dehnung",
+      "name_es": "Estiramiento de Cuádriceps de Pie",
+      "category": "stretching"
+    },
+    {
+      "slug": "standing-side-bend",
+      "name_en": "Standing Side Bend",
+      "name_de": "Stehende Seitneige",
+      "name_es": "Flexión Lateral de Pie",
+      "category": "stretching"
+    },
+    {
+      "slug": "step-ups",
+      "name_en": "Step Ups",
+      "name_de": "Step-Ups",
+      "name_es": "Step Ups",
+      "category": "strength"
+    },
+    {
+      "slug": "stiff-leg-deadlift",
+      "name_en": "Stiff Leg Deadlift",
+      "name_de": "Steifbeiniges Kreuzheben",
+      "name_es": "Peso Muerto con Piernas Rígidas",
+      "category": "strength"
+    },
+    {
+      "slug": "straight-arm-pulldown",
+      "name_en": "Straight-Arm Pulldown",
+      "name_de": "Straight-Arm-Pulldown",
+      "name_es": "Jalón con Brazos Rectos",
+      "category": "strength"
+    },
+    {
+      "slug": "straight-bar-dips",
+      "name_en": "Straight Bar Dips",
+      "name_de": "Dips an der geraden Stange",
+      "name_es": "Fondos en Barra Recta",
+      "category": "strength"
+    },
+    {
+      "slug": "strict-curl",
+      "name_en": "Strict Curl",
+      "name_de": "Strict Curl",
+      "name_es": "Curl Estricto",
+      "category": "strength"
+    },
+    {
+      "slug": "sumo-deadlift",
+      "name_en": "Sumo Deadlift",
+      "name_de": "Sumo-Kreuzheben",
+      "name_es": "Peso Muerto Sumo",
+      "category": "strength"
+    },
+    {
+      "slug": "sumo-squat",
+      "name_en": "Sumo Squat",
+      "name_de": "Sumo-Kniebeuge",
+      "name_es": "Sentadilla Sumo",
+      "category": "strength"
+    },
+    {
+      "slug": "superman",
+      "name_en": "Superman",
+      "name_de": "Superman",
+      "name_es": "Superman",
+      "category": "strength"
+    },
+    {
+      "slug": "supine-spinal-twist",
+      "name_en": "Supine Spinal Twist",
+      "name_de": "Liegende Wirbelsäulendrehung",
+      "name_es": "Giro Espinal Tumbado",
+      "category": "stretching"
+    },
+    {
+      "slug": "svend-press",
+      "name_en": "Svend Press",
+      "name_de": "Svend Press",
+      "name_es": "Press Svend",
+      "category": "strength"
+    },
+    {
+      "slug": "t-bar-row",
+      "name_en": "T-Bar Row",
+      "name_de": "T-Bar-Rudern",
+      "name_es": "Remo en T",
+      "category": "strength"
+    },
+    {
+      "slug": "thoracic-bridge",
+      "name_en": "Thoracic Bridge",
+      "name_de": "Thorakale Brücke",
+      "name_es": "Puente Torácico",
+      "category": "strength"
+    },
+    {
+      "slug": "thruster",
+      "name_en": "Thruster",
+      "name_de": "Thruster",
+      "name_es": "Thruster",
+      "category": "strength"
+    },
+    {
+      "slug": "toes-to-bar",
+      "name_en": "Toes to Bar",
+      "name_de": "Toes to Bar",
+      "name_es": "Toes to Bar",
+      "category": "strength"
+    },
+    {
+      "slug": "tricep-kickback",
+      "name_en": "Dumbbell Tricep Kickback",
+      "name_de": "Kurzhantel-Trizeps-Kickback",
+      "name_es": "Patada de Tríceps con Mancuerna",
+      "category": "strength"
+    },
+    {
+      "slug": "tricep-pushdown",
+      "name_en": "Cable Tricep Pushdown",
+      "name_de": "Kabel-Trizeps-Pushdown",
+      "name_es": "Jalón de Tríceps en Cable",
+      "category": "strength"
+    },
+    {
+      "slug": "trx-bicep-curl",
+      "name_en": "TRX Bicep Curl",
+      "name_de": "TRX Bizeps-Curl",
+      "name_es": "Curl de Bíceps TRX",
+      "category": "strength"
+    },
+    {
+      "slug": "trx-chest-press",
+      "name_en": "TRX Chest Press",
+      "name_de": "TRX Brustpresse",
+      "name_es": "Press de Pecho con TRX",
+      "category": "strength"
+    },
+    {
+      "slug": "trx-face-pull",
+      "name_en": "TRX Face Pull",
+      "name_de": "TRX Face Pull",
+      "name_es": "Face Pull con TRX",
+      "category": "strength"
+    },
+    {
+      "slug": "trx-hamstring-curl",
+      "name_en": "TRX Hamstring Curl",
+      "name_de": "TRX Hamstring-Curl",
+      "name_es": "Curl de Isquiotibiales con TRX",
+      "category": "strength"
+    },
+    {
+      "slug": "trx-lunge",
+      "name_en": "TRX Lunge",
+      "name_de": "TRX Ausfallschritt",
+      "name_es": "Zancada TRX",
+      "category": "strength"
+    },
+    {
+      "slug": "trx-pistol-squat",
+      "name_en": "TRX Pistol Squat",
+      "name_de": "TRX Pistol Squat",
+      "name_es": "Sentadilla Pistola con TRX",
+      "category": "strength"
+    },
+    {
+      "slug": "trx-plank",
+      "name_en": "TRX Plank",
+      "name_de": "TRX-Plank",
+      "name_es": "Plancha en TRX",
+      "category": "strength"
+    },
+    {
+      "slug": "trx-row",
+      "name_en": "TRX Row",
+      "name_de": "TRX-Rudern",
+      "name_es": "Remo TRX",
+      "category": "strength"
+    },
+    {
+      "slug": "trx-side-plank",
+      "name_en": "TRX Side Plank",
+      "name_de": "TRX Seitstütz",
+      "name_es": "Plancha Lateral en TRX",
+      "category": "strength"
+    },
+    {
+      "slug": "trx-squat",
+      "name_en": "TRX Squat",
+      "name_de": "TRX Kniebeuge",
+      "name_es": "Sentadilla TRX",
+      "category": "strength"
+    },
+    {
+      "slug": "trx-tricep-extension",
+      "name_en": "TRX Triceps Extension",
+      "name_de": "TRX Trizeps-Extension",
+      "name_es": "Extensión de Tríceps TRX",
+      "category": "strength"
+    },
+    {
+      "slug": "trx-y-fly",
+      "name_en": "TRX Y-Fly",
+      "name_de": "TRX Y-Fly",
+      "name_es": "TRX Y-Fly",
+      "category": "strength"
+    },
+    {
+      "slug": "upright-row",
+      "name_en": "Barbell Upright Row",
+      "name_de": "Langhantel Hochziehen",
+      "name_es": "Remo al Mentón con Barra",
+      "category": "strength"
+    },
+    {
+      "slug": "v-bar-lat-pulldown",
+      "name_en": "V-Bar Lat Pulldown",
+      "name_de": "V-Griff Latziehen",
+      "name_es": "Jalón al Pecho con Barra en V",
+      "category": "strength"
+    },
+    {
+      "slug": "v-bar-tricep-pushdown",
+      "name_en": "V-Bar Tricep Pushdown",
+      "name_de": "V-Griff Trizepsdrücken",
+      "name_es": "Extensión de Tríceps en Polea con Barra en V",
+      "category": "strength"
+    },
+    {
+      "slug": "v-sit",
+      "name_en": "V-Sit",
+      "name_de": "V-Sitz",
+      "name_es": "Posición en V",
+      "category": "strength"
+    },
+    {
+      "slug": "v-ups",
+      "name_en": "V Ups",
+      "name_de": "V-Ups",
+      "name_es": "V-Ups",
+      "category": "strength"
+    },
+    {
+      "slug": "walking-lunge",
+      "name_en": "Walking Lunge",
+      "name_de": "Gehende Ausfallschritte",
+      "name_es": "Zancada Caminando",
+      "category": "strength"
+    },
+    {
+      "slug": "wall-push-ups",
+      "name_en": "Wall Push Ups",
+      "name_de": "Wand-Push-Ups",
+      "name_es": "Push-Ups en Pared",
+      "category": "strength"
+    },
+    {
+      "slug": "wall-sit",
+      "name_en": "Wall Sit",
+      "name_de": "Wandsitzen",
+      "name_es": "Sentadilla en Pared",
+      "category": "strength"
+    },
+    {
+      "slug": "weighted-wall-crunch",
+      "name_en": "Weighted Wall Crunch",
+      "name_de": "Gewichtetes Wandcrunch",
+      "name_es": "Crunch en Pared con Peso",
+      "category": "strength"
+    },
+    {
+      "slug": "wide-grip-bench-press",
+      "name_en": "Wide-Grip Bench Press",
+      "name_de": "Bankdrücken mit breitem Griff",
+      "name_es": "Press de Banca en Agarre Ancho",
+      "category": "strength"
+    },
+    {
+      "slug": "wide-grip-pull-ups",
+      "name_en": "Wide Grip Pull Ups",
+      "name_de": "Klimmzüge mit breitem Griff",
+      "name_es": "Dominadas en Agarre Ancho",
+      "category": "strength"
+    },
+    {
+      "slug": "wide-grip-push-ups",
+      "name_en": "Wide Grip Push Ups",
+      "name_de": "Liegestütz weiter Griff",
+      "name_es": "Flexiones con Agarre Ancho",
+      "category": "strength"
+    },
+    {
+      "slug": "wide-grip-seated-cable-row",
+      "name_en": "Wide Grip Seated Cable Row",
+      "name_de": "Sitzrudern mit breitem Griff am Kabelzug",
+      "name_es": "Remo en Polea Sentado en Agarre Ancho",
+      "category": "strength"
+    },
+    {
+      "slug": "wrist-curl",
+      "name_en": "Bilateral Dumbbell Wrist Curl",
+      "name_de": "Beidarmiger Kurzhantel-Handgelenk-Curl",
+      "name_es": "Curl de Muñeca con Mancuernas Bilateral",
+      "category": "strength"
+    },
+    {
+      "slug": "wrist-roller",
+      "name_en": "Wrist Roller",
+      "name_de": "Wrist Roller",
+      "name_es": "Rodillo de Muñeca",
+      "category": "strength"
+    }
+  ]
+}

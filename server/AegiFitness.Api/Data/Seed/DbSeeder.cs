@@ -141,23 +141,7 @@ public static class DbSeeder
 
     private static async Task SeedCatalogAsync(AppDbContext context)
     {
-        if (!await context.Exercises.AnyAsync())
-        {
-            var exercises = SeedCatalog.Exercises.Concat(SeedCatalog.ExtraExercises).Select(e => new Exercise
-            {
-                Name = e.Name,
-                MuscleGroup = Enum.Parse<MuscleGroup>(e.MuscleGroup),
-                Type = Enum.Parse<Modality>(e.Type),
-                Objective = Enum.Parse<CatalogObjective>(e.Objective),
-                Difficulty = e.Difficulty,
-                Equipment = e.Equipment,
-                Description = e.Description,
-                Instructions = e.Instructions,
-                Target = e.Target,
-                Effect = e.Effect
-            });
-            context.Exercises.AddRange(exercises);
-        }
+        await SeedExercisesAsync(context);
 
         if (!await context.Foods.AnyAsync())
         {
@@ -181,4 +165,63 @@ public static class DbSeeder
 
         await context.SaveChangesAsync();
     }
+
+    // Catálogo RepDB (400 ejercicios ES con imágenes) en exercises.seed.json.
+    // BD vacía: catálogo completo. BD existente: merge no destructivo por nombre
+    // (los ejercicios previos se conservan, solo se agregan los que faltan).
+    private static async Task SeedExercisesAsync(AppDbContext context)
+    {
+        var path = Path.Combine(AppContext.BaseDirectory, "Data", "Seed", "exercises.seed.json");
+        if (!File.Exists(path)) return;
+
+        var json = await File.ReadAllTextAsync(path);
+        var seed = System.Text.Json.JsonSerializer.Deserialize<List<RepDbSeedExercise>>(json,
+            new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        if (seed is null || seed.Count == 0) return;
+
+        var isEmpty = !await context.Exercises.AnyAsync();
+        var existingNames = isEmpty
+            ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            : (await context.Exercises.Select(e => e.Name).ToListAsync())
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var toAdd = seed
+            .Where(e => !existingNames.Contains(e.Name))
+            .Select(e => new Exercise
+            {
+                Name = e.Name,
+                MuscleGroup = Enum.Parse<MuscleGroup>(e.MuscleGroup),
+                Type = Enum.Parse<Modality>(e.Type),
+                Objective = Enum.Parse<CatalogObjective>(e.Objective),
+                Difficulty = e.Difficulty,
+                Equipment = e.Equipment,
+                Description = e.Description,
+                Instructions = e.Instructions,
+                Target = e.Target,
+                Effect = e.Effect,
+                ImageSlug = e.ImageSlug,
+                ImageVariants = e.ImageVariants
+            })
+            .ToList();
+
+        if (toAdd.Count > 0)
+        {
+            context.Exercises.AddRange(toAdd);
+            await context.SaveChangesAsync();
+        }
+    }
+
+    private sealed record RepDbSeedExercise(
+        string Name,
+        string MuscleGroup,
+        string Type,
+        string Objective,
+        int Difficulty,
+        string Equipment,
+        string Description,
+        string Instructions,
+        string Target,
+        string Effect,
+        string? ImageSlug,
+        string? ImageVariants);
 }

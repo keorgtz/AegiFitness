@@ -164,6 +164,12 @@ namespace AegiFitness.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ImageSlug")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageVariants")
+                        .HasColumnType("text");
+
                     b.Property<string>("Instructions")
                         .IsRequired()
                         .HasColumnType("text");

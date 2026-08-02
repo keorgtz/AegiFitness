@@ -129,7 +129,9 @@ public class WorkoutLogsController : ControllerBase
         ex.Description,
         ex.Instructions,
         ex.Target,
-        ex.Effect);
+        ex.Effect,
+        ex.ImageSlug,
+        ex.ImageVariants);
 
     private static WorkoutLogDto Map(WorkoutLog log, int xp = 0) => new(
         log.Id,

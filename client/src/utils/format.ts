@@ -161,3 +161,20 @@ export function achievementCategoryName(cat: string): string {
   };
   return map[cat] ?? cat;
 }
+
+// URL de imagen de ejercicio (RepDB flat WebP servida desde /exercises/flat)
+export function exerciseImageUrl(
+  ex: { imageSlug?: string; imageVariants?: string },
+  variant?: string,
+): string | null {
+  if (!ex.imageSlug || !ex.imageVariants) return null;
+  const variants = ex.imageVariants.split(",").filter(Boolean);
+  if (variants.length === 0) return null;
+  const v = variant && variants.includes(variant) ? variant : variants[0];
+  return `/exercises/flat/${ex.imageSlug}-${v}.webp`;
+}
+
+// Lista de variantes disponibles (p.ej. ["start", "peak"] o ["main"])
+export function exerciseImageVariants(ex: { imageVariants?: string }): string[] {
+  return ex.imageVariants?.split(",").filter(Boolean) ?? [];
+}

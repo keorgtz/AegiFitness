@@ -2275,6 +2275,78 @@
   margin-bottom: 14px;
 }
 
+/* Guía visual del ejercicio (RepDB flat WebP) */
+.guide-images {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.guide-images--pair {
+  grid-template-columns: 1fr 1fr;
+}
+
+.guide-images__figure {
+  margin: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.guide-images__figure img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+}
+
+.guide-images__figure figcaption {
+  padding: 8px 10px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.guide-attribution {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.guide-attribution a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+/* Thumbnail de ejercicio en pickers */
+.catalog-picker__item--media {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.catalog-picker__thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-xs);
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+}
+
+.catalog-picker__item-body {
+  flex: 1;
+  min-width: 0;
+}
+
 .swap-modal__current-name {
   font-weight: 700;
   font-size: 0.95rem;

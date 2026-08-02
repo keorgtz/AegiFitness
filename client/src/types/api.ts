@@ -165,6 +165,8 @@ export interface ExerciseDto {
   instructions: string;
   target: string;
   effect: string;
+  imageSlug?: string;
+  imageVariants?: string;
 }
 
 export interface FoodDto {

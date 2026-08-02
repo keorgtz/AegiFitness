@@ -82,5 +82,7 @@ public class ExercisesController : ControllerBase
         e.Description,
         e.Instructions,
         e.Target,
-        e.Effect);
+        e.Effect,
+        e.ImageSlug,
+        e.ImageVariants);
 }
