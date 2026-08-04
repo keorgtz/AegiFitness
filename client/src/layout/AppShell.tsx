@@ -1,6 +1,8 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { initials } from "../utils/format";
+import { toggleTheme } from "../utils/theme";
+import { useTheme } from "../hooks/useTheme";
 import { RingProgress } from "../components/ui/charts";
 import type { ReactNode } from "react";
 
@@ -24,6 +26,7 @@ const NAV_ITEMS: NavItem[] = [
 export function AppShell({ children }: { children: ReactNode }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const navItems = NAV_ITEMS.filter((n) => !n.admin || user?.roles.includes("Admin"));
 
@@ -40,7 +43,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           <div className="brand-text">
             <strong>AegiFitness</strong>
-            <span>Midnight Pulse</span>
+            <span>Pastel Pulse</span>
           </div>
         </div>
         <nav className="sidebar__nav">
@@ -66,11 +69,20 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           <div className="brand-text">
             <strong>AegiFitness</strong>
-            <span>Midnight Pulse</span>
+            <span>Pastel Pulse</span>
           </div>
         </div>
 
         <div className="app-header__actions">
+          <button
+            type="button"
+            className="btn-icon"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+            title={theme === "dark" ? "Modo claro" : "Modo oscuro"}
+          >
+            <span className="icon">{theme === "dark" ? "light_mode" : "dark_mode"}</span>
+          </button>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <RingProgress value={xp} max={levelXp} size={44} stroke={4}>
               <span style={{ fontSize: 12, fontWeight: 800 }}>{level}</span>

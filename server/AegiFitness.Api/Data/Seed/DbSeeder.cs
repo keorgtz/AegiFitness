@@ -209,6 +209,49 @@ public static class DbSeeder
             context.Exercises.AddRange(toAdd);
             await context.SaveChangesAsync();
         }
+
+        await FixExerciseImagesAsync(context, seed);
+    }
+
+    // Slugs de imagen que el free tier de RepDB no incluye → movimiento base
+    // equivalente que sí tiene WebP. Idempotente: corrige filas ya sembradas
+    // con el slug roto (BDs creadas antes del fix en transform-repdb.mjs).
+    private static readonly IReadOnlyDictionary<string, string> ImageSlugFixes =
+        new Dictionary<string, string>
+        {
+            ["barbell-lunge"] = "barbell-reverse-lunge",
+            ["pause-deadlift"] = "deadlift",
+            ["pause-squat"] = "squat",
+            ["paused-incline-bench-press"] = "incline-bench-press",
+        };
+
+    private static async Task FixExerciseImagesAsync(AppDbContext context, List<RepDbSeedExercise> seed)
+    {
+        var brokenSlugs = ImageSlugFixes.Keys.ToHashSet();
+        var broken = await context.Exercises
+            .Where(e => e.ImageSlug != null && brokenSlugs.Contains(e.ImageSlug))
+            .ToListAsync();
+        if (broken.Count == 0) return;
+
+        // Variantes verificadas del seed regenerado (mismo nombre)
+        var byName = seed
+            .GroupBy(e => e.Name, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+
+        foreach (var ex in broken)
+        {
+            if (byName.TryGetValue(ex.Name, out var s) && s.ImageSlug is not null)
+            {
+                ex.ImageSlug = s.ImageSlug;
+                ex.ImageVariants = s.ImageVariants;
+            }
+            else if (ImageSlugFixes.TryGetValue(ex.ImageSlug!, out var fallback))
+            {
+                ex.ImageSlug = fallback;
+                ex.ImageVariants = "start,peak";
+            }
+        }
+        await context.SaveChangesAsync();
     }
 
     private sealed record RepDbSeedExercise(

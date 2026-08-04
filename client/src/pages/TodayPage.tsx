@@ -760,7 +760,7 @@ function ExercisePickerModal({
                 className={`catalog-picker__item ${thumb ? "catalog-picker__item--media" : ""}`}
                 onClick={() => onSelect(ex)}
               >
-                {thumb && <img className="catalog-picker__thumb" src={thumb} alt="" loading="lazy" />}
+                {thumb && (<img className="catalog-picker__thumb" src={thumb} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.display = "none"; }} />)}
                 <div className="catalog-picker__item-body">
                   <div className="catalog-picker__item-title">{ex.name}</div>
                   <div className="catalog-picker__item-meta">
@@ -881,7 +881,7 @@ function ExerciseSwapModal({
                 className={`catalog-picker__item ${thumb ? "catalog-picker__item--media" : ""}`}
                 onClick={() => onSelect(ex)}
               >
-                {thumb && <img className="catalog-picker__thumb" src={thumb} alt="" loading="lazy" />}
+                {thumb && (<img className="catalog-picker__thumb" src={thumb} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.display = "none"; }} />)}
                 <div className="catalog-picker__item-body">
                   <div className="catalog-picker__item-title">{ex.name}</div>
                   <div className="catalog-picker__item-meta">

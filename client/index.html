@@ -7,12 +7,27 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <meta name="theme-color" content="#070b18" />
+    <meta name="theme-color" content="#f5f6fb" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
       name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
+      content="default"
     />
+    <script>
+      // Aplica el tema guardado antes del primer paint (sin FOUC).
+      // Claro por defecto; "dark" solo si el usuario lo eligió.
+      (function () {
+        var theme = "light";
+        try {
+          if (localStorage.getItem("aegi-theme") === "dark") theme = "dark";
+        } catch (e) {}
+        document.documentElement.dataset.theme = theme;
+        if (theme === "dark") {
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", "#101118");
+        }
+      })();
+    </script>
     <link rel="apple-touch-icon" href="/AegiFit-Icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

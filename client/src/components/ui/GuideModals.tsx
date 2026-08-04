@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { ExerciseDto, FoodDto } from "../../types/api";
 import { Chip, Modal } from "./index";
 import { exerciseImageUrl, exerciseImageVariants, muscleGroupName, modalityName } from "../../utils/format";
@@ -14,10 +15,12 @@ interface ExerciseGuideModalProps {
 }
 
 export function ExerciseGuideModal({ exercise, onClose }: ExerciseGuideModalProps) {
+  const [failed, setFailed] = useState<Set<string>>(new Set());
   if (!exercise) return null;
 
   const difficultyLabel = exercise.difficulty === 1 ? "Fácil" : exercise.difficulty === 2 ? "Media" : "Difícil";
-  const variants = exerciseImageVariants(exercise);
+  // Variantes con imagen real; las que fallen al cargar se ocultan solas
+  const variants = exerciseImageVariants(exercise).filter((v) => !failed.has(v));
 
   return (
     <Modal open onClose={onClose} title={exercise.name} wide>
@@ -40,6 +43,7 @@ export function ExerciseGuideModal({ exercise, onClose }: ExerciseGuideModalProp
                 src={exerciseImageUrl(exercise, v) ?? undefined}
                 alt={`${exercise.name} — ${VARIANT_LABEL[v] ?? v}`}
                 loading="lazy"
+                onError={() => setFailed((f) => new Set(f).add(v))}
               />
               <figcaption>{VARIANT_LABEL[v] ?? v}</figcaption>
             </figure>

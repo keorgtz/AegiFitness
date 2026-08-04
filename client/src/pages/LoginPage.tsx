@@ -67,7 +67,7 @@ export default function LoginPage() {
           </p>
         </div>
         <div style={{ color: "var(--text-dim)", fontSize: "0.8rem" }}>
-          Midnight Pulse Edition
+          Pastel Pulse Edition
         </div>
       </div>
 

@@ -4,7 +4,9 @@ import { useAuth } from "../auth/AuthContext";
 import { Button, Card, Chip, EmptyState, ErrorState, Input, Loading, Modal, SegmentedControl, Select } from "../components/ui";
 import { DayConfigEditor } from "../components/DayConfigEditor";
 import { useAsync } from "../hooks/useAsync";
+import { useTheme } from "../hooks/useTheme";
 import { useToastCtx } from "../hooks/useToastContext";
+import { setTheme } from "../utils/theme";
 import type {
   CalisthenicsMode,
   Goal,
@@ -338,6 +340,7 @@ interface AccountSectionProps {
 
 function AccountSection({ username, displayName, email, license, onSaved, onLogout }: AccountSectionProps) {
   const toast = useToastCtx();
+  const theme = useTheme();
   const [name, setName] = useState(displayName);
   const [mail, setMail] = useState(email);
   const [savingData, setSavingData] = useState(false);
@@ -388,6 +391,21 @@ function AccountSection({ username, displayName, email, license, onSaved, onLogo
 
   return (
     <div className="settings-account">
+      <Card title="Apariencia" icon="palette" style={{ marginBottom: 16 }}>
+        <p style={{ color: "var(--text-muted)", fontSize: 13, lineHeight: 1.5, marginBottom: 12 }}>
+          El tema se aplica al instante y se guarda en este dispositivo.
+        </p>
+        <SegmentedControl
+          block
+          options={[
+            { value: "light", label: "Claro" },
+            { value: "dark", label: "Oscuro" },
+          ]}
+          value={theme}
+          onChange={(v) => setTheme(v as "light" | "dark")}
+        />
+      </Card>
+
       <Card title="Datos de la cuenta" icon="account_circle" style={{ marginBottom: 16 }}>
         <div className="form-grid">
           <Input label="Usuario" value={username} readOnly disabled />

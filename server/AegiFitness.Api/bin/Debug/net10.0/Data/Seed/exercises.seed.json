@@ -584,7 +584,7 @@
   "instructions": "1. Coloca una barra en la parte alta de la espalda y párate erguido.\n2. Da un paso adelante con una pierna en una zancada larga.\n3. Baja la rodilla trasera hacia el suelo hasta que el muslo delantero quede paralelo.\n4. Impulsa a través del talón delantero para volver a la posición inicial.\n5. Completa las repeticiones de un lado, luego cambia.",
   "target": "Glúteo Mayor, Cuádriceps · Secundario: Erector Espinal, Glúteo Medio, Isquiotibiales",
   "effect": "• Da una zancada lo bastante larga para que la rodilla delantera quede sobre el tobillo.\n• Mantén el torso erguido y el core contraído bajo la barra.\n• Empuja el suelo con el talón delantero, no con los dedos.",
-  "imageSlug": "barbell-lunge",
+  "imageSlug": "barbell-reverse-lunge",
   "imageVariants": "start,peak"
  },
  {
@@ -4056,7 +4056,7 @@
   "instructions": "1. Colócate en posición de peso muerto convencional.\n2. Levanta la barra del suelo y haz una pausa cuando pase por las rodillas.\n3. Mantén la posición 2-3 segundos y luego completa el levantamiento.\n4. Baja con control.\n5. Repite.",
   "target": "Erector Espinal, Glúteo Mayor, Isquiotibiales · Secundario: Cuádriceps, Trapecio",
   "effect": "• La pausa elimina el impulso y desarrolla la fuerza de inicio.\n• Mantén la espalda plana durante la pausa.",
-  "imageSlug": "pause-deadlift",
+  "imageSlug": "deadlift",
   "imageVariants": "start,peak"
  },
  {
@@ -4070,7 +4070,7 @@
   "instructions": "1. Saca la barra del rack y apóyala sobre la parte superior de la espalda.\n2. De pie con los pies a la anchura de los hombros.\n3. Baja en sentadilla hasta que los muslos queden paralelos al suelo.\n4. Mantén la posición inferior durante 2-3 segundos.\n5. Impulsa a través de los talones para volver a ponerte de pie.\n6. Repite el número de repeticiones deseado.",
   "target": "Glúteo Mayor, Cuádriceps · Secundario: Erector Espinal, Glúteo Medio, Isquiotibiales",
   "effect": "• Mantén la tensión en la pausa; no te relajes en el fondo.\n• Coge aire arriba y mantén el abdomen firme toda la repetición.\n• Mantén el pecho alto para que la barra no te venza hacia delante.",
-  "imageSlug": "pause-squat",
+  "imageSlug": "squat",
   "imageVariants": "start,peak"
  },
  {
@@ -4098,7 +4098,7 @@
   "instructions": "1. Túmbate en un banco inclinado y agarra la barra ligeramente más abierta que la anchura de los hombros.\n2. Saca la barra del rack y bájala hasta el pecho superior.\n3. Haz una pausa sobre el pecho durante 1-2 segundos.\n4. Empuja la barra hacia arriba hasta que los brazos queden completamente extendidos.\n5. Mantén los omóplatos retraídos durante todo el ejercicio.\n6. Repite el número de repeticiones deseado.",
   "target": "Deltoides Anterior, Pectoral Mayor · Secundario: Tríceps",
   "effect": "• No acortes la pausa cuando la carga se haga pesada.\n• Mantén las muñecas firmes sobre los codos durante el recorrido.\n• Mantén los pies firmes en el suelo durante toda la serie.",
-  "imageSlug": "paused-incline-bench-press",
+  "imageSlug": "incline-bench-press",
   "imageVariants": "start,peak"
  },
  {

@@ -1,16 +1,42 @@
 // Transforma repdb-free/free.es.json → server/AegiFitness.Api/Data/Seed/exercises.seed.json
 // Mapea los 400 ejercicios RepDB (ES) al contrato del seed de AegiFitness,
 // incluyendo slug/variantes de imagen para la guía visual.
+// Valida contra los WebP reales en repdb-free/images/flat: si el slug no
+// tiene archivos, intenta un fallback conocido y si no, deja sin imagen.
 // Uso: node scripts/transform-repdb.mjs
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync } from "node:fs";
 
 const ROOT = "C:/Users/kevin/KeorSoft/Development/Web/AegiFitness";
 const SRC = `${ROOT}/repdb-free/free.es.json`;
+const IMAGES = `${ROOT}/repdb-free/images/flat`;
 const OUT = `${ROOT}/server/AegiFitness.Api/Data/Seed/exercises.seed.json`;
 
 const data = JSON.parse(readFileSync(SRC, "utf8"));
 const muscles = data.muscles;
 const equipment = data.equipment;
+
+// Archivos WebP realmente disponibles (el free tier no incluye todos)
+const files = new Set(readdirSync(IMAGES));
+const hasImage = (slug, variant) => files.has(`${slug}-${variant}.webp`);
+
+// Slugs sin imágenes en el free tier → movimiento base con imágenes equivalentes
+const FALLBACK_SLUG = {
+  "barbell-lunge": "barbell-reverse-lunge",
+  "pause-deadlift": "deadlift",
+  "pause-squat": "squat",
+  "paused-incline-bench-press": "incline-bench-press",
+};
+
+// Resuelve slug + variantes verificando archivos; null si no hay imagen real
+function resolveImages(ex) {
+  const wanted = (ex.images?.flat ?? []).filter(Boolean);
+  const candidates = [ex.image_alias ?? ex.id, FALLBACK_SLUG[ex.image_alias ?? ex.id]].filter(Boolean);
+  for (const slug of candidates) {
+    const variants = wanted.filter((v) => hasImage(slug, v));
+    if (variants.length > 0) return { imageSlug: slug, imageVariants: variants.join(",") };
+  }
+  return { imageSlug: null, imageVariants: null };
+}
 
 const muscleName = (slug) => muscles[slug]?.name ?? slug.replaceAll("_", " ");
 const muscleRegion = (slug) => muscles[slug]?.region;
@@ -102,8 +128,7 @@ for (const ex of data.exercises) {
     instructions: ex.instructions.map((s, i) => `${i + 1}. ${s}`).join("\n"),
     target,
     effect: tips || `Objetivos: ${goalLabels}`,
-    imageSlug: ex.image_alias ?? ex.id,
-    imageVariants: (ex.images?.flat ?? []).join(","),
+    ...resolveImages(ex),
   });
 }
 
@@ -119,5 +144,8 @@ for (const e of out) {
 }
 console.log(`ejercicios escritos: ${out.length} → ${OUT}`);
 console.log("por tipo:", byType);
+const noImage = out.filter((e) => !e.imageSlug);
+const fallback = out.filter((e) => e.imageSlug && Object.values(FALLBACK_SLUG).includes(e.imageSlug));
+console.log(`sin imagen: ${noImage.length}`, noImage.map((e) => e.name));
 console.log("por tipo/músculo:");
 for (const [k, v] of Object.entries(byMuscleType).sort()) console.log(`  ${k}: ${v}`);

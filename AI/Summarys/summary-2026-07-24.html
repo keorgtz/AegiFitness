@@ -127,7 +127,7 @@
   <header>
     <h1>AegiFitness</h1>
     <div class="sub">Resumen de implementación</div>
-    <div class="date-badge">24 jul — 1 ago · 2026</div>
+    <div class="date-badge">24 jul — 3 ago · 2026</div>
   </header>
 
   <div class="section">
@@ -335,6 +335,62 @@
   </div>
 
   <div class="section">
+    <div class="section-title">Rediseño total: Material Expressive 3 pastel, claro/oscuro</div>
+    <ul class="changes">
+      <li>
+        <strong>Nuevo lenguaje visual "Pastel Pulse"</strong> (MeridianUI × Material Expressive 3):
+        reescritura completa de <code>tokens.css</code> y <code>app.css</code> (~2700 líneas).
+        Acentos pastel (violeta <code>#7b61ff</code>, menta, durazno, cielo, rosa, coral),
+        radios generosos (cards 18px, hero 26px, botones stadium/pill), sombras Dp1-3 suaves,
+        motion <code>emphasized cubic-bezier(0.2,0,0,1)</code> de 140-280ms, sin glows duros.
+      </li>
+      <li>
+        <strong>Modo claro por defecto + modo oscuro persistente</strong>: paletas duales en
+        <code>:root</code> y <code>[data-theme="dark"]</code> (negro suave <code>#101118</code>
+        con acentos pastel luminosos). Script inline en <code>index.html</code> aplica el tema
+        antes del primer paint (sin FOUC); la elección se guarda en
+        <code>localStorage("aegi-theme")</code> y actualiza <code>theme-color</code>.
+      </li>
+      <li>
+        Toggle sol/luna en el header (siempre accesible) + tarjeta <strong>Apariencia</strong>
+        en Ajustes → Cuenta (segmented Claro/Oscuro). Store mínimo en
+        <code>utils/theme.ts</code> con <code>useSyncExternalStore</code> y transición suave
+        al cambiar (clase <code>theme-anim</code> de 300ms).
+      </li>
+      <li>
+        Navegación estilo M3: item activo = pill <code>primary-bg</code> + ícono FILL (sidebar
+        y bottom-nav), en vez del gradiente sólido anterior. Stat-cards con tile de ícono
+        semántico pastel; hero con lavado violeta→rosa→menta; inputs con relleno
+        <code>--field-bg</code>; tablas con hover de fila.
+      </li>
+      <li>
+        Tokens nuevos para tematizar lo que era <code>rgba()</code> fijo:
+        <code>--field-bg</code>, <code>--row-bg</code>, <code>--track</code> (0 rgba hardcodeado
+        en componentes). Contraste corregido: texto sobre acentos usa
+        <code>--text-on-primary</code> (blanco en claro, <code>#17142e</code> en oscuro).
+      </li>
+      <li>
+        Marca: subtítulo "Midnight Pulse" → <strong>"Pastel Pulse"</strong> (sidebar, header,
+        login, registro); brand-mark gradiente violeta→rosa; manifest PWA y
+        <code>theme-color</code> actualizados a <code>#f5f6fb</code>.
+      </li>
+      <li>
+        <strong>Fix RepDB</strong>: 4 slugs sin WebP en el free tier
+        (<code>barbell-lunge</code>, <code>pause-deadlift</code>, <code>pause-squat</code>,
+        <code>paused-incline-bench-press</code>) rompían la guía visual.
+        <code>transform-repdb.mjs</code> ahora valida contra los archivos reales y aplica
+        fallbacks (deadlift, squat, incline-bench-press, barbell-reverse-lunge);
+        <code>DbSeeder.FixExerciseImagesAsync</code> corrige idempotentemente las filas ya
+        sembradas; la guía y los thumbs ocultan imágenes rotas vía <code>onError</code>.
+      </li>
+      <li>
+        Verificación visual dual: <code>capture-theme.mjs</code> (nuevo) captura 5 vistas +
+        modal + apariencia en desktop y 3 en móvil, en ambos temas — revisadas.
+      </li>
+    </ul>
+  </div>
+
+  <div class="section">
     <div class="section-title">Verificación</div>
     <div class="verify-grid">
       <div class="verify"><div class="val">38/38</div><div class="lbl">Smoke API</div></div>
@@ -346,10 +402,11 @@
       <li><code>npm run build</code> (tsc + vite + PWA) sin errores.</li>
       <li><code>scripts/run-smoke.ps1</code>: 38/38 PASS — incluye contratos exercise/food/foodId y adherencia 0–100.</li>
       <li><code>scripts/run-smoke-admin.ps1</code>: 17/17 PASS — flujo completo de licencias, roles y contraseñas.</li>
-      <li><code>e2e-smoke.mjs</code>: 13/13 PASS, sin errores JS en consola; puertos 5212/5173 liberados.</li>
-      <li><code>verify-swap.mjs</code>: 26/26 PASS — swap de ejercicio y platillo, imágenes RepDB en guía y pickers, bottom-sheet móvil.</li>
-      <li><code>dotnet publish -c Release</code> correcto; migración <code>ExerciseImages</code> generada y aplicada en dev.</li>
-      <li>Capturas regeneradas en <code>shots/review/</code> (desktop + móvil) y <code>shots/swap/09-guia-imagenes.png</code> (guía con imágenes RepDB) revisadas visualmente.</li>
+      <li><code>e2e-smoke.mjs</code>: 13/13 PASS, sin errores JS en consola (post-rediseño).</li>
+      <li><code>verify-swap.mjs</code>: 26/26 PASS — swap de ejercicio y platillo, imágenes RepDB en guía (200 OK) y pickers, bottom-sheet móvil.</li>
+      <li><code>npm run build</code> (tsc + vite + PWA, 375 KiB precache) y <code>dotnet build</code> sin errores tras el rediseño.</li>
+      <li><code>capture-theme.mjs</code>: 26 capturas revisadas en ambos temas (desktop + móvil); contraste de botones corregido; guía RepDB con imágenes reales en claro y oscuro.</li>
+      <li>Seeder de imágenes verificado en BD dev: 0 slugs rotos, 4 filas corregidas idempotentemente.</li>
     </ul>
   </div>
 
@@ -364,6 +421,12 @@
       <div><span class="tag">API</span>server/AegiFitness.Api/Data/Seed/DbSeeder.cs (merge RepDB por nombre)</div>
       <div><span class="tag">API</span>server/AegiFitness.Api/Data/Seed/exercises.seed.json (nuevo, 400 ejercicios)</div>
       <div><span class="tag">API</span>server/AegiFitness.Api/Migrations/20260801024020_ExerciseImages.cs (nuevo)</div>
+      <div><span class="tag">WEB</span>client/src/styles/tokens.css (reescrito: dual-theme pastel)</div>
+      <div><span class="tag">WEB</span>client/src/styles/app.css (reescrito: Material Expressive 3)</div>
+      <div><span class="tag">WEB</span>client/src/utils/theme.ts (nuevo: store de tema)</div>
+      <div><span class="tag">WEB</span>client/src/hooks/useTheme.ts (nuevo)</div>
+      <div><span class="tag">WEB</span>client/index.html (anti-FOUC + theme-color claro)</div>
+      <div><span class="tag">WEB</span>client/src/layout/AppShell.tsx (toggle sol/luna + marca)</div>
       <div><span class="tag">WEB</span>client/src/pages/AchievementsPage.tsx</div>
       <div><span class="tag">WEB</span>client/src/pages/AdminPage.tsx</div>
       <div><span class="tag">WEB</span>client/src/pages/NutritionPage.tsx</div>
@@ -371,11 +434,12 @@
       <div><span class="tag">WEB</span>client/src/pages/TodayPage.tsx</div>
       <div><span class="tag">WEB</span>client/src/components/ui/index.tsx (Modal portal + bottom-sheet)</div>
       <div><span class="tag">WEB</span>client/src/components/ui/FoodSwapModal.tsx (nuevo)</div>
-      <div><span class="tag">WEB</span>client/src/components/ui/GuideModals.tsx (imágenes RepDB + atribución)</div>
+      <div><span class="tag">WEB</span>client/src/components/ui/GuideModals.tsx (imágenes RepDB + onError + atribución)</div>
       <div><span class="tag">WEB</span>client/src/components/ui/charts.tsx</div>
       <div><span class="tag">WEB</span>client/src/utils/format.ts (exerciseImageUrl/Variants)</div>
       <div><span class="tag">WEB</span>client/src/types/api.ts</div>
-      <div><span class="tag">WEB</span>client/src/pages/SettingsPage.tsx (Acerca de, atribución RepDB)</div>
+      <div><span class="tag">WEB</span>client/src/pages/SettingsPage.tsx (tarjeta Apariencia + atribución)</div>
+      <div><span class="tag">WEB</span>client/src/pages/LoginPage.tsx / RegisterPage.tsx (marca Pastel Pulse)</div>
       <div><span class="tag">WEB</span>client/vite.config.ts (PWA globIgnores + runtimeCaching imágenes)</div>
       <div><span class="tag">WEB</span>client/public/exercises/flat/ (745 WebP, 11.6 MB)</div>
       <div><span class="tag">WEB</span>client/src/api/resources.ts</div>
@@ -385,8 +449,10 @@
       <div><span class="tag">OPS</span>docker-compose.yml (healthchecks + depends_on healthy)</div>
       <div><span class="tag">OPS</span>client/nginx.conf (resolver DNS dinámico + /healthz)</div>
       <div><span class="tag">OPS</span>server/AegiFitness.Api/Dockerfile (curl para healthcheck)</div>
-      <div><span class="tag">OPS</span>scripts/transform-repdb.mjs (nuevo, dataset → seed JSON)</div>
+      <div><span class="tag">OPS</span>scripts/transform-repdb.mjs (valida WebP reales + fallbacks)</div>
       <div><span class="tag">OPS</span>client/scripts/verify-swap.mjs (ampliado a 26 checks)</div>
+      <div><span class="tag">OPS</span>client/scripts/capture-theme.mjs (nuevo: capturas dual-theme)</div>
+      <div><span class="tag">API</span>server/AegiFitness.Api/Data/Seed/DbSeeder.cs (merge + FixExerciseImagesAsync)</div>
       <div><span class="tag">DOC</span>deploy-guide.html (v1.1, troubleshooting ampliado)</div>
       <div><span class="tag">DOC</span>README.md (atribución RepDB)</div>
     </div>
@@ -421,12 +487,12 @@
     <div class="section-title">Pendientes conocidos</div>
     <ul class="changes">
       <li>Los scripts de captura full-page muestran la bottom-nav flotando a mitad de página; es un artefacto del screenshot, no un bug del viewport real (verificado: <code>app-content</code> reserva <code>--nav-h + 32px</code> de padding inferior).</li>
-      <li>Deploy pendiente en el servidor: <code>docker compose up -d --build</code> (cambian ambos contenedores). La migración <code>ExerciseImages</code> se aplica sola al arrancar y el merge RepDB es no destructivo (564 ejercicios tras el seed).</li>
+      <li>Deploy pendiente en el servidor: <code>docker compose up -d --build</code> (cambian ambos contenedores). La migración <code>ExerciseImages</code> se aplica sola al arrancar, el merge RepDB es no destructivo y <code>FixExerciseImagesAsync</code> corrige los 4 slugs rotos en BDs ya sembradas. El rediseño es 100% cliente + seeder: no requiere migración nueva.</li>
       <li>Cambios sin commit en el working tree, listos para revisión.</li>
     </ul>
   </div>
 
-  <footer>AegiFitness · Resumen actualizado el 2026-08-01</footer>
+  <footer>AegiFitness · Resumen actualizado el 2026-08-03</footer>
 
 </div>
 </body>
