@@ -354,6 +354,13 @@ export interface MetricsSummaryDto {
   volumeByMuscle: Record<string, number>;
 }
 
+export interface ExerciseHistoryPointDto { date: string; volumeKg: number; maxWeightKg: number; totalReps: number; estimatedOneRepMax: number; completedSets: number }
+export interface ExerciseHistoryDto { exercise: ExerciseDto; sessions: number; lastPerformed: string; totalVolumeKg: number; bestWeightKg: number; bestReps: number; bestEstimatedOneRepMax: number; trendPercent: number; recent: ExerciseHistoryPointDto[] }
+export interface PersonalRecordDto { exercise: ExerciseDto; bestWeightKg: number; repsAtBestWeight: number; bestWeightDate?: string; bestReps: number; bestRepsDate?: string; bestEstimatedOneRepMax: number; bestEstimatedOneRepMaxDate?: string; bestSessionVolumeKg: number; bestSessionVolumeDate?: string; totalSessions: number; improvedRecently: boolean }
+export interface FitnessCalendarDayDto { date: string; isTracked: boolean; hasWorkout: boolean; hasNutrition: boolean; hasMeasurement: boolean; isRestDay: boolean; trainingAdherence?: number; nutritionAdherence?: number; overallAdherence: number; completedSets: number; plannedSets: number; calories: number; targetCalories: number; workoutVolumeKg: number; personalRecords: number }
+export interface AdherenceWeekDto { startDate: string; training: number; nutrition: number; overall: number }
+export interface AdherenceSummaryDto { training7d: number; training30d: number; nutrition7d: number; nutrition30d: number; overall7d: number; overall30d: number; trainingStreak: number; nutritionStreak: number; overallStreak: number; perfectDays30d: number; plannedWorkouts30d: number; completedWorkouts30d: number; weeklyTrend: AdherenceWeekDto[] }
+
 export interface AchievementDto {
   code: string;
   name: string;

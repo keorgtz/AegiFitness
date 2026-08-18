@@ -1,6 +1,7 @@
 import { api } from "./client";
 import type {
   AdminLicenseDto,
+  AdherenceSummaryDto,
   BodyMeasurementDto,
   BodyMeasurementRequest,
   AdminUserDto,
@@ -9,8 +10,10 @@ import type {
   CreateGoalRequest,
   DashboardSummaryDto,
   ExerciseDto,
+  ExerciseHistoryDto,
   ExtendLicenseRequest,
   FoodDto,
+  FitnessCalendarDayDto,
   GamificationSummaryDto,
   LicenseActionRequest,
   MealLogDto,
@@ -20,6 +23,7 @@ import type {
   MetricsSummaryDto,
   PagedResult,
   ProfileDto,
+  PersonalRecordDto,
   ProgressPhotoDto,
   ResetPasswordRequest,
   RoleRequest,
@@ -85,6 +89,13 @@ export const metricsApi = {
   },
   deletePhoto: (photoId: string) => api.delete<void>(`/metrics/body/photos/${photoId}`),
   photo: (photoId: string) => api.getBlob(`/metrics/body/photos/${photoId}`),
+};
+
+export const analyticsApi = {
+  exercises: (from: string, to: string) => api.get<ExerciseHistoryDto[]>(`/analytics/exercises?from=${from}&to=${to}`),
+  personalRecords: () => api.get<PersonalRecordDto[]>("/analytics/personal-records"),
+  calendar: (from: string, to: string) => api.get<FitnessCalendarDayDto[]>(`/analytics/calendar?from=${from}&to=${to}`),
+  adherence: (date?: string) => api.get<AdherenceSummaryDto>(`/analytics/adherence${date ? `?date=${date}` : ""}`),
 };
 
 export const gamificationApi = {

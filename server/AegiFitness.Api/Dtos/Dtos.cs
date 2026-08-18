@@ -374,3 +374,17 @@ public record CatalogFilterQuery(string? Search, string? Type, string? MuscleGro
 public record FoodFilterQuery(string? Search, string? MealType, string? Objective, int Page = 1, int PageSize = 20);
 public record DateRangeQuery(DateOnly? From, DateOnly? To);
 public record DateQuery([Required] DateOnly Date);
+
+public record ExerciseHistoryPointDto(DateOnly Date, decimal VolumeKg, decimal MaxWeightKg, int TotalReps, decimal EstimatedOneRepMax, int CompletedSets);
+public record ExerciseHistoryDto(ExerciseDto Exercise, int Sessions, DateOnly LastPerformed, decimal TotalVolumeKg,
+    decimal BestWeightKg, int BestReps, decimal BestEstimatedOneRepMax, decimal TrendPercent, ExerciseHistoryPointDto[] Recent);
+public record PersonalRecordDto(ExerciseDto Exercise, decimal BestWeightKg, int RepsAtBestWeight, DateOnly? BestWeightDate,
+    int BestReps, DateOnly? BestRepsDate, decimal BestEstimatedOneRepMax, DateOnly? BestEstimatedOneRepMaxDate,
+    decimal BestSessionVolumeKg, DateOnly? BestSessionVolumeDate, int TotalSessions, bool ImprovedRecently);
+public record FitnessCalendarDayDto(DateOnly Date, bool IsTracked, bool HasWorkout, bool HasNutrition, bool HasMeasurement, bool IsRestDay,
+    int? TrainingAdherence, int? NutritionAdherence, int OverallAdherence, int CompletedSets, int PlannedSets,
+    int Calories, int TargetCalories, decimal WorkoutVolumeKg, int PersonalRecords);
+public record AdherenceWeekDto(DateOnly StartDate, int Training, int Nutrition, int Overall);
+public record AdherenceSummaryDto(int Training7d, int Training30d, int Nutrition7d, int Nutrition30d,
+    int Overall7d, int Overall30d, int TrainingStreak, int NutritionStreak, int OverallStreak,
+    int PerfectDays30d, int PlannedWorkouts30d, int CompletedWorkouts30d, AdherenceWeekDto[] WeeklyTrend);

@@ -20,6 +20,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/nutrition", label: "Nutrición", icon: "restaurant" },
   { to: "/guide", label: "Guía", icon: "menu_book" },
   { to: "/progress", label: "Progreso", icon: "trending_up" },
+  { to: "/insights", label: "Análisis", icon: "monitoring" },
   { to: "/achievements", label: "Logros", icon: "emoji_events" },
   { to: "/export", label: "Exportar", icon: "download", desktopOnly: true },
   { to: "/settings", label: "Ajustes", icon: "settings" },
