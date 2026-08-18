@@ -12,6 +12,7 @@ type NutritionView = "log" | "plan" | "catalog";
 interface MealEntry { foodId?: number; customName?: string; mealType: MealType; servings: number; calories: number; proteinG: number; carbsG: number; fatG: number; isExtra: boolean; food?: FoodDto }
 const MEAL_TYPES = ["Breakfast", "Lunch", "Dinner", "Snack"] as const;
 const OBJECTIVES: CatalogObjective[] = ["Bulk", "Cut", "Both"];
+const FOOD_PAGE_SIZE = 24;
 
 export default function NutritionPage() {
   const toast = useToastCtx();
@@ -124,18 +125,56 @@ function FoodCatalog({ onSelect }: { onSelect: (food: FoodDto) => void }) {
   const [mealType, setMealType] = useState("");
   const [objective, setObjective] = useState("");
   const [items, setItems] = useState<FoodDto[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
-  useEffect(() => { setLoading(true); foodCatalogApi.search({ search, mealType, objective, pageSize: 40 }).then((result) => setItems(result.items)).finally(() => setLoading(false)); }, [search, mealType, objective]);
-  return <section aria-labelledby="food-catalog-title"><div className="section-title"><span id="food-catalog-title">Catálogo de comidas</span></div><div className="catalog-picker__search"><span className="icon">search</span><input className="input" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar comida..." /></div><div className="row gap-2 mb-3"><select className="select" value={mealType} onChange={(event) => setMealType(event.target.value)}><option value="">Todas las comidas</option>{MEAL_TYPES.map((type) => <option key={type} value={type}>{mealTypeName(type)}</option>)}</select><select className="select" value={objective} onChange={(event) => setObjective(event.target.value)}><option value="">Todos los objetivos</option>{OBJECTIVES.map((item) => <option key={item} value={item}>{item}</option>)}</select></div>{loading ? <Loading message="Cargando catálogo" /> : !items.length ? <EmptyState icon="search_off" title="Sin resultados" /> : items.map((food) => <button key={food.id} type="button" className="catalog-picker__item" onClick={() => onSelect(food)}><div><div className="catalog-picker__item-title">{food.name}</div><div className="catalog-picker__item-meta">{food.calories} kcal · {food.proteinG}g P · {mealTypeName(food.mealType)}</div></div><span className="icon">chevron_right</span></button>)}</section>;
+  const totalPages = Math.max(1, Math.ceil(totalCount / FOOD_PAGE_SIZE));
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    foodCatalogApi.search({ search, mealType, objective, page, pageSize: FOOD_PAGE_SIZE }).then((result) => {
+      if (!active) return;
+      setItems(result.items);
+      setTotalCount(result.totalCount);
+    }).finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [search, mealType, objective, page]);
+  return <section aria-labelledby="food-catalog-title"><div className="section-title"><span id="food-catalog-title">Catálogo de comidas</span></div><div className="catalog-picker__search"><span className="icon">search</span><input className="input" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Buscar cualquier comida..." /></div><div className="catalog-picker__filters"><select className="select" value={mealType} onChange={(event) => { setMealType(event.target.value); setPage(1); }}><option value="">Todos los platillos</option>{MEAL_TYPES.map((type) => <option key={type} value={type}>{mealTypeName(type)}</option>)}</select><select className="select" value={objective} onChange={(event) => { setObjective(event.target.value); setPage(1); }}><option value="">Todos los objetivos</option>{OBJECTIVES.map((item) => <option key={item} value={item}>{item}</option>)}</select></div>{loading ? <Loading message="Cargando catálogo" /> : !items.length ? <EmptyState icon="search_off" title="Sin resultados" /> : <>{items.map((food) => <button key={food.id} type="button" className="catalog-picker__item" onClick={() => onSelect(food)}><div><div className="catalog-picker__item-title">{food.name}</div><div className="catalog-picker__item-meta">{food.calories} kcal · {food.proteinG}g P · {mealTypeName(food.mealType)}</div></div><span className="icon">chevron_right</span></button>)}<div className="catalog-picker__pagination"><Button variant="ghost" size="sm" disabled={page <= 1} onClick={() => setPage((current) => current - 1)}>Anterior</Button><span className="text-muted">{totalCount} platillos · {page}/{totalPages}</span><Button variant="ghost" size="sm" disabled={page >= totalPages} onClick={() => setPage((current) => current + 1)}>Siguiente</Button></div></>}</section>;
 }
 
 function FoodPickerModal({ open, onClose, onSelect, onQuick }: { open: boolean; onClose: () => void; onSelect: (food: FoodDto, mealType: MealType) => void; onQuick: () => void }) {
-  const [mealType, setMealType] = useState<MealType>("Snack");
+  const [filterMealType, setFilterMealType] = useState("");
+  const [logMealType, setLogMealType] = useState<MealType | "auto">("auto");
+  const [objective, setObjective] = useState("");
   const [search, setSearch] = useState("");
   const [items, setItems] = useState<FoodDto[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
-  useEffect(() => { if (!open) return; setLoading(true); foodCatalogApi.search({ search, mealType, pageSize: 30 }).then((result) => setItems(result.items)).finally(() => setLoading(false)); }, [open, search, mealType]);
-  return <Modal open={open} onClose={onClose} title="Añadir comida" wide><select className="select mb-3" value={mealType} onChange={(event) => setMealType(event.target.value as MealType)}>{MEAL_TYPES.map((type) => <option key={type} value={type}>{mealTypeName(type)}</option>)}</select><div className="catalog-picker__search"><span className="icon">search</span><input className="input" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar comida..." /></div>{loading ? <Loading message="Buscando comidas" /> : !items.length ? <EmptyState icon="search_off" title="Sin resultados" /> : items.map((food) => <button key={food.id} type="button" className="catalog-picker__item" onClick={() => onSelect(food, mealType)}><div><div className="catalog-picker__item-title">{food.name}</div><div className="catalog-picker__item-meta">{food.calories} kcal · {food.proteinG}g P</div></div><span className="icon">add</span></button>)}<Button variant="ghost" block className="mt-3" onClick={onQuick}>No está en el catálogo</Button></Modal>;
+  const totalPages = Math.max(1, Math.ceil(totalCount / FOOD_PAGE_SIZE));
+
+  useEffect(() => {
+    if (open) return;
+    setFilterMealType("");
+    setLogMealType("auto");
+    setObjective("");
+    setSearch("");
+    setPage(1);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    let active = true;
+    setLoading(true);
+    foodCatalogApi.search({ search, mealType: filterMealType, objective, page, pageSize: FOOD_PAGE_SIZE }).then((result) => {
+      if (!active) return;
+      setItems(result.items);
+      setTotalCount(result.totalCount);
+    }).finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [open, search, filterMealType, objective, page]);
+
+  return <Modal open={open} onClose={onClose} title="Añadir comida" wide><div className="catalog-picker__filters catalog-picker__filters--triple"><div className="input-group"><label className="input-group__label">Mostrar</label><select className="select" value={filterMealType} onChange={(event) => { setFilterMealType(event.target.value); setPage(1); }}><option value="">Todos los platillos</option>{MEAL_TYPES.map((type) => <option key={type} value={type}>{mealTypeName(type)}</option>)}</select></div><div className="input-group"><label className="input-group__label">Objetivo</label><select className="select" value={objective} onChange={(event) => { setObjective(event.target.value); setPage(1); }}><option value="">Todos</option>{OBJECTIVES.map((item) => <option key={item} value={item}>{item}</option>)}</select></div><div className="input-group"><label className="input-group__label">Registrar como</label><select className="select" value={logMealType} onChange={(event) => setLogMealType(event.target.value as MealType | "auto")}><option value="auto">Tipo del platillo</option>{MEAL_TYPES.map((type) => <option key={type} value={type}>{mealTypeName(type)}</option>)}</select></div></div><div className="catalog-picker__search"><span className="icon">search</span><input className="input" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Buscar cualquier comida..." /></div>{loading ? <Loading message="Buscando comidas" /> : !items.length ? <EmptyState icon="search_off" title="Sin resultados" description="Prueba quitando los filtros o cambiando la búsqueda." /> : <>{items.map((food) => <button key={food.id} type="button" className="catalog-picker__item" onClick={() => onSelect(food, logMealType === "auto" ? food.mealType : logMealType)}><div><div className="catalog-picker__item-title">{food.name}</div><div className="catalog-picker__item-meta">{food.calories} kcal · {food.proteinG}g P · {mealTypeName(food.mealType)}</div></div><span className="icon">add</span></button>)}<div className="catalog-picker__pagination"><Button variant="ghost" size="sm" disabled={page <= 1} onClick={() => setPage((current) => current - 1)}>Anterior</Button><span className="text-muted">{totalCount} platillos · {page}/{totalPages}</span><Button variant="ghost" size="sm" disabled={page >= totalPages} onClick={() => setPage((current) => current + 1)}>Siguiente</Button></div></>}<Button variant="ghost" block className="mt-3" onClick={onQuick}>No está en el catálogo</Button></Modal>;
 }
 
 function QuickMealModal({ open, onClose, onAdd }: { open: boolean; onClose: () => void; onAdd: (entry: Omit<MealEntry, "servings" | "isExtra">) => void }) {

@@ -10,6 +10,9 @@ import { addDays, dayName, exerciseImageUrl, modalityName, muscleGroupName, toda
 type TrainingView = "today" | "plan" | "history";
 interface WorkoutEntry { exerciseId: number; plannedSets: number; plannedReps: number; actualSets: number; actualReps: number; actualWeightKg: number; completed: boolean; isExtra: boolean; exercise: ExerciseDto }
 const MUSCLE_VARIANT: Record<MuscleGroup, string> = { Chest: "info", Back: "primary", Legs: "success", Shoulders: "warning", Biceps: "danger", Triceps: "accent", Core: "accent" };
+const EXERCISE_TYPES = ["Gym", "Calisthenics", "Both"] as const;
+const MUSCLE_GROUPS: MuscleGroup[] = ["Chest", "Back", "Legs", "Shoulders", "Biceps", "Triceps", "Core"];
+const EXERCISE_PAGE_SIZE = 24;
 
 export default function TrainingPage() {
   const toast = useToastCtx();
@@ -148,15 +151,42 @@ export default function TrainingPage() {
 
 function ExercisePickerModal({ open, title, onClose, onSelect }: { open: boolean; title: string; onClose: () => void; onSelect: (exercise: ExerciseDto) => void }) {
   const [search, setSearch] = useState("");
+  const [type, setType] = useState("");
+  const [muscleGroup, setMuscleGroup] = useState("");
   const [items, setItems] = useState<ExerciseDto[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const totalPages = Math.max(1, Math.ceil(totalCount / EXERCISE_PAGE_SIZE));
+
+  useEffect(() => {
+    if (open) return;
+    setSearch("");
+    setType("");
+    setMuscleGroup("");
+    setPage(1);
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
+    let active = true;
     setLoading(true);
-    exerciseCatalogApi.search({ search, pageSize: 30 }).then((result) => setItems(result.items)).finally(() => setLoading(false));
-  }, [open, search]);
+    exerciseCatalogApi.search({ search, type, muscleGroup, page, pageSize: EXERCISE_PAGE_SIZE })
+      .then((result) => {
+        if (!active) return;
+        setItems(result.items);
+        setTotalCount(result.totalCount);
+      })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [open, search, type, muscleGroup, page]);
+
   return <Modal open={open} onClose={onClose} title={title} wide>
-    <div className="catalog-picker__search"><span className="icon">search</span><input className="input" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar ejercicio..." autoFocus /></div>
-    {loading ? <Loading message="Buscando ejercicios" /> : !items.length ? <EmptyState icon="search_off" title="Sin resultados" /> : <div className="catalog-picker__grid">{items.map((exercise) => { const image = exerciseImageUrl(exercise); return <button key={exercise.id} type="button" className="catalog-picker__item" onClick={() => onSelect(exercise)}>{image && <img src={image} alt="" className="catalog-picker__thumb" />}<div><div className="catalog-picker__item-title">{exercise.name}</div><div className="catalog-picker__item-meta">{muscleGroupName(exercise.muscleGroup)} · {exercise.equipment}</div></div></button>; })}</div>}
+    <div className="catalog-picker__filters">
+      <select className="select" value={type} onChange={(event) => { setType(event.target.value); setPage(1); }} aria-label="Filtrar por tipo de entrenamiento"><option value="">Todos los tipos</option>{EXERCISE_TYPES.map((item) => <option key={item} value={item}>{modalityName(item)}</option>)}</select>
+      <select className="select" value={muscleGroup} onChange={(event) => { setMuscleGroup(event.target.value); setPage(1); }} aria-label="Filtrar por grupo muscular"><option value="">Todo el cuerpo</option>{MUSCLE_GROUPS.map((item) => <option key={item} value={item}>{muscleGroupName(item)}</option>)}</select>
+    </div>
+    <div className="catalog-picker__search"><span className="icon">search</span><input className="input" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Buscar cualquier ejercicio..." autoFocus /></div>
+    {loading ? <Loading message="Buscando ejercicios" /> : !items.length ? <EmptyState icon="search_off" title="Sin resultados" description="Prueba quitando los filtros o cambiando la búsqueda." /> : <><div className="catalog-picker__grid">{items.map((exercise) => { const image = exerciseImageUrl(exercise); return <button key={exercise.id} type="button" className="catalog-picker__item" onClick={() => onSelect(exercise)}>{image && <img src={image} alt="" className="catalog-picker__thumb" />}<div><div className="catalog-picker__item-title">{exercise.name}</div><div className="catalog-picker__item-meta">{modalityName(exercise.type)} · {muscleGroupName(exercise.muscleGroup)} · {exercise.equipment}</div></div></button>; })}</div><div className="catalog-picker__pagination"><Button variant="ghost" size="sm" disabled={page <= 1} onClick={() => setPage((current) => current - 1)}>Anterior</Button><span className="text-muted">{totalCount} ejercicios · {page}/{totalPages}</span><Button variant="ghost" size="sm" disabled={page >= totalPages} onClick={() => setPage((current) => current + 1)}>Siguiente</Button></div></>}
   </Modal>;
 }
