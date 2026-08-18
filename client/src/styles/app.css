@@ -2170,6 +2170,335 @@
   }
 }
 
+/* ==========================================================
+   EXPORTS — constructor y vista previa
+   ========================================================== */
+.export-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  align-items: start;
+  gap: 18px;
+}
+
+.export-builder,
+.export-preview {
+  min-width: 0;
+}
+
+.export-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+  padding-bottom: 24px;
+}
+
+.export-step:not(.export-step--last)::before {
+  content: "";
+  position: absolute;
+  top: 34px;
+  bottom: 0;
+  left: 16px;
+  width: 2px;
+  background: var(--primary-pale);
+}
+
+.export-step__number {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: var(--primary);
+  background: var(--primary-bg);
+  border: 1px solid var(--primary-pale);
+  font-weight: 800;
+}
+
+.export-step__body {
+  min-width: 0;
+  padding-top: 5px;
+}
+
+.export-step__body > .label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.export-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.export-choice {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  min-height: 126px;
+  padding: 14px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-md);
+  background: var(--row-bg);
+  text-align: left;
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+}
+
+.export-choice:hover {
+  border-color: var(--primary-pale);
+  transform: translateY(-1px);
+}
+
+.export-choice--active {
+  border-color: var(--primary);
+  background: var(--primary-bg);
+}
+
+.export-choice > .icon:first-child {
+  color: var(--primary);
+}
+
+.export-choice strong,
+.export-choice small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.export-choice small {
+  margin-top: 3px;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+
+.export-choice__check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: var(--primary);
+  font-size: 18px;
+  opacity: 0;
+}
+
+.export-choice--active .export-choice__check {
+  opacity: 1;
+  font-variation-settings: "FILL" 1;
+}
+
+.export-date {
+  margin-top: 12px;
+  margin-bottom: 10px;
+}
+
+.export-range {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+.export-range small,
+.export-range strong {
+  display: block;
+}
+
+.export-range small {
+  margin-bottom: 2px;
+  font-size: 0.68rem;
+}
+
+.export-range strong {
+  color: var(--text);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.export-help {
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.export-preview {
+  position: sticky;
+  top: calc(var(--header-h) + 20px);
+}
+
+.export-preview__empty {
+  display: grid;
+  place-items: center;
+  min-height: 350px;
+  padding: 30px;
+  border: 1px dashed var(--hairline-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.export-preview__empty > .icon {
+  margin-bottom: 12px;
+  color: var(--primary);
+  font-size: 48px;
+}
+
+.export-preview__empty p {
+  margin-top: 5px;
+  font-size: 0.82rem;
+}
+
+.export-document {
+  padding: 22px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  background: linear-gradient(145deg, var(--primary-bg), var(--accent-bg) 55%, var(--success-bg));
+}
+
+.export-document__brand {
+  color: var(--primary);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.export-document h2 {
+  margin-top: 8px;
+  font-size: 1.3rem;
+}
+
+.export-document > p {
+  margin-top: 3px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.export-document dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.export-document dl > div {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  background: var(--surface-glass);
+}
+
+.export-document dt {
+  margin-bottom: 3px;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+}
+
+.export-document dd {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.export-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.export-summary > div {
+  min-width: 0;
+  padding: 9px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-glass);
+  text-align: center;
+}
+
+.export-summary strong,
+.export-summary span {
+  display: block;
+}
+
+.export-summary strong {
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+.export-summary span {
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 0.62rem;
+  line-height: 1.25;
+}
+
+.export-formats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.export-formats .btn {
+  min-width: 0;
+  padding-inline: 12px;
+}
+
+.export-pdf-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
+.export-pdf-hint .icon {
+  margin-top: 1px;
+  font-size: 15px;
+}
+
+@media (max-width: 900px) {
+  .export-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .export-preview {
+    position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .export-choice-grid,
+  .export-formats {
+    grid-template-columns: 1fr;
+  }
+
+  .export-choice {
+    min-height: auto;
+    flex-direction: row;
+    align-items: center;
+    padding-right: 38px;
+  }
+
+  .export-document dl,
+  .export-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .export-formats .btn {
+    width: 100%;
+  }
+}
+
 /* Responsive tweaks */
 @media (min-width: 640px) {
   .hero {

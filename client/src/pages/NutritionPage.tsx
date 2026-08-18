@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { foodCatalogApi, mealLogApi, mealPlanApi } from "../api/resources";
 import { Button, Chip, EmptyState, ErrorState, FoodSwapModal, Loading, Modal, RecipeModal, SegmentedControl, Stepper } from "../components/ui";
 import { MacroBar } from "../components/ui/charts";
@@ -16,6 +16,7 @@ const FOOD_PAGE_SIZE = 24;
 
 export default function NutritionPage() {
   const toast = useToastCtx();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [view, setView] = useState<NutritionView>("log");
   const [date, setDate] = useState(today());
@@ -88,6 +89,7 @@ export default function NutritionPage() {
       <div className="hero__label"><span className="icon">restaurant</span><span>Nutrición</span></div>
       <h1 className="hero__title">Tu alimentación, sin salir de Nutrición</h1>
       <p className="hero__subtitle">Registra comidas, consulta el plan y encuentra alternativas desde este apartado.</p>
+      <div className="hero__actions"><Button variant="ghost" size="sm" onClick={() => navigate("/export?content=nutrition")}><span className="icon">download</span>Exportar dieta</Button></div>
     </div>
     <div className="nutrition-toolbar"><label className="input-group__label" htmlFor="nutrition-date">Fecha</label><input id="nutrition-date" type="date" className="input" value={date} onChange={(event) => setDate(event.target.value)} /></div>
     <div className="mb-4"><SegmentedControl block value={view} onChange={setView} options={[{ value: "log", label: "Mi registro" }, { value: "plan", label: "Plan del día" }, { value: "catalog", label: "Catálogo" }]} /></div>

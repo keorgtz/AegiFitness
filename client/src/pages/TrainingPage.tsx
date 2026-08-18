@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { exerciseCatalogApi, workoutLogApi, workoutPlanApi } from "../api/resources";
 import { Button, Chip, EmptyState, ErrorState, ExerciseGuideModal, Loading, Modal, SegmentedControl, Stepper } from "../components/ui";
 import { useAsync } from "../hooks/useAsync";
@@ -16,6 +16,7 @@ const EXERCISE_PAGE_SIZE = 24;
 
 export default function TrainingPage() {
   const toast = useToastCtx();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [view, setView] = useState<TrainingView>("today");
   const [freeSession, setFreeSession] = useState(false);
@@ -96,6 +97,7 @@ export default function TrainingPage() {
         <div className="hero__label"><span className="icon">fitness_center</span><span>Entrenar</span></div>
         <h1 className="hero__title">Tu entrenamiento, en un solo lugar</h1>
         <p className="hero__subtitle">Completa la sesión de hoy, consulta tu rutina y revisa tu historial.</p>
+        <div className="hero__actions"><Button variant="ghost" size="sm" onClick={() => navigate("/export?content=training")}><span className="icon">download</span>Exportar rutina</Button></div>
       </div>
       <div className="mb-4"><SegmentedControl block value={view} onChange={setView} options={[{ value: "today", label: "Hoy" }, { value: "plan", label: "Rutina" }, { value: "history", label: "Historial" }]} /></div>
 

@@ -11,6 +11,7 @@ interface NavItem {
   label: string;
   icon: string;
   admin?: boolean;
+  desktopOnly?: boolean;
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -19,6 +20,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/nutrition", label: "Nutrición", icon: "restaurant" },
   { to: "/progress", label: "Progreso", icon: "trending_up" },
   { to: "/achievements", label: "Logros", icon: "emoji_events" },
+  { to: "/export", label: "Exportar", icon: "download", desktopOnly: true },
   { to: "/settings", label: "Ajustes", icon: "settings" },
   { to: "/admin", label: "Admin", icon: "admin_panel_settings", admin: true },
 ];
@@ -111,7 +113,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <main className="app-content">{children}</main>
 
       <nav className="bottom-nav">
-        {navItems.map((item) => (
+        {navItems.filter((item) => !item.desktopOnly).map((item) => (
           <NavLink
             key={item.to}
             to={item.to}

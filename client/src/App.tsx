@@ -16,6 +16,7 @@ import ProgressPage from "./pages/ProgressPage";
 import AchievementsPage from "./pages/AchievementsPage";
 import SettingsPage from "./pages/SettingsPage";
 import AdminPage from "./pages/AdminPage";
+import ExportPage from "./pages/ExportPage";
 
 import "./styles/tokens.css";
 import "./styles/app.css";
@@ -62,6 +63,7 @@ function AppContent() {
                       <Route path="/progress" element={<ProgressPage />} />
                       <Route path="/achievements" element={<AchievementsPage />} />
                       <Route path="/settings" element={<SettingsPage />} />
+                      <Route path="/export" element={<ExportPage />} />
                       <Route
                         path="/admin"
                         element={
