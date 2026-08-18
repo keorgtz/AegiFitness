@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { exerciseCatalogApi, workoutLogApi, workoutPlanApi } from "../api/resources";
 import { Button, Chip, EmptyState, ErrorState, ExerciseGuideModal, Loading, Modal, SegmentedControl, Stepper } from "../components/ui";
 import { useAsync } from "../hooks/useAsync";
@@ -12,7 +13,9 @@ const MUSCLE_VARIANT: Record<MuscleGroup, string> = { Chest: "info", Back: "prim
 
 export default function TrainingPage() {
   const toast = useToastCtx();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [view, setView] = useState<TrainingView>("today");
+  const [freeSession, setFreeSession] = useState(false);
   const [entries, setEntries] = useState<WorkoutEntry[]>([]);
   const [selectedDay, setSelectedDay] = useState<WorkoutPlanDayDto | null>(null);
   const [guide, setGuide] = useState<ExerciseDto | null>(null);
@@ -26,17 +29,29 @@ export default function TrainingPage() {
     void run(Promise.all([workoutPlanApi.current(), workoutLogApi.get(addDays(date, -30), date)]).then(([plan, history]) => ({ plan, history })));
   }, [date, run]);
   useEffect(() => load(), [load]);
+  useEffect(() => {
+    if (searchParams.get("quick") !== "exercise") return;
+    setView("today");
+    setFreeSession(true);
+    setEntries([]);
+    setPicker({ open: true, replaceIndex: null });
+    setSearchParams({}, { replace: true });
+  }, [searchParams, setSearchParams]);
   const todayPlan = useMemo(() => data?.plan.days.find((day) => day.dayOfWeek === new Date().getDay()) ?? null, [data]);
 
   useEffect(() => {
     if (!data) return;
+    if (freeSession) {
+      setEntries([]);
+      return;
+    }
     const log = data.history.find((item) => item.date === date);
     if (log?.entries.length) {
       setEntries(log.entries.map((entry) => ({ exerciseId: entry.exerciseId, plannedSets: entry.plannedSets, plannedReps: entry.plannedReps, actualSets: entry.actualSets ?? entry.plannedSets, actualReps: entry.actualReps ?? entry.plannedReps, actualWeightKg: entry.actualWeightKg ?? 0, completed: entry.completed, isExtra: entry.isExtra, exercise: entry.exercise })));
     } else {
       setEntries((todayPlan?.items ?? []).map((item) => ({ exerciseId: item.exerciseId, plannedSets: item.sets, plannedReps: Math.round((item.repsMin + item.repsMax) / 2), actualSets: item.sets, actualReps: Math.round((item.repsMin + item.repsMax) / 2), actualWeightKg: 0, completed: false, isExtra: false, exercise: item.exercise })));
     }
-  }, [data, date, todayPlan]);
+  }, [data, date, freeSession, todayPlan]);
 
   const updateEntry = (index: number, patch: Partial<WorkoutEntry>) => setEntries((current) => current.map((entry, i) => i === index ? { ...entry, ...patch } : entry));
   const selectExercise = (exercise: ExerciseDto) => {
@@ -52,8 +67,9 @@ export default function TrainingPage() {
   const saveWorkout = async () => {
     setSaving(true);
     try {
-      const result = await workoutLogApi.log({ date, planDayId: todayPlan?.id, entries: entries.map((entry) => ({ exerciseId: entry.exerciseId, plannedSets: entry.plannedSets, plannedReps: entry.plannedReps, actualSets: entry.completed ? entry.actualSets : undefined, actualReps: entry.completed ? entry.actualReps : undefined, actualWeightKg: entry.completed && entry.actualWeightKg > 0 ? entry.actualWeightKg : undefined, completed: entry.completed, isExtra: entry.isExtra })) satisfies WorkoutLogEntryRequest[] });
+      const result = await workoutLogApi.log({ date, planDayId: freeSession ? undefined : todayPlan?.id, entries: entries.map((entry) => ({ exerciseId: entry.exerciseId, plannedSets: entry.plannedSets, plannedReps: entry.plannedReps, actualSets: entry.completed ? entry.actualSets : undefined, actualReps: entry.completed ? entry.actualReps : undefined, actualWeightKg: entry.completed && entry.actualWeightKg > 0 ? entry.actualWeightKg : undefined, completed: entry.completed, isExtra: entry.isExtra })) satisfies WorkoutLogEntryRequest[] });
       toast.add(result.totalXp ? `Entreno guardado · +${result.totalXp} XP` : "Entreno guardado", "success");
+      setFreeSession(false);
       load();
     } catch (err) { toast.add(err instanceof Error ? err.message : "No se pudo guardar el entreno", "error"); }
     finally { setSaving(false); }
@@ -82,7 +98,10 @@ export default function TrainingPage() {
 
       {view === "today" && <section aria-labelledby="today-workout-title">
         <div className="section-title"><span id="today-workout-title">{dayName(new Date().getDay())}</span><span className="section-title__hint">{entries.length ? `${completed}/${entries.length} completados` : "Descanso"}</span></div>
-        {todayPlan && <div className="label mb-3">{modalityName(todayPlan.modality)} · {todayPlan.focus}</div>}
+        <div className="training-mode-row">
+          <div className="label">{freeSession ? "Entrenamiento libre" : todayPlan ? `${modalityName(todayPlan.modality)} · ${todayPlan.focus}` : "Día de descanso"}</div>
+          {freeSession ? <Button variant="ghost" size="sm" onClick={() => setFreeSession(false)}>Volver a la rutina</Button> : <Button variant="ghost" size="sm" onClick={() => { setFreeSession(true); setEntries([]); setPicker({ open: true, replaceIndex: null }); }}>Entrenamiento libre</Button>}
+        </div>
         {!entries.length && <EmptyState icon="hotel" title="Hoy es día de descanso" description="Si vas a entrenar, puedes crear una sesión libre." action={<Button variant="ghost" onClick={() => setPicker({ open: true, replaceIndex: null })}>Añadir ejercicio</Button>} />}
         {entries.map((entry, index) => {
           const variant = MUSCLE_VARIANT[entry.exercise.muscleGroup];

@@ -17,6 +17,13 @@ public class WorkoutPlanGenerator
     {
         var exercises = await _context.Exercises.AsNoTracking().ToListAsync(ct);
         var activeDays = config.Days.OrderBy(d => d.DayOfWeek).Where(d => d.Modality != Modality.Rest).ToList();
+        var recentCutoff = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(-21);
+        var recentUsage = await _context.WorkoutLogEntries
+            .AsNoTracking()
+            .Where(x => x.Log.UserId == userId && x.Log.Date >= recentCutoff && x.Completed)
+            .GroupBy(x => x.ExerciseId)
+            .Select(group => new { ExerciseId = group.Key, Count = group.Count() })
+            .ToDictionaryAsync(x => x.ExerciseId, x => x.Count, ct);
         var weekSeed = userId.GetHashCode() ^ DateTime.UtcNow.Year ^ DateTime.UtcNow.DayOfYear / 7;
         var rng = new Random(weekSeed);
 
@@ -36,7 +43,7 @@ public class WorkoutPlanGenerator
             var muscles = GetMusclesForDay(day, activeDays.Count, activeDays.IndexOf(day));
             var dayModality = day.Modality;
             var scheme = ResolveScheme(config, dayModality);
-            var candidates = SelectCandidates(exercises, dayModality, muscles, goal, usedExerciseIds, usedExerciseNames, rng);
+            var candidates = SelectCandidates(exercises, dayModality, muscles, goal, usedExerciseIds, usedExerciseNames, recentUsage, rng);
             var items = BuildItems(candidates, config, dayModality, scheme, rng);
 
             var planDay = new WorkoutPlanDay
@@ -72,17 +79,24 @@ public class WorkoutPlanGenerator
             return day.MuscleGroups.Split(',', StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => Enum.Parse<MuscleGroup>(s.Trim())).ToList();
 
+        var push = new List<MuscleGroup> { MuscleGroup.Chest, MuscleGroup.Shoulders, MuscleGroup.Triceps };
+        var pull = new List<MuscleGroup> { MuscleGroup.Back, MuscleGroup.Biceps, MuscleGroup.Core };
+        var legs = new List<MuscleGroup> { MuscleGroup.Legs, MuscleGroup.Core };
+        var upper = new List<MuscleGroup> { MuscleGroup.Chest, MuscleGroup.Back, MuscleGroup.Shoulders, MuscleGroup.Biceps, MuscleGroup.Triceps };
+        var fullBody = new List<MuscleGroup> { MuscleGroup.Chest, MuscleGroup.Back, MuscleGroup.Legs, MuscleGroup.Shoulders, MuscleGroup.Core };
+
         return activeDayCount switch
         {
-            3 => new List<MuscleGroup> { MuscleGroup.Chest, MuscleGroup.Back, MuscleGroup.Legs, MuscleGroup.Shoulders, MuscleGroup.Core },
-            4 => index % 2 == 0
-                ? new List<MuscleGroup> { MuscleGroup.Chest, MuscleGroup.Shoulders, MuscleGroup.Triceps, MuscleGroup.Core }
-                : new List<MuscleGroup> { MuscleGroup.Back, MuscleGroup.Biceps, MuscleGroup.Legs, MuscleGroup.Core },
+            <= 1 => fullBody,
+            2 => index == 0 ? upper : legs,
+            3 => fullBody,
+            4 => index % 2 == 0 ? upper : legs,
+            5 => index switch { 0 => push, 1 => pull, 2 => legs, 3 => upper, _ => legs },
             _ => (index % 3) switch
             {
-                0 => new List<MuscleGroup> { MuscleGroup.Chest, MuscleGroup.Shoulders, MuscleGroup.Triceps, MuscleGroup.Core },
-                1 => new List<MuscleGroup> { MuscleGroup.Back, MuscleGroup.Biceps, MuscleGroup.Core },
-                _ => new List<MuscleGroup> { MuscleGroup.Legs, MuscleGroup.Core }
+                0 => push,
+                1 => pull,
+                _ => legs
             }
         };
     }
@@ -137,7 +151,7 @@ public class WorkoutPlanGenerator
         };
     }
 
-    private static List<Exercise> SelectCandidates(List<Exercise> all, Modality modality, List<MuscleGroup> muscles, Goal goal, HashSet<int> used, HashSet<string> usedNames, Random rng)
+    private static List<Exercise> SelectCandidates(List<Exercise> all, Modality modality, List<MuscleGroup> muscles, Goal goal, HashSet<int> used, HashSet<string> usedNames, IReadOnlyDictionary<int, int> recentUsage, Random rng)
     {
         var allowedTypes = modality switch
         {
@@ -154,25 +168,43 @@ public class WorkoutPlanGenerator
             .Select(g => g.First());
 
         IEnumerable<Exercise> ByType(IEnumerable<Exercise> source) => DistinctNames(source.Where(e => allowedTypes.Contains(e.Type)));
-        IEnumerable<Exercise> ByMuscles(IEnumerable<Exercise> source) => muscles.Any() ? source.Where(e => muscles.Contains(e.MuscleGroup)) : source;
         IEnumerable<Exercise> Unused(IEnumerable<Exercise> source) => source.Where(e => !used.Contains(e.Id) && !usedNames.Contains(e.Name));
 
-        List<Exercise> Order(IEnumerable<Exercise> source) => goal == Goal.Bulk
-            ? source.OrderByDescending(e => e.Difficulty).ThenBy(_ => rng.Next()).ToList()
-            : source.OrderBy(e => e.Difficulty).ThenBy(_ => rng.Next()).ToList();
+        bool MatchesGoal(Exercise exercise) => exercise.Objective == CatalogObjective.Both
+            || (goal == Goal.Bulk && exercise.Objective == CatalogObjective.Bulk)
+            || (goal == Goal.Cut && exercise.Objective == CatalogObjective.Cut)
+            || goal == Goal.Recomposition;
 
-        var candidates = Order(Unused(ByMuscles(ByType(all))));
+        List<Exercise> Order(IEnumerable<Exercise> source) => source
+            .OrderBy(e => MatchesGoal(e) ? 0 : 1)
+            .ThenBy(e => recentUsage.GetValueOrDefault(e.Id))
+            .ThenBy(e => goal == Goal.Bulk ? -e.Difficulty : e.Difficulty)
+            .ThenBy(_ => rng.Next())
+            .ToList();
+
+        var typed = ByType(all).ToList();
+        var candidates = new List<Exercise>();
+        for (var round = 0; round < 2; round++)
+        {
+            foreach (var muscle in muscles)
+            {
+                var candidate = Order(Unused(typed.Where(e => e.MuscleGroup == muscle))).Skip(round).FirstOrDefault();
+                if (candidate is not null) candidates.Add(candidate);
+            }
+        }
+        candidates = candidates.DistinctBy(e => e.Name, StringComparer.OrdinalIgnoreCase).ToList();
+        candidates.AddRange(Order(Unused(typed.Where(e => muscles.Contains(e.MuscleGroup) && !candidates.Any(c => c.Name.Equals(e.Name, StringComparison.OrdinalIgnoreCase))))));
         if (candidates.Count < 4)
-            candidates = Order(Unused(ByType(all)));
+            candidates.AddRange(Order(Unused(typed.Where(e => !candidates.Any(c => c.Name.Equals(e.Name, StringComparison.OrdinalIgnoreCase))))));
         if (candidates.Count < 4)
-            candidates = Order(ByType(all));
+            candidates.AddRange(Order(typed.Where(e => !candidates.Any(c => c.Name.Equals(e.Name, StringComparison.OrdinalIgnoreCase)))));
         if (candidates.Count < 4)
-            candidates = Order(DistinctNames(all));
+            candidates.AddRange(Order(DistinctNames(all).Where(e => !candidates.Any(c => c.Name.Equals(e.Name, StringComparison.OrdinalIgnoreCase)))));
 
         if (muscles.Contains(MuscleGroup.Core) && !candidates.Any(e => e.MuscleGroup == MuscleGroup.Core))
         {
-            var core = ByType(all).FirstOrDefault(e => e.MuscleGroup == MuscleGroup.Core && !usedNames.Contains(e.Name))
-                ?? ByType(all).FirstOrDefault(e => e.MuscleGroup == MuscleGroup.Core);
+            var core = Order(Unused(typed.Where(e => e.MuscleGroup == MuscleGroup.Core))).FirstOrDefault()
+                ?? Order(typed.Where(e => e.MuscleGroup == MuscleGroup.Core)).FirstOrDefault();
             if (core is not null && !candidates.Contains(core)) candidates.Add(core);
         }
 

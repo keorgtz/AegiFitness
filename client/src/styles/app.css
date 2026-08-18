@@ -323,6 +323,7 @@
   border-radius: var(--radius-md);
   padding: 18px;
   position: relative;
+  min-width: 0;
   transition:
     transform var(--transition-base),
     box-shadow var(--transition-base),
@@ -350,6 +351,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 .card__title .icon {
@@ -409,6 +412,13 @@
   font-size: 0.92rem;
   max-width: 520px;
   line-height: 1.5;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
 }
 
 /* Button — stadium M3 Expressive */
@@ -784,6 +794,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 12px;
 }
 
 .macro-bar__row {
@@ -823,6 +834,26 @@
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--text);
+}
+
+@media (max-width: 420px) {
+  .macro-bar__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 7px 10px;
+  }
+
+  .macro-bar__label,
+  .macro-bar__value {
+    min-width: 0;
+  }
+
+  .macro-bar__track {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    margin: 0;
+  }
 }
 
 /* Meal nutrition metadata remains readable at compact widths. */
@@ -883,6 +914,7 @@
   overflow: hidden;
   background: var(--surface-1);
   box-shadow: var(--shadow-1);
+  min-width: 0;
 }
 
 .stat-card__icon {
@@ -930,6 +962,7 @@
   font-size: 1.5rem;
   letter-spacing: -0.02em;
   line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 
 .stat-card__unit {
@@ -1167,10 +1200,17 @@
 .dialog__footer {
   display: flex;
   justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 12px;
   padding: 12px 20px 16px;
   border-top: 1px solid var(--hairline);
   flex-shrink: 0;
+}
+
+@media (max-width: 420px) {
+  .dialog__footer .btn {
+    flex: 1 1 100%;
+  }
 }
 
 /* Toast */
@@ -1249,6 +1289,12 @@
   gap: 14px;
 }
 
+.grid-2 > *,
+.grid-3 > *,
+.grid-4 > * {
+  min-width: 0;
+}
+
 @media (min-width: 640px) {
   .grid-2,
   .grid-3,
@@ -1292,6 +1338,17 @@
   font-weight: 500;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .section-title__hint {
+    white-space: normal;
+  }
 }
 
 .count-badge {
@@ -1527,6 +1584,7 @@
 /* Tables */
 .table-wrap {
   overflow-x: auto;
+  overscroll-behavior-x: contain;
   border-radius: var(--radius-md);
   border: 1px solid var(--hairline);
   background: var(--surface-1);
@@ -1534,6 +1592,7 @@
 
 .table {
   width: 100%;
+  min-width: 760px;
   border-collapse: collapse;
   font-size: 0.88rem;
 }
@@ -1544,6 +1603,11 @@
   text-align: left;
   border-bottom: 1px solid var(--hairline);
   white-space: nowrap;
+  vertical-align: middle;
+}
+
+.table td:last-child {
+  min-width: 250px;
 }
 
 .table th {
@@ -1805,9 +1869,31 @@
 }
 
 /* Charts */
-.bar-chart,
-.line-chart {
+.chart-shell {
   width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0 6px;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+.chart-shell svg {
+  display: block;
+  min-width: 100%;
+  max-width: none;
+}
+
+.chart__label {
+  fill: var(--text-muted);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.chart__value {
+  fill: var(--text);
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .bar-chart__bar {
@@ -1830,6 +1916,92 @@
   fill: var(--primary);
   stroke: var(--surface-1);
   stroke-width: 2;
+}
+
+.weight-entry-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.weight-entry-form__field {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 480px) {
+  .weight-entry-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .weight-entry-form .btn {
+    width: 100%;
+  }
+}
+
+.quick-log__intro {
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.quick-log__options {
+  display: grid;
+  gap: 10px;
+}
+
+.quick-log__option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+}
+
+.quick-log__option:hover {
+  border-color: var(--primary-pale);
+  background: var(--surface-2);
+  transform: translateY(-1px);
+}
+
+.quick-log__option strong,
+.quick-log__option small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.quick-log__option small {
+  margin-top: 3px;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.quick-log__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+}
+
+.quick-log__icon--training {
+  color: var(--primary);
+  background: var(--primary-bg);
+}
+
+.quick-log__icon--nutrition {
+  color: var(--success);
+  background: var(--success-bg);
 }
 
 /* Achievement card */
@@ -1916,15 +2088,27 @@
 }
 
 .catalog-picker__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
   padding: 14px;
   border-radius: var(--radius-sm);
   background: var(--row-bg);
   border: 1px solid var(--hairline);
   margin-bottom: 8px;
   cursor: pointer;
+  color: var(--text);
+  text-align: left;
   transition:
     border-color var(--transition-fast),
     background var(--transition-fast);
+}
+
+.catalog-picker__item > div {
+  flex: 1;
+  min-width: 0;
 }
 
 .catalog-picker__item:hover {
@@ -1936,11 +2120,14 @@
   font-weight: 600;
   font-size: 0.92rem;
   margin-bottom: 2px;
+  overflow-wrap: anywhere;
 }
 
 .catalog-picker__item-meta {
   font-size: 0.75rem;
   color: var(--text-muted);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .catalog-picker__pagination {
@@ -2088,6 +2275,19 @@
   grid-template-columns: 1fr;
   gap: 10px;
   margin-top: 12px;
+}
+
+.training-mode-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
 }
 
 .nutrition-toolbar {

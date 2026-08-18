@@ -86,8 +86,8 @@ export default function ProgressPage() {
       </div>
 
       <Card title="Registrar peso" icon="monitor_weight" style={{ marginBottom: 16 }}>
-        <form onSubmit={handleSaveWeight} style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
-          <div style={{ flex: 1 }}>
+        <form onSubmit={handleSaveWeight} className="weight-entry-form">
+          <div className="weight-entry-form__field">
             <Input
               type="number"
               step="0.1"

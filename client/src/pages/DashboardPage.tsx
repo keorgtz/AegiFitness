@@ -1,13 +1,14 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { dashboardApi } from "../api/resources";
-import { Button, Card, EmptyState, ErrorState, Loading } from "../components/ui";
+import { Button, Card, EmptyState, ErrorState, Loading, Modal } from "../components/ui";
 import { MacroBar, RingProgress, StatCard } from "../components/ui/charts";
 import { useAsync } from "../hooks/useAsync";
 import { formatNumber, modalityName, today } from "../utils/format";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
+  const [quickLogOpen, setQuickLogOpen] = useState(false);
   const { data, loading, error, run } = useAsync<{
     summary: Awaited<ReturnType<typeof dashboardApi.summary>>;
   }>();
@@ -41,6 +42,12 @@ export default function DashboardPage() {
         <p className="hero__subtitle">
           Nivel {s.user.level} · {s.user.levelTitle} · Racha de {s.user.streakDays} días
         </p>
+        <div className="hero__actions">
+          <Button onClick={() => setQuickLogOpen(true)}>
+            <span className="icon">add_circle</span>
+            Registro rápido
+          </Button>
+        </div>
       </div>
 
       <div className="grid-2">
@@ -160,6 +167,24 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+
+      <Modal open={quickLogOpen} onClose={() => setQuickLogOpen(false)} title="Registro rápido">
+        <p className="quick-log__intro">
+          Registra lo que realmente hiciste hoy, aunque sea distinto de la recomendación.
+        </p>
+        <div className="quick-log__options">
+          <button type="button" className="quick-log__option" onClick={() => navigate("/training?quick=exercise")}>
+            <span className="quick-log__icon quick-log__icon--training"><span className="icon">fitness_center</span></span>
+            <span><strong>Entrenamiento libre</strong><small>Elige cualquier ejercicio del catálogo</small></span>
+            <span className="icon">chevron_right</span>
+          </button>
+          <button type="button" className="quick-log__option" onClick={() => navigate("/nutrition?quick=food")}>
+            <span className="quick-log__icon quick-log__icon--nutrition"><span className="icon">restaurant</span></span>
+            <span><strong>Comida o alimento</strong><small>Elige del catálogo o crea una entrada</small></span>
+            <span className="icon">chevron_right</span>
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

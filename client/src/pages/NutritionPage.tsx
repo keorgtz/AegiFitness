@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { foodCatalogApi, mealLogApi, mealPlanApi } from "../api/resources";
 import { Button, Chip, EmptyState, ErrorState, FoodSwapModal, Loading, Modal, RecipeModal, SegmentedControl, Stepper } from "../components/ui";
 import { MacroBar } from "../components/ui/charts";
@@ -14,6 +15,7 @@ const OBJECTIVES: CatalogObjective[] = ["Bulk", "Cut", "Both"];
 
 export default function NutritionPage() {
   const toast = useToastCtx();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [view, setView] = useState<NutritionView>("log");
   const [date, setDate] = useState(today());
   const [entries, setEntries] = useState<MealEntry[]>([]);
@@ -30,6 +32,12 @@ export default function NutritionPage() {
     void run(Promise.all([mealPlanApi.forDate(date), mealLogApi.get(date, date)]).then(([plan, logs]) => ({ plan, logs })));
   }, [date, run]);
   useEffect(() => load(), [load]);
+  useEffect(() => {
+    if (searchParams.get("quick") !== "food") return;
+    setView("log");
+    setFoodPicker(true);
+    setSearchParams({}, { replace: true });
+  }, [searchParams, setSearchParams]);
   useEffect(() => {
     if (!data) return;
     setEntries((data.logs.find((log) => log.date === date)?.entries ?? []).map((entry) => ({ ...entry })));
@@ -104,7 +112,7 @@ export default function NutritionPage() {
     </section>}
 
     {view === "catalog" && <FoodCatalog onSelect={setSelectedFood} />}
-    <FoodPickerModal open={foodPicker} onClose={() => setFoodPicker(false)} onSelect={addFood} />
+    <FoodPickerModal open={foodPicker} onClose={() => setFoodPicker(false)} onSelect={addFood} onQuick={() => { setFoodPicker(false); setQuickEntry(true); }} />
     <QuickMealModal open={quickEntry} onClose={() => setQuickEntry(false)} onAdd={addQuick} />
     <FoodSwapModal item={swapItem} onClose={() => setSwapItem(null)} onSwapped={load} />
     <RecipeModal food={selectedFood} onClose={() => setSelectedFood(null)} />
@@ -121,13 +129,13 @@ function FoodCatalog({ onSelect }: { onSelect: (food: FoodDto) => void }) {
   return <section aria-labelledby="food-catalog-title"><div className="section-title"><span id="food-catalog-title">Catálogo de comidas</span></div><div className="catalog-picker__search"><span className="icon">search</span><input className="input" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar comida..." /></div><div className="row gap-2 mb-3"><select className="select" value={mealType} onChange={(event) => setMealType(event.target.value)}><option value="">Todas las comidas</option>{MEAL_TYPES.map((type) => <option key={type} value={type}>{mealTypeName(type)}</option>)}</select><select className="select" value={objective} onChange={(event) => setObjective(event.target.value)}><option value="">Todos los objetivos</option>{OBJECTIVES.map((item) => <option key={item} value={item}>{item}</option>)}</select></div>{loading ? <Loading message="Cargando catálogo" /> : !items.length ? <EmptyState icon="search_off" title="Sin resultados" /> : items.map((food) => <button key={food.id} type="button" className="catalog-picker__item" onClick={() => onSelect(food)}><div><div className="catalog-picker__item-title">{food.name}</div><div className="catalog-picker__item-meta">{food.calories} kcal · {food.proteinG}g P · {mealTypeName(food.mealType)}</div></div><span className="icon">chevron_right</span></button>)}</section>;
 }
 
-function FoodPickerModal({ open, onClose, onSelect }: { open: boolean; onClose: () => void; onSelect: (food: FoodDto, mealType: MealType) => void }) {
+function FoodPickerModal({ open, onClose, onSelect, onQuick }: { open: boolean; onClose: () => void; onSelect: (food: FoodDto, mealType: MealType) => void; onQuick: () => void }) {
   const [mealType, setMealType] = useState<MealType>("Snack");
   const [search, setSearch] = useState("");
   const [items, setItems] = useState<FoodDto[]>([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => { if (!open) return; setLoading(true); foodCatalogApi.search({ search, mealType, pageSize: 30 }).then((result) => setItems(result.items)).finally(() => setLoading(false)); }, [open, search, mealType]);
-  return <Modal open={open} onClose={onClose} title="Añadir comida" wide><select className="select mb-3" value={mealType} onChange={(event) => setMealType(event.target.value as MealType)}>{MEAL_TYPES.map((type) => <option key={type} value={type}>{mealTypeName(type)}</option>)}</select><div className="catalog-picker__search"><span className="icon">search</span><input className="input" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar comida..." /></div>{loading ? <Loading message="Buscando comidas" /> : !items.length ? <EmptyState icon="search_off" title="Sin resultados" /> : items.map((food) => <button key={food.id} type="button" className="catalog-picker__item" onClick={() => onSelect(food, mealType)}><div><div className="catalog-picker__item-title">{food.name}</div><div className="catalog-picker__item-meta">{food.calories} kcal · {food.proteinG}g P</div></div><span className="icon">add</span></button>)}</Modal>;
+  return <Modal open={open} onClose={onClose} title="Añadir comida" wide><select className="select mb-3" value={mealType} onChange={(event) => setMealType(event.target.value as MealType)}>{MEAL_TYPES.map((type) => <option key={type} value={type}>{mealTypeName(type)}</option>)}</select><div className="catalog-picker__search"><span className="icon">search</span><input className="input" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar comida..." /></div>{loading ? <Loading message="Buscando comidas" /> : !items.length ? <EmptyState icon="search_off" title="Sin resultados" /> : items.map((food) => <button key={food.id} type="button" className="catalog-picker__item" onClick={() => onSelect(food, mealType)}><div><div className="catalog-picker__item-title">{food.name}</div><div className="catalog-picker__item-meta">{food.calories} kcal · {food.proteinG}g P</div></div><span className="icon">add</span></button>)}<Button variant="ghost" block className="mt-3" onClick={onQuick}>No está en el catálogo</Button></Modal>;
 }
 
 function QuickMealModal({ open, onClose, onAdd }: { open: boolean; onClose: () => void; onAdd: (entry: Omit<MealEntry, "servings" | "isExtra">) => void }) {

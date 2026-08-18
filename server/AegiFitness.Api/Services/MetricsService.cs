@@ -19,7 +19,8 @@ public class MetricsService
 
     public async Task<MetricsSummary> GetSummaryAsync(Guid userId, DateOnly? referenceDate = null, CancellationToken ct = default)
     {
-        var cacheKey = $"metrics:{userId}:{referenceDate?.ToString("yyyy-MM-dd") ?? "utc"}";
+        var cacheVersion = await _cache.GetAsync<string>($"metrics-version:{userId}", ct) ?? "0";
+        var cacheKey = $"metrics:{userId}:{referenceDate?.ToString("yyyy-MM-dd") ?? "utc"}:{cacheVersion}";
         var cached = await _cache.GetAsync<MetricsSummary>(cacheKey, ct);
         if (cached is not null) return cached;
 
@@ -129,7 +130,7 @@ public class MetricsService
 
     public async Task InvalidateAsync(Guid userId, CancellationToken ct = default)
     {
-        await _cache.RemoveAsync($"metrics:{userId}", ct);
+        await _cache.SetAsync($"metrics-version:{userId}", Guid.NewGuid().ToString("N"), ct: ct);
     }
 }
 

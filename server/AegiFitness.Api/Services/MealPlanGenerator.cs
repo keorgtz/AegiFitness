@@ -63,11 +63,16 @@ public class MealPlanGenerator
 
         foreach (var mealType in activeMealTypes)
         {
-            var mealCalories = (int)Math.Round(targets.Calories * (ratios[mealType] / totalRatio));
-            var food = await PickFoodAsync(userId, date, mealType, profile.Goal, mealCalories, ct);
+            var normalizedRatio = ratios[mealType] / totalRatio;
+            var mealTarget = new MacroTargets(
+                (int)Math.Round(targets.Calories * normalizedRatio),
+                (int)Math.Round(targets.ProteinG * normalizedRatio),
+                (int)Math.Round(targets.CarbsG * normalizedRatio),
+                (int)Math.Round(targets.FatG * normalizedRatio));
+            var food = await PickFoodAsync(userId, date, mealType, profile.Goal, mealTarget, ct);
             if (food is null) continue;
 
-            var servings = Math.Clamp(Math.Round(mealCalories / (decimal)food.Calories, 1), 0.5m, 2.5m);
+            var servings = BestServing(food, mealTarget.Calories);
 
             plan.Items.Add(new MealPlanItem
             {
@@ -84,13 +89,13 @@ public class MealPlanGenerator
         return plan;
     }
 
-    private async Task<Food?> PickFoodAsync(Guid userId, DateOnly date, MealType mealType, Goal goal, int targetCalories, CancellationToken ct)
+    private async Task<Food?> PickFoodAsync(Guid userId, DateOnly date, MealType mealType, Goal goal, MacroTargets target, CancellationToken ct)
     {
         var allowedObjectives = goal switch
         {
             Goal.Bulk => new[] { CatalogObjective.Bulk, CatalogObjective.Both },
             Goal.Cut => new[] { CatalogObjective.Cut, CatalogObjective.Both },
-            _ => new[] { CatalogObjective.Both, CatalogObjective.Bulk }
+            _ => new[] { CatalogObjective.Both, CatalogObjective.Bulk, CatalogObjective.Cut }
         };
 
         var candidates = await _context.Foods
@@ -100,23 +105,57 @@ public class MealPlanGenerator
 
         if (!candidates.Any()) return null;
 
-        var previousDate = date.AddDays(-1);
-        var previousPlan = await _context.MealPlans
+        var recentFoodUsage = await _context.MealPlans
             .AsNoTracking()
             .Include(x => x.Items)
-            .Where(x => x.UserId == userId && x.Date == previousDate && x.Items.Any(i => i.MealType == mealType))
+            .Where(x => x.UserId == userId && x.Date >= date.AddDays(-7) && x.Date < date)
             .SelectMany(x => x.Items)
-            .Select(i => i.FoodId)
-            .ToListAsync(ct);
-
-        candidates = candidates.Where(c => !previousPlan.Contains(c.Id)).ToList();
-        if (!candidates.Any())
-            candidates = await _context.Foods.AsNoTracking().Where(f => f.MealType == mealType && allowedObjectives.Contains(f.Objective)).ToListAsync(ct);
+            .Where(i => i.MealType == mealType)
+            .GroupBy(i => i.FoodId)
+            .Select(group => new { FoodId = group.Key, Count = group.Count() })
+            .ToDictionaryAsync(x => x.FoodId, x => x.Count, ct);
 
         var seed = userId.GetHashCode() ^ date.DayNumber ^ (int)mealType;
         var rng = new Random(seed);
-        candidates = candidates.OrderBy(f => Math.Abs(f.Calories - targetCalories)).ThenBy(_ => rng.Next()).ToList();
+        candidates = candidates
+            .OrderBy(food => ScoreFood(food, target, goal, recentFoodUsage.GetValueOrDefault(food.Id)))
+            .ThenBy(_ => rng.Next())
+            .ToList();
 
         return candidates.FirstOrDefault();
+    }
+
+    private static decimal BestServing(Food food, int targetCalories)
+    {
+        if (food.Calories <= 0) return 1m;
+        return Math.Clamp(Math.Round(targetCalories / (decimal)food.Calories, 1), 0.5m, 3m);
+    }
+
+    private static decimal ScoreFood(Food food, MacroTargets target, Goal goal, int recentUses)
+    {
+        var servings = BestServing(food, target.Calories);
+        decimal Difference(decimal actual, decimal expected) => expected <= 0 ? 0 : Math.Abs(actual - expected) / expected;
+
+        var calorieDifference = Difference(food.Calories * servings, target.Calories);
+        var proteinDifference = Difference(food.ProteinG * servings, target.ProteinG);
+        var carbDifference = Difference(food.CarbsG * servings, target.CarbsG);
+        var fatDifference = Difference(food.FatG * servings, target.FatG);
+        var varietyPenalty = recentUses * 0.12m;
+        var objectivePenalty = food.Objective == CatalogObjective.Both
+            || (goal == Goal.Bulk && food.Objective == CatalogObjective.Bulk)
+            || (goal == Goal.Cut && food.Objective == CatalogObjective.Cut)
+            ? 0m
+            : 0.2m;
+        var sugarPenalty = goal == Goal.Cut && target.Calories > 0
+            ? food.SugarsG * servings / target.Calories * 0.15m
+            : 0m;
+
+        return calorieDifference * 0.4m
+            + proteinDifference * 0.3m
+            + carbDifference * 0.15m
+            + fatDifference * 0.15m
+            + varietyPenalty
+            + objectivePenalty
+            + sugarPenalty;
     }
 }
