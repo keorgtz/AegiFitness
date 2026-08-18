@@ -132,7 +132,11 @@ public record WorkoutLogEntryDto(
     int? ActualReps,
     decimal? ActualWeightKg,
     bool Completed,
-    bool IsExtra);
+    bool IsExtra,
+    WorkoutSetDto[]? Sets = null);
+
+public record WorkoutSetDto(Guid? Id, int SetNumber, int PlannedReps, decimal? PlannedWeightKg,
+    int? ActualReps, decimal? ActualWeightKg, int? Rir, bool Completed, DateTime? CompletedAt);
 
 // Entrada de log tal como la consume el frontend (incluye el ejercicio).
 public record WorkoutLogEntryResponseDto(
@@ -145,13 +149,16 @@ public record WorkoutLogEntryResponseDto(
     decimal? ActualWeightKg,
     bool Completed,
     bool IsExtra,
-    ExerciseDto Exercise);
+    ExerciseDto Exercise,
+    WorkoutSetDto[] Sets);
 
 public record WorkoutLogCreateDto(
     [Required] DateOnly Date,
     Guid? PlanDayId,
     WorkoutLogEntryDto[] Entries,
-    string? Notes);
+    string? Notes,
+    DateTime? StartedAt = null,
+    DateTime? FinishedAt = null);
 
 public record WorkoutLogDto(
     Guid Id,
@@ -233,6 +240,16 @@ public record MealLogDto(
 public record WeightEntryDto(Guid Id, DateOnly Date, decimal WeightKg, string? Notes);
 
 public record WeightEntryCreateDto([Required] DateOnly Date, [Range(20, 300)] decimal WeightKg, string? Notes);
+
+public record ProgressPhotoDto(Guid Id, Guid WeightEntryId, string FileName, string ContentType, string? Caption, DateTime CreatedAt);
+public record BodyMeasurementDto(Guid Id, DateOnly Date, decimal WeightKg, decimal? BodyFatPercent, decimal? MuscleMassKg,
+    decimal? WaistCm, decimal? HipCm, decimal? ChestCm, decimal? NeckCm, decimal? LeftArmCm, decimal? RightArmCm,
+    decimal? LeftThighCm, decimal? RightThighCm, string? Notes, DateTime CreatedAt, ProgressPhotoDto[] Photos);
+public record BodyMeasurementCreateDto([Required] DateOnly Date, [Range(20, 300)] decimal WeightKg,
+    [Range(1, 75)] decimal? BodyFatPercent, [Range(1, 300)] decimal? MuscleMassKg,
+    [Range(20, 300)] decimal? WaistCm, [Range(20, 300)] decimal? HipCm, [Range(20, 300)] decimal? ChestCm,
+    [Range(10, 100)] decimal? NeckCm, [Range(10, 100)] decimal? LeftArmCm, [Range(10, 100)] decimal? RightArmCm,
+    [Range(15, 150)] decimal? LeftThighCm, [Range(15, 150)] decimal? RightThighCm, string? Notes);
 
 public record GamificationSummaryDto(
     int Xp,

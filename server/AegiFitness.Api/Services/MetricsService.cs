@@ -35,6 +35,8 @@ public class MetricsService
             .Where(x => x.UserId == userId && x.Date >= start7)
             .Include(x => x.Entries)
             .ThenInclude(e => e.Exercise)
+            .Include(x => x.Entries)
+            .ThenInclude(e => e.Sets)
             .ToListAsync(ct);
 
         var workoutLogs30 = await _context.WorkoutLogs
@@ -90,10 +92,16 @@ public class MetricsService
         var volumeByMuscle = new Dictionary<string, decimal>();
         foreach (var log in workoutLogs7)
         {
-            foreach (var entry in log.Entries.Where(e => e.Completed && e.ActualWeightKg.HasValue))
+            foreach (var entry in log.Entries)
             {
                 var muscle = entry.Exercise.MuscleGroup.ToString();
-                var volume = (entry.ActualSets ?? entry.PlannedSets) * (entry.ActualReps ?? entry.PlannedReps) * entry.ActualWeightKg!.Value;
+                var detailedVolume = entry.Sets.Where(s => s.Completed).Sum(s => (s.ActualReps ?? 0) * (s.ActualWeightKg ?? 0));
+                var volume = entry.Sets.Count > 0
+                    ? detailedVolume
+                    : entry.Completed && entry.ActualWeightKg.HasValue
+                        ? (entry.ActualSets ?? entry.PlannedSets) * (entry.ActualReps ?? entry.PlannedReps) * entry.ActualWeightKg.Value
+                        : 0;
+                if (volume <= 0) continue;
                 if (!volumeByMuscle.ContainsKey(muscle)) volumeByMuscle[muscle] = 0;
                 volumeByMuscle[muscle] += volume;
             }

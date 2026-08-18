@@ -4,7 +4,7 @@ import { exerciseCatalogApi, workoutLogApi, workoutPlanApi } from "../api/resour
 import { Button, Chip, EmptyState, ErrorState, ExerciseGuideModal, Loading, Modal, SegmentedControl, Stepper } from "../components/ui";
 import { useAsync } from "../hooks/useAsync";
 import { useToastCtx } from "../hooks/useToastContext";
-import type { ExerciseDto, MuscleGroup, WorkoutLogEntryRequest, WorkoutPlanDayDto } from "../types/api";
+import type { ExerciseDto, MuscleGroup, WorkoutLogDto, WorkoutLogEntryRequest, WorkoutPlanDayDto } from "../types/api";
 import { addDays, dayName, exerciseImageUrl, modalityName, muscleGroupName, today } from "../utils/format";
 
 type TrainingView = "today" | "plan" | "history";
@@ -22,6 +22,7 @@ export default function TrainingPage() {
   const [freeSession, setFreeSession] = useState(false);
   const [entries, setEntries] = useState<WorkoutEntry[]>([]);
   const [selectedDay, setSelectedDay] = useState<WorkoutPlanDayDto | null>(null);
+  const [selectedLog, setSelectedLog] = useState<WorkoutLogDto | null>(null);
   const [guide, setGuide] = useState<ExerciseDto | null>(null);
   const [picker, setPicker] = useState<{ open: boolean; replaceIndex: number | null }>({ open: false, replaceIndex: null });
   const [saving, setSaving] = useState(false);
@@ -79,6 +80,22 @@ export default function TrainingPage() {
     finally { setSaving(false); }
   };
 
+  const startFocusedWorkout = () => {
+    if (!entries.length) return;
+    localStorage.setItem("aegi_active_training_v1", JSON.stringify({
+      startedAt: new Date().toISOString(), current: 0, notes: "",
+      exercises: entries.map((entry, index) => ({
+        exercise: entry.exercise, planDayId: freeSession ? undefined : todayPlan?.id,
+        isExtra: entry.isExtra || freeSession, restSeconds: todayPlan?.items[index]?.restSeconds ?? 60,
+        sets: Array.from({ length: Math.max(1, entry.actualSets) }, (_, setIndex) => ({
+          setNumber: setIndex + 1, plannedReps: entry.plannedReps, actualReps: entry.actualReps,
+          actualWeightKg: entry.actualWeightKg, rir: 2, completed: false,
+        })),
+      })),
+    }));
+    navigate("/training/session");
+  };
+
   const regenerate = async () => {
     setRegenerating(true);
     try { await workoutPlanApi.regenerate(); toast.add("Plan regenerado", "success"); load(); }
@@ -97,7 +114,7 @@ export default function TrainingPage() {
         <div className="hero__label"><span className="icon">fitness_center</span><span>Entrenar</span></div>
         <h1 className="hero__title">Tu entrenamiento, en un solo lugar</h1>
         <p className="hero__subtitle">Completa la sesión de hoy, consulta tu rutina y revisa tu historial.</p>
-        <div className="hero__actions"><Button variant="ghost" size="sm" onClick={() => navigate("/export?content=training")}><span className="icon">download</span>Exportar rutina</Button></div>
+        <div className="hero__actions"><Button onClick={() => navigate("/training/session")}><span className="icon">play_arrow</span>Iniciar entrenamiento</Button><Button variant="ghost" size="sm" onClick={() => navigate("/export?content=training")}><span className="icon">download</span>Exportar rutina</Button></div>
       </div>
       <div className="mb-4"><SegmentedControl block value={view} onChange={setView} options={[{ value: "today", label: "Hoy" }, { value: "plan", label: "Rutina" }, { value: "history", label: "Historial" }]} /></div>
 
@@ -129,7 +146,7 @@ export default function TrainingPage() {
             </div>
           </div>;
         })}
-        {!!entries.length && <div className="training-actions"><Button variant="ghost" block onClick={() => setPicker({ open: true, replaceIndex: null })}>Añadir ejercicio extra</Button><Button block loading={saving} onClick={() => void saveWorkout()}>Guardar entreno</Button></div>}
+        {!!entries.length && <div className="training-actions"><Button variant="ghost" block onClick={() => setPicker({ open: true, replaceIndex: null })}>Añadir ejercicio extra</Button><Button variant="ghost" block loading={saving} onClick={() => void saveWorkout()}>Registro rápido</Button><Button block onClick={startFocusedWorkout}><span className="icon">play_arrow</span>Modo entrenamiento</Button></div>}
       </section>}
 
       {view === "plan" && <section aria-labelledby="weekly-plan-title">
@@ -139,13 +156,16 @@ export default function TrainingPage() {
 
       {view === "history" && <section aria-labelledby="training-history-title">
         <div className="section-title"><span id="training-history-title">Últimos 30 días</span></div>
-        {!data.history.length ? <EmptyState icon="history" title="Sin entrenos registrados" description="Tu primera sesión aparecerá aquí." /> : data.history.map((log) => <div key={log.id} className="list-item"><div className="list-item__main"><div className="list-item__title">{log.date}</div><div className="list-item__meta">{log.entries.filter((entry) => entry.completed).length}/{log.entries.length} ejercicios completados</div></div>{log.totalXp ? <div className="badge badge--success">+{log.totalXp} XP</div> : null}</div>)}
+        {!data.history.length ? <EmptyState icon="history" title="Sin entrenos registrados" description="Tu primera sesión aparecerá aquí." /> : data.history.map((log) => <button type="button" key={log.id} className="list-item list-item--button" onClick={() => setSelectedLog(log)}><div className="list-item__main"><div className="list-item__title">{log.date}</div><div className="list-item__meta">{log.entries.reduce((sum, entry) => sum + (entry.sets?.filter((set) => set.completed).length || entry.actualSets || 0), 0)} series · {log.entries.length} ejercicios</div></div><span className="icon">chevron_right</span></button>)}
       </section>}
 
       <ExercisePickerModal open={picker.open} title={picker.replaceIndex === null ? "Añadir ejercicio" : "Cambiar ejercicio"} onClose={() => setPicker({ open: false, replaceIndex: null })} onSelect={selectExercise} />
       <ExerciseGuideModal exercise={guide} onClose={() => setGuide(null)} />
       <Modal open={!!selectedDay} onClose={() => setSelectedDay(null)} title={selectedDay ? dayName(selectedDay.dayOfWeek) : "Rutina"}>
         {selectedDay && (selectedDay.items.length ? selectedDay.items.map((item) => <div key={item.id} className="list-item"><div className="list-item__main"><div className="list-item__title">{item.exercise.name}</div><div className="list-item__meta">{item.sets} series · {item.repsMin}-{item.repsMax} reps · {item.restSeconds}s</div></div><Button variant="ghost" size="sm" onClick={() => setGuide(item.exercise)}>Guía</Button></div>) : <EmptyState icon="hotel" title="Día de descanso" />)}
+      </Modal>
+      <Modal open={!!selectedLog} onClose={() => setSelectedLog(null)} title={selectedLog ? `Entrenamiento · ${selectedLog.date}` : "Entrenamiento"} wide>
+        {selectedLog && <div className="workout-detail"><div className="workout-detail__summary"><span><strong>{selectedLog.entries.length}</strong> ejercicios</span><span><strong>{selectedLog.entries.reduce((sum, entry) => sum + (entry.sets?.filter((set) => set.completed).length || entry.actualSets || 0), 0)}</strong> series</span><span><strong>{selectedLog.startedAt && selectedLog.finishedAt ? Math.max(1, Math.round((new Date(selectedLog.finishedAt).getTime() - new Date(selectedLog.startedAt).getTime()) / 60000)) : "—"}</strong> min</span></div>{selectedLog.entries.map((entry) => <section key={entry.id} className="workout-detail__exercise"><h3>{entry.exercise.name}</h3>{entry.sets?.length ? <div className="workout-detail__sets"><div><span>Serie</span><span>Peso</span><span>Reps</span><span>RIR</span></div>{entry.sets.map((set) => <div key={set.setNumber} className={set.completed ? "is-done" : ""}><strong>{set.setNumber}</strong><span>{set.actualWeightKg ? `${set.actualWeightKg} kg` : "—"}</span><span>{set.actualReps ?? "—"}</span><span>{set.rir ?? "—"}</span></div>)}</div> : <p className="text-muted">{entry.actualSets ?? 0} series · {entry.actualReps ?? 0} reps · {entry.actualWeightKg ?? 0} kg</p>}</section>)}{selectedLog.notes && <p className="workout-detail__notes">{selectedLog.notes}</p>}</div>}
       </Modal>
     </div>
   );

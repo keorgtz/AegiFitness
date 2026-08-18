@@ -126,12 +126,21 @@ async function request<T>(path: string, opts: RequestOptions): Promise<T> {
   return (await res.json()) as T;
 }
 
+async function getBlob(path: string): Promise<Blob> {
+  let res = await fetch(`${API_BASE}${path}`, { headers: getHeaders(false) });
+  if (res.status === 401 && await refreshTokenOnce()) res = await fetch(`${API_BASE}${path}`, { headers: getHeaders(false) });
+  if (!res.ok) throw await parseError(res);
+  return res.blob();
+}
+
 export const api = {
   get: <T>(path: string) => request<T>(path, { method: "GET" }),
   post: <T>(path: string, body?: unknown) => request<T>(path, { method: "POST", body }),
   put: <T>(path: string, body?: unknown) => request<T>(path, { method: "PUT", body }),
   patch: <T>(path: string, body?: unknown) => request<T>(path, { method: "PATCH", body }),
   delete: <T>(path: string) => request<T>(path, { method: "DELETE" }),
+  postForm: <T>(path: string, body: FormData) => request<T>(path, { method: "POST", body, contentType: false }),
+  getBlob,
 };
 
 export const authApi = {

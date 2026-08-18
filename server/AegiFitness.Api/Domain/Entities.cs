@@ -19,6 +19,7 @@ public class ApplicationUser : IdentityUser<Guid>
     public ICollection<UserAchievement> UserAchievements { get; set; } = new List<UserAchievement>();
     public ICollection<UserGoal> Goals { get; set; } = new List<UserGoal>();
     public ICollection<WeightEntry> WeightEntries { get; set; } = new List<WeightEntry>();
+    public ICollection<ProgressPhoto> ProgressPhotos { get; set; } = new List<ProgressPhoto>();
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }
 
@@ -177,6 +178,22 @@ public class WorkoutLogEntry
     public decimal? ActualWeightKg { get; set; }
     public bool Completed { get; set; }
     public bool IsExtra { get; set; }
+    public ICollection<WorkoutSetEntry> Sets { get; set; } = new List<WorkoutSetEntry>();
+}
+
+public class WorkoutSetEntry
+{
+    public Guid Id { get; set; }
+    public Guid WorkoutLogEntryId { get; set; }
+    public WorkoutLogEntry WorkoutLogEntry { get; set; } = null!;
+    public int SetNumber { get; set; }
+    public int PlannedReps { get; set; }
+    public decimal? PlannedWeightKg { get; set; }
+    public int? ActualReps { get; set; }
+    public decimal? ActualWeightKg { get; set; }
+    public int? Rir { get; set; }
+    public bool Completed { get; set; }
+    public DateTime? CompletedAt { get; set; }
 }
 
 public class MealPlan
@@ -289,7 +306,33 @@ public class WeightEntry
     public ApplicationUser User { get; set; } = null!;
     public DateOnly Date { get; set; }
     public decimal WeightKg { get; set; }
+    public decimal? BodyFatPercent { get; set; }
+    public decimal? MuscleMassKg { get; set; }
+    public decimal? WaistCm { get; set; }
+    public decimal? HipCm { get; set; }
+    public decimal? ChestCm { get; set; }
+    public decimal? NeckCm { get; set; }
+    public decimal? LeftArmCm { get; set; }
+    public decimal? RightArmCm { get; set; }
+    public decimal? LeftThighCm { get; set; }
+    public decimal? RightThighCm { get; set; }
     public string? Notes { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public ICollection<ProgressPhoto> Photos { get; set; } = new List<ProgressPhoto>();
+}
+
+public class ProgressPhoto
+{
+    public Guid Id { get; set; }
+    public Guid UserId { get; set; }
+    public ApplicationUser User { get; set; } = null!;
+    public Guid WeightEntryId { get; set; }
+    public WeightEntry WeightEntry { get; set; } = null!;
+    public string FileName { get; set; } = string.Empty;
+    public string ContentType { get; set; } = string.Empty;
+    public byte[] Data { get; set; } = Array.Empty<byte>();
+    public string? Caption { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
 
 public class RefreshToken

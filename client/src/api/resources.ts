@@ -1,6 +1,8 @@
 import { api } from "./client";
 import type {
   AdminLicenseDto,
+  BodyMeasurementDto,
+  BodyMeasurementRequest,
   AdminUserDto,
   ChangePasswordRequest,
   ChangePasswordResponse,
@@ -18,6 +20,7 @@ import type {
   MetricsSummaryDto,
   PagedResult,
   ProfileDto,
+  ProgressPhotoDto,
   ResetPasswordRequest,
   RoleRequest,
   TrainingConfigDto,
@@ -74,6 +77,14 @@ export const metricsApi = {
   weight: (from: string, to: string) =>
     api.get<WeightEntryDto[]>(`/metrics/weight?from=${from}&to=${to}`),
   saveWeight: (req: WeightEntryRequest) => api.post<WeightEntryDto>("/metrics/weight", req),
+  body: (from: string, to: string) => api.get<BodyMeasurementDto[]>(`/metrics/body?from=${from}&to=${to}`),
+  saveBody: (req: BodyMeasurementRequest) => api.post<BodyMeasurementDto>("/metrics/body", req),
+  uploadPhoto: (entryId: string, file: File, caption?: string) => {
+    const form = new FormData(); form.append("file", file); if (caption) form.append("caption", caption);
+    return api.postForm<ProgressPhotoDto>(`/metrics/body/${entryId}/photos`, form);
+  },
+  deletePhoto: (photoId: string) => api.delete<void>(`/metrics/body/photos/${photoId}`),
+  photo: (photoId: string) => api.getBlob(`/metrics/body/photos/${photoId}`),
 };
 
 export const gamificationApi = {

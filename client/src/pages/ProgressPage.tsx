@@ -1,179 +1,42 @@
 import { useCallback, useEffect, useState } from "react";
 import { metricsApi } from "../api/resources";
-import { Button, Card, EmptyState, ErrorState, Input, Loading } from "../components/ui";
+import { Button, Card, EmptyState, ErrorState, Input, Loading, SegmentedControl } from "../components/ui";
 import { BarChart, LineChart, StatCard } from "../components/ui/charts";
 import { useAsync } from "../hooks/useAsync";
 import { useToastCtx } from "../hooks/useToastContext";
+import type { BodyMeasurementDto, BodyMeasurementRequest, ProgressPhotoDto } from "../types/api";
 import { addDays, muscleGroupName, shortDayName, today } from "../utils/format";
 
+type View = "body" | "analytics" | "history";
+type NumericKey = Exclude<keyof BodyMeasurementRequest, "date" | "notes">;
+const fields: { key: NumericKey; label: string; unit: string }[] = [
+  { key: "weightKg", label: "Peso", unit: "kg" }, { key: "bodyFatPercent", label: "Grasa corporal", unit: "%" },
+  { key: "muscleMassKg", label: "Masa muscular", unit: "kg" }, { key: "waistCm", label: "Cintura", unit: "cm" },
+  { key: "hipCm", label: "Cadera", unit: "cm" }, { key: "chestCm", label: "Pecho", unit: "cm" },
+  { key: "neckCm", label: "Cuello", unit: "cm" }, { key: "leftArmCm", label: "Brazo izquierdo", unit: "cm" },
+  { key: "rightArmCm", label: "Brazo derecho", unit: "cm" }, { key: "leftThighCm", label: "Muslo izquierdo", unit: "cm" },
+  { key: "rightThighCm", label: "Muslo derecho", unit: "cm" },
+];
+
 export default function ProgressPage() {
-  const toast = useToastCtx();
-  const [weight, setWeight] = useState("");
-  const [saving, setSaving] = useState(false);
-
-  const { data, loading, error, run } = useAsync<{
-    summary: Awaited<ReturnType<typeof metricsApi.summary>>;
-    weights: Awaited<ReturnType<typeof metricsApi.weight>>;
-  }>();
-
-  const load = useCallback(() => {
-    const from = addDays(today(), -90);
-    void run(
-      Promise.all([metricsApi.summary(today()), metricsApi.weight(from, today())]).then(
-        ([summary, weights]) => ({ summary, weights }),
-      ),
-    );
-  }, [run]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  const handleSaveWeight = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const value = Number(weight);
-    if (!value || value <= 0) {
-      toast.add("Ingresa un peso válido", "error");
-      return;
-    }
-    setSaving(true);
-    try {
-      await metricsApi.saveWeight({ date: today(), weightKg: value });
-      toast.add("Peso registrado", "success");
-      setWeight("");
-      load();
-    } catch (err) {
-      const message =
-        typeof err === "object" && err !== null && "message" in err
-          ? String(err.message)
-          : "Error al guardar peso";
-      toast.add(message, "error");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  if (loading && !data) return <Loading message="Cargando progreso" />;
-  if (error) return <ErrorState message={error} onRetry={load} />;
-  if (!data) return <EmptyState icon="monitor_weight" title="Sin datos" />;
-
-  const summary = data.summary;
-  const weightData = data.weights
-    .slice(-14)
-    .map((w) => ({ label: w.date.slice(5), value: w.weightKg }));
-
-  const xpData = summary.xpByDay.map((value, i) => ({
-    label: shortDayName((new Date().getDay() - 13 + i + 7) % 7),
-    value,
-  }));
-
-  const volumeData = Object.entries(summary.volumeByMuscle).map(([muscle, value]) => {
-    const name = muscleGroupName(muscle);
-    return {
-      label: name.length > 6 ? `${name.slice(0, 4)}.` : name,
-      value,
-    };
-  });
-
-  return (
-    <div className="page">
-      <div className="hero">
-        <div className="hero__label">
-          <span className="icon">trending_up</span>
-          <span>Progreso</span>
-        </div>
-        <h1 className="hero__title">Tu evolución</h1>
-      </div>
-
-      <Card title="Registrar peso" icon="monitor_weight" style={{ marginBottom: 16 }}>
-        <form onSubmit={handleSaveWeight} className="weight-entry-form">
-          <div className="weight-entry-form__field">
-            <Input
-              type="number"
-              step="0.1"
-              label="Peso (kg)"
-              placeholder="75.0"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-            />
-          </div>
-          <Button type="submit" loading={saving}>
-            Guardar
-          </Button>
-        </form>
-      </Card>
-
-      <div className="grid-2">
-        <Card title="Historial de peso" icon="show_chart">
-          {weightData.length === 0 ? (
-            <EmptyState icon="monitor_weight" title="Sin registros" />
-          ) : (
-            <LineChart data={weightData} height={180} />
-          )}
-        </Card>
-        <Card title="XP últimos 14 días" icon="local_fire_department">
-          <BarChart data={xpData} height={180} />
-        </Card>
-      </div>
-
-      <div className="grid-4 mt-4">
-        <StatCard
-          icon="percent"
-          label="Adherencia 7 días"
-          value={`${summary.adherence7d.toFixed(0)}%`}
-          variant="primary"
-        />
-        <StatCard
-          icon="percent"
-          label="Adherencia 30 días"
-          value={`${summary.adherence30d.toFixed(0)}%`}
-          variant="success"
-        />
-        <StatCard
-          icon="fitness_center"
-          label="Entrenos semana"
-          value={`${summary.workoutsThisWeek}`}
-          variant="danger"
-        />
-        <StatCard
-          icon="fitness_center"
-          label="Entrenos total"
-          value={`${summary.workoutsTotal}`}
-          variant="accent"
-        />
-        <StatCard
-          icon="local_fire_department"
-          label="Racha actual"
-          value={`${summary.currentStreak} días`}
-          variant="primary"
-        />
-        <StatCard
-          icon="monitor_weight"
-          label="Delta peso 30 días"
-          value={`${summary.weightDelta30d.toFixed(1)} kg`}
-          variant={summary.weightDelta30d <= 0 ? "success" : "danger"}
-        />
-        <StatCard
-          icon="restaurant"
-          label="Kcal promedio 7d"
-          value={`${Math.round(summary.caloriesAvg7d)}`}
-          variant="accent"
-        />
-        <StatCard
-          icon="egg_alt"
-          label="Proteína promedio 7d"
-          value={`${Math.round(summary.proteinAvg7d)}g`}
-          variant="success"
-        />
-      </div>
-
-      <Card title="Volumen por músculo (7 días)" icon="fitness_center" className="mt-4">
-        {volumeData.length === 0 ? (
-          <EmptyState icon="fitness_center" title="Sin volumen registrado" />
-        ) : (
-          <BarChart data={volumeData} height={200} />
-        )}
-      </Card>
-    </div>
-  );
+  const toast = useToastCtx(); const [view, setView] = useState<View>("body"); const [saving, setSaving] = useState(false); const [uploading, setUploading] = useState(false);
+  const [metric, setMetric] = useState<NumericKey>("weightKg"); const [form, setForm] = useState<Record<string, string>>({ date: today() });
+  const { data, loading, error, run } = useAsync<{ summary: Awaited<ReturnType<typeof metricsApi.summary>>; body: BodyMeasurementDto[] }>();
+  const load = useCallback(() => void run(Promise.all([metricsApi.summary(today()), metricsApi.body(addDays(today(), -365), today())]).then(([summary, body]) => ({ summary, body }))), [run]);
+  useEffect(load, [load]);
+  const selected = data?.body.find((x) => x.date === form.date);
+  useEffect(() => { if (!data) return; const date = form.date ?? today(); const item = data.body.find((x) => x.date === date); const next: Record<string, string> = { date }; fields.forEach(({ key }) => next[key] = item?.[key]?.toString() ?? ""); next.notes = item?.notes ?? ""; setForm(next); }, [data, form.date]);
+  const save = async (event: React.FormEvent) => { event.preventDefault(); const weight = Number(form.weightKg); if (weight < 20 || weight > 300) { toast.add("Ingresá un peso entre 20 y 300 kg", "error"); return; } setSaving(true); try { const request: BodyMeasurementRequest = { date: form.date ?? today(), weightKg: weight, notes: form.notes || undefined }; fields.filter((x) => x.key !== "weightKg").forEach(({ key }) => { if (form[key] !== "") request[key] = Number(form[key]) as never; }); await metricsApi.saveBody(request); toast.add("Control corporal guardado", "success"); load(); } catch (err) { toast.add(err instanceof Error ? err.message : "No se pudo guardar", "error"); } finally { setSaving(false); } };
+  const upload = async (event: React.ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; if (!file || !selected) return; if (file.size > 5_000_000) { toast.add("La foto debe pesar menos de 5 MB", "error"); return; } setUploading(true); try { await metricsApi.uploadPhoto(String(selected.id), file); toast.add("Foto privada guardada", "success"); load(); } catch (err) { toast.add(err instanceof Error ? err.message : "No se pudo subir la foto", "error"); } finally { setUploading(false); event.target.value = ""; } };
+  if (loading && !data) return <Loading message="Cargando tu evolución" />; if (error) return <ErrorState message={error} onRetry={load} />; if (!data) return <EmptyState icon="monitor_weight" title="Sin datos" />;
+  const points = [...data.body].reverse().filter((x) => x[metric] != null).slice(-16).map((x) => ({ label: x.date.slice(5), value: Number(x[metric]) }));
+  const latest = data.body[0]; const previous = data.body.find((x) => x.date <= addDays(today(), -30)); const delta = latest && previous ? latest.weightKg - previous.weightKg : 0;
+  return <div className="page"><div className="hero"><div className="hero__label"><span className="icon">monitor_weight</span><span>Seguimiento corporal</span></div><h1 className="hero__title">Medí cambios, no sólo el peso</h1><p className="hero__subtitle">Registrá medidas consistentes y compará tu evolución con datos reales.</p></div><div className="mb-4"><SegmentedControl block value={view} onChange={setView} options={[{ value: "body", label: "Nuevo control" }, { value: "analytics", label: "Evolución" }, { value: "history", label: "Historial" }]} /></div>
+    {view === "body" && <div className="body-layout"><Card title={selected ? "Editar control" : "Nuevo control"} icon="straighten"><form onSubmit={save}><Input type="date" label="Fecha" value={form.date} max={today()} onChange={(e) => setForm({ ...form, date: e.target.value })} /><div className="body-form-grid">{fields.map((field) => <Input key={field.key} type="number" min="0" step="0.1" label={`${field.label} (${field.unit})${field.key === "weightKg" ? " *" : ""}`} placeholder="—" value={form[field.key] ?? ""} onChange={(e) => setForm({ ...form, [field.key]: e.target.value })} />)}</div><label className="field"><span className="field__label">Notas</span><textarea className="textarea" value={form.notes ?? ""} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Condiciones, hora, sensaciones..." /></label><Button block type="submit" loading={saving}>Guardar control</Button></form></Card><Card title="Fotos de progreso" icon="photo_camera"><p className="text-muted body-photo-help">Son privadas y sólo se cargan con tu sesión autenticada. Usá luz, postura y distancia similares.</p>{!selected ? <EmptyState icon="add_a_photo" title="Guardá primero el control" description="Después podrás asociar fotos a esta fecha." /> : <><label className={`photo-upload ${uploading ? "photo-upload--disabled" : ""}`}><span className="icon">add_a_photo</span><strong>{uploading ? "Subiendo..." : "Añadir foto"}</strong><span>JPG, PNG o WebP · máximo 5 MB</span><input type="file" accept="image/jpeg,image/png,image/webp" onChange={upload} disabled={uploading} /></label><div className="progress-photo-grid">{selected.photos.map((photo) => <PrivatePhoto key={photo.id} photo={photo} onDelete={async () => { if (!confirm("¿Eliminar esta foto?")) return; await metricsApi.deletePhoto(photo.id); load(); }} />)}</div></>}</Card></div>}
+    {view === "analytics" && <><div className="grid-4"><StatCard icon="monitor_weight" label="Peso actual" value={latest ? `${latest.weightKg.toFixed(1)} kg` : "—"} variant="primary" /><StatCard icon="difference" label="Cambio 30 días" value={latest && previous ? `${delta > 0 ? "+" : ""}${delta.toFixed(1)} kg` : "—"} variant={delta <= 0 ? "success" : "danger"} /><StatCard icon="percent" label="Grasa corporal" value={latest?.bodyFatPercent ? `${latest.bodyFatPercent}%` : "—"} variant="accent" /><StatCard icon="straighten" label="Cintura" value={latest?.waistCm ? `${latest.waistCm} cm` : "—"} variant="success" /></div><Card title="Evolución de medidas" icon="show_chart" className="mt-4"><select className="select body-metric-select" value={metric} onChange={(e) => setMetric(e.target.value as NumericKey)}>{fields.map((x) => <option value={x.key} key={x.key}>{x.label} ({x.unit})</option>)}</select>{points.length > 1 ? <LineChart data={points} height={230} /> : <EmptyState icon="show_chart" title="Faltan registros" description="Necesitás al menos dos controles de esta medida." />}</Card><Analytics summary={data.summary} /></>}
+    {view === "history" && <section><div className="section-title"><span>Controles registrados</span><span className="section-title__hint">{data.body.length} registros</span></div>{!data.body.length ? <EmptyState icon="history" title="Todavía no hay controles" /> : <div className="body-history">{data.body.map((item) => <button type="button" className="card card--interactive body-history__item" key={item.id} onClick={() => { setForm({ date: item.date }); setView("body"); }}><div><strong>{item.date}</strong><span>{item.notes || "Sin notas"}</span></div><div className="body-history__values"><strong>{item.weightKg.toFixed(1)} kg</strong>{item.waistCm && <span>Cintura {item.waistCm} cm</span>}{item.bodyFatPercent && <span>Grasa {item.bodyFatPercent}%</span>}{item.photos.length > 0 && <span><span className="icon">photo_camera</span>{item.photos.length}</span>}</div></button>)}</div>}</section>}
+  </div>;
 }
+
+function PrivatePhoto({ photo, onDelete }: { photo: ProgressPhotoDto; onDelete: () => void }) { const [url, setUrl] = useState(""); useEffect(() => { let active = true; let objectUrl = ""; metricsApi.photo(photo.id).then((blob) => { objectUrl = URL.createObjectURL(blob); if (active) setUrl(objectUrl); }); return () => { active = false; if (objectUrl) URL.revokeObjectURL(objectUrl); }; }, [photo.id]); return <figure className="progress-photo">{url ? <img src={url} alt={photo.caption || `Progreso ${photo.createdAt.slice(0, 10)}`} /> : <div className="progress-photo__loading" />}<button type="button" onClick={onDelete} aria-label="Eliminar foto"><span className="icon">delete</span></button></figure>; }
+function Analytics({ summary }: { summary: Awaited<ReturnType<typeof metricsApi.summary>> }) { const xp = summary.xpByDay.map((value, i) => ({ label: shortDayName((new Date().getDay() - 13 + i + 7) % 7), value })); const volume = Object.entries(summary.volumeByMuscle).map(([muscle, value]) => ({ label: muscleGroupName(muscle).slice(0, 6), value })); return <div className="grid-2 mt-4"><Card title="Actividad (XP)" icon="local_fire_department"><BarChart data={xp} height={190} /></Card><Card title="Volumen por músculo" icon="fitness_center">{volume.length ? <BarChart data={volume} height={190} /> : <EmptyState icon="fitness_center" title="Sin volumen" />}</Card></div>; }

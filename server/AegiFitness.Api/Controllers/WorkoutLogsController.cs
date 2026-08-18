@@ -33,6 +33,8 @@ public class WorkoutLogsController : ControllerBase
             .Where(x => x.UserId == userId)
             .Include(x => x.Entries)
             .ThenInclude(e => e.Exercise)
+            .Include(x => x.Entries)
+            .ThenInclude(e => e.Sets)
             .AsQueryable();
 
         if (from.HasValue) query = query.Where(x => x.Date >= from.Value);
@@ -46,6 +48,10 @@ public class WorkoutLogsController : ControllerBase
     public async Task<ActionResult<WorkoutLogDto>> Create(WorkoutLogCreateDto dto)
     {
         var userId = CurrentUserId();
+        if (dto.Entries.Length == 0) return BadRequest(new { message = "La sesión debe incluir al menos un ejercicio." });
+        var startedAt = AsUtc(dto.StartedAt) ?? DateTime.UtcNow;
+        var finishedAt = AsUtc(dto.FinishedAt) ?? DateTime.UtcNow;
+        if (finishedAt < startedAt) return BadRequest(new { message = "La hora de finalización no puede ser anterior al inicio." });
         var existing = await _context.WorkoutLogs
             .Include(x => x.Entries)
             .FirstOrDefaultAsync(x => x.UserId == userId && x.Date == dto.Date);
@@ -62,8 +68,8 @@ public class WorkoutLogsController : ControllerBase
             UserId = userId,
             Date = dto.Date,
             PlanDayId = dto.PlanDayId,
-            StartedAt = DateTime.UtcNow,
-            FinishedAt = DateTime.UtcNow,
+            StartedAt = startedAt,
+            FinishedAt = finishedAt,
             Notes = dto.Notes
         };
 
@@ -73,7 +79,7 @@ public class WorkoutLogsController : ControllerBase
 
         foreach (var entry in dto.Entries)
         {
-            log.Entries.Add(new WorkoutLogEntry
+            var logEntry = new WorkoutLogEntry
             {
                 Id = Guid.NewGuid(),
                 LogId = log.Id,
@@ -85,9 +91,37 @@ public class WorkoutLogsController : ControllerBase
                 ActualWeightKg = entry.ActualWeightKg,
                 Completed = entry.Completed,
                 IsExtra = entry.IsExtra
-            });
+            };
 
-            if (entry.Completed)
+            var submittedSets = entry.Sets ?? [];
+            if (submittedSets.Length == 0 && entry.ActualSets is > 0)
+            {
+                submittedSets = Enumerable.Range(1, entry.ActualSets.Value).Select(number => new WorkoutSetDto(
+                    null, number, entry.PlannedReps, entry.ActualWeightKg, entry.ActualReps,
+                    entry.ActualWeightKg, null, entry.Completed, entry.Completed ? log.FinishedAt : null)).ToArray();
+            }
+
+            foreach (var set in submittedSets.OrderBy(x => x.SetNumber))
+            {
+                logEntry.Sets.Add(new WorkoutSetEntry
+                {
+                    Id = Guid.NewGuid(), SetNumber = set.SetNumber, PlannedReps = set.PlannedReps,
+                    PlannedWeightKg = set.PlannedWeightKg, ActualReps = set.ActualReps,
+                    ActualWeightKg = set.ActualWeightKg, Rir = set.Rir is null ? null : Math.Clamp(set.Rir.Value, 0, 10),
+                    Completed = set.Completed, CompletedAt = AsUtc(set.CompletedAt)
+                });
+            }
+            if (logEntry.Sets.Count > 0)
+            {
+                var done = logEntry.Sets.Where(x => x.Completed).ToArray();
+                logEntry.ActualSets = done.Length;
+                logEntry.ActualReps = done.Length == 0 ? null : (int)Math.Round(done.Average(x => x.ActualReps ?? 0));
+                logEntry.ActualWeightKg = done.Length == 0 ? null : done.Max(x => x.ActualWeightKg);
+                logEntry.Completed = done.Length == logEntry.Sets.Count;
+            }
+            log.Entries.Add(logEntry);
+
+            if (logEntry.Completed)
             {
                 xp += 15;
                 completedCount++;
@@ -113,6 +147,8 @@ public class WorkoutLogsController : ControllerBase
             .AsNoTracking()
             .Include(x => x.Entries)
             .ThenInclude(e => e.Exercise)
+            .Include(x => x.Entries)
+            .ThenInclude(e => e.Sets)
             .FirstAsync(x => x.Id == log.Id, HttpContext.RequestAborted);
 
         return Ok(Map(saved, xp));
@@ -151,7 +187,15 @@ public class WorkoutLogsController : ControllerBase
             e.ActualWeightKg,
             e.Completed,
             e.IsExtra,
-            MapExercise(e.Exercise))).ToArray());
+            MapExercise(e.Exercise),
+            e.Sets.OrderBy(s => s.SetNumber).Select(s => new WorkoutSetDto(s.Id, s.SetNumber, s.PlannedReps,
+                s.PlannedWeightKg, s.ActualReps, s.ActualWeightKg, s.Rir, s.Completed, s.CompletedAt)).ToArray())).ToArray());
+
+    private static DateTime? AsUtc(DateTime? value)
+    {
+        if (!value.HasValue) return null;
+        return value.Value.Kind == DateTimeKind.Utc ? value.Value : value.Value.ToUniversalTime();
+    }
 
     private Guid CurrentUserId() => Guid.Parse(User.FindFirst("sub")?.Value ?? Guid.Empty.ToString());
 }

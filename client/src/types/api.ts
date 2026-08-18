@@ -230,7 +230,11 @@ export interface WorkoutLogEntryDto {
   completed: boolean;
   isExtra: boolean;
   exercise: ExerciseDto;
+  sets: WorkoutSetDto[];
 }
+
+export interface WorkoutSetDto { id?: string; setNumber: number; plannedReps: number; plannedWeightKg?: number; actualReps?: number; actualWeightKg?: number; rir?: number; completed: boolean; completedAt?: string }
+export type WorkoutSetRequest = Omit<WorkoutSetDto, "id">;
 
 export interface WorkoutLogDto {
   id: number;
@@ -252,6 +256,7 @@ export interface WorkoutLogEntryRequest {
   actualWeightKg?: number;
   completed: boolean;
   isExtra: boolean;
+  sets?: WorkoutSetRequest[];
 }
 
 export interface WorkoutLogRequest {
@@ -259,6 +264,8 @@ export interface WorkoutLogRequest {
   planDayId?: number;
   entries: WorkoutLogEntryRequest[];
   notes?: string;
+  startedAt?: string;
+  finishedAt?: string;
 }
 
 export interface MealPlanItemDto {
@@ -329,6 +336,10 @@ export interface WeightEntryRequest {
   weightKg: number;
   notes?: string;
 }
+
+export interface ProgressPhotoDto { id: string; weightEntryId: string; fileName: string; contentType: string; caption?: string; createdAt: string }
+export interface BodyMeasurementDto extends WeightEntryDto { bodyFatPercent?: number; muscleMassKg?: number; waistCm?: number; hipCm?: number; chestCm?: number; neckCm?: number; leftArmCm?: number; rightArmCm?: number; leftThighCm?: number; rightThighCm?: number; createdAt: string; photos: ProgressPhotoDto[] }
+export interface BodyMeasurementRequest extends WeightEntryRequest { bodyFatPercent?: number; muscleMassKg?: number; waistCm?: number; hipCm?: number; chestCm?: number; neckCm?: number; leftArmCm?: number; rightArmCm?: number; leftThighCm?: number; rightThighCm?: number }
 
 export interface MetricsSummaryDto {
   adherence7d: number;

@@ -18,6 +18,7 @@ import SettingsPage from "./pages/SettingsPage";
 import AdminPage from "./pages/AdminPage";
 import ExportPage from "./pages/ExportPage";
 import GuidePage from "./pages/GuidePage";
+import TrainingSessionPage from "./pages/TrainingSessionPage";
 
 import "./styles/tokens.css";
 import "./styles/app.css";
@@ -60,6 +61,7 @@ function AppContent() {
                       <Route path="/" element={<DashboardPage />} />
                       <Route path="/today" element={<Navigate to="/training" replace />} />
                       <Route path="/training" element={<TrainingPage />} />
+                      <Route path="/training/session" element={<TrainingSessionPage />} />
                       <Route path="/nutrition" element={<NutritionPage />} />
                       <Route path="/guide" element={<GuidePage />} />
                       <Route path="/progress" element={<ProgressPage />} />

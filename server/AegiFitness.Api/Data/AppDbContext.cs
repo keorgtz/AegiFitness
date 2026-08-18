@@ -22,6 +22,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
     public DbSet<WorkoutPlanItem> WorkoutPlanItems { get; set; } = null!;
     public DbSet<WorkoutLog> WorkoutLogs { get; set; } = null!;
     public DbSet<WorkoutLogEntry> WorkoutLogEntries { get; set; } = null!;
+    public DbSet<WorkoutSetEntry> WorkoutSetEntries { get; set; } = null!;
     public DbSet<MealPlan> MealPlans { get; set; } = null!;
     public DbSet<MealPlanItem> MealPlanItems { get; set; } = null!;
     public DbSet<MealLog> MealLogs { get; set; } = null!;
@@ -31,6 +32,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
     public DbSet<UserAchievement> UserAchievements { get; set; } = null!;
     public DbSet<UserGoal> UserGoals { get; set; } = null!;
     public DbSet<WeightEntry> WeightEntries { get; set; } = null!;
+    public DbSet<ProgressPhoto> ProgressPhotos { get; set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -119,7 +121,10 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
         builder.Entity<WorkoutLogEntry>(we =>
         {
             we.HasOne(x => x.Exercise).WithMany().HasForeignKey(x => x.ExerciseId).OnDelete(DeleteBehavior.Restrict);
+            we.HasMany(x => x.Sets).WithOne(x => x.WorkoutLogEntry).HasForeignKey(x => x.WorkoutLogEntryId).OnDelete(DeleteBehavior.Cascade);
         });
+
+        builder.Entity<WorkoutSetEntry>(ws => ws.HasIndex(x => new { x.WorkoutLogEntryId, x.SetNumber }).IsUnique());
 
         builder.Entity<MealPlan>(mp =>
         {
@@ -168,6 +173,14 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
         builder.Entity<WeightEntry>(w =>
         {
             w.HasIndex(x => new { x.UserId, x.Date });
+            w.HasMany(x => x.Photos).WithOne(x => x.WeightEntry).HasForeignKey(x => x.WeightEntryId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<ProgressPhoto>(p =>
+        {
+            p.HasOne(x => x.User).WithMany(x => x.ProgressPhotos).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+            p.Property(x => x.FileName).HasMaxLength(180);
+            p.Property(x => x.ContentType).HasMaxLength(60);
         });
 
         builder.Entity<RefreshToken>(rt =>
