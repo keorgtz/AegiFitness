@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { initials } from "../utils/format";
 import { toggleTheme } from "../utils/theme";
@@ -29,7 +29,9 @@ const NAV_ITEMS: NavItem[] = [
 export function AppShell({ children }: { children: ReactNode }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
+  const immersive = location.pathname === "/training/session";
 
   const navItems = NAV_ITEMS.filter((n) => !n.admin || user?.roles.includes("Admin"));
 
@@ -38,7 +40,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const level = user?.gamification.level ?? 1;
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${immersive ? "app-shell--immersive" : ""}`}>
       <aside className="sidebar">
         <div className="sidebar__brand">
           <div className="brand-mark">
