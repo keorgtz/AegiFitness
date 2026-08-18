@@ -18,6 +18,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/", label: "Hoy", icon: "calendar_today" },
   { to: "/training", label: "Entrenar", icon: "fitness_center" },
   { to: "/nutrition", label: "Nutrición", icon: "restaurant" },
+  { to: "/guide", label: "Guía", icon: "menu_book" },
   { to: "/progress", label: "Progreso", icon: "trending_up" },
   { to: "/achievements", label: "Logros", icon: "emoji_events" },
   { to: "/export", label: "Exportar", icon: "download", desktopOnly: true },

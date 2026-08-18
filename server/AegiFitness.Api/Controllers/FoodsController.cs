@@ -26,11 +26,14 @@ public class FoodsController : ControllerBase
     public async Task<ActionResult<FoodListDto>> List(
         [FromQuery] string? mealType,
         [FromQuery] string? objective,
+        [FromQuery] int? maxCalories,
+        [FromQuery] int? minProtein,
+        [FromQuery] int? maxSugars,
         [FromQuery] string? search,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
-        var cacheKey = $"foods:{mealType}:{objective}:{search}:{page}:{pageSize}";
+        var cacheKey = $"foods:{mealType}:{objective}:{maxCalories}:{minProtein}:{maxSugars}:{search}:{page}:{pageSize}";
         var cached = await _cache.GetAsync<FoodListDto>(cacheKey);
         if (cached is not null) return Ok(cached);
 
@@ -42,8 +45,17 @@ public class FoodsController : ControllerBase
         if (!string.IsNullOrWhiteSpace(objective) && Enum.TryParse<CatalogObjective>(objective, out var obj))
             query = query.Where(x => x.Objective == obj);
 
+        if (maxCalories is > 0)
+            query = query.Where(x => x.Calories <= maxCalories.Value);
+
+        if (minProtein is >= 0)
+            query = query.Where(x => x.ProteinG >= minProtein.Value);
+
+        if (maxSugars is >= 0)
+            query = query.Where(x => x.SugarsG <= maxSugars.Value);
+
         if (!string.IsNullOrWhiteSpace(search))
-            query = query.Where(x => x.Name.Contains(search));
+            query = query.Where(x => EF.Functions.ILike(x.Name, $"%{search.Trim()}%"));
 
         var total = await query.CountAsync();
         var items = await query

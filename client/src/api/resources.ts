@@ -91,6 +91,8 @@ export const exerciseCatalogApi = {
     type?: string;
     muscleGroup?: string;
     objective?: string;
+    difficulty?: number | string;
+    equipment?: string;
     search?: string;
     page?: number;
     pageSize?: number;
@@ -110,6 +112,9 @@ export const foodCatalogApi = {
   search: (params: {
     mealType?: string;
     objective?: string;
+    maxCalories?: number | string;
+    minProtein?: number | string;
+    maxSugars?: number | string;
     search?: string;
     page?: number;
     pageSize?: number;

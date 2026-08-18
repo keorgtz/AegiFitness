@@ -17,6 +17,7 @@ import AchievementsPage from "./pages/AchievementsPage";
 import SettingsPage from "./pages/SettingsPage";
 import AdminPage from "./pages/AdminPage";
 import ExportPage from "./pages/ExportPage";
+import GuidePage from "./pages/GuidePage";
 
 import "./styles/tokens.css";
 import "./styles/app.css";
@@ -60,6 +61,7 @@ function AppContent() {
                       <Route path="/today" element={<Navigate to="/training" replace />} />
                       <Route path="/training" element={<TrainingPage />} />
                       <Route path="/nutrition" element={<NutritionPage />} />
+                      <Route path="/guide" element={<GuidePage />} />
                       <Route path="/progress" element={<ProgressPage />} />
                       <Route path="/achievements" element={<AchievementsPage />} />
                       <Route path="/settings" element={<SettingsPage />} />

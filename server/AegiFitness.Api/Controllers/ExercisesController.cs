@@ -27,11 +27,13 @@ public class ExercisesController : ControllerBase
         [FromQuery] string? type,
         [FromQuery] string? muscleGroup,
         [FromQuery] string? objective,
+        [FromQuery] int? difficulty,
+        [FromQuery] string? equipment,
         [FromQuery] string? search,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
-        var cacheKey = $"exercises:{type}:{muscleGroup}:{objective}:{search}:{page}:{pageSize}";
+        var cacheKey = $"exercises:{type}:{muscleGroup}:{objective}:{difficulty}:{equipment}:{search}:{page}:{pageSize}";
         var cached = await _cache.GetAsync<ExerciseListDto>(cacheKey);
         if (cached is not null) return Ok(cached);
 
@@ -46,8 +48,14 @@ public class ExercisesController : ControllerBase
         if (!string.IsNullOrWhiteSpace(objective) && Enum.TryParse<CatalogObjective>(objective, out var obj))
             query = query.Where(x => x.Objective == obj);
 
+        if (difficulty is >= 1 and <= 3)
+            query = query.Where(x => x.Difficulty == difficulty.Value);
+
+        if (!string.IsNullOrWhiteSpace(equipment))
+            query = query.Where(x => EF.Functions.ILike(x.Equipment, $"%{equipment.Trim()}%"));
+
         if (!string.IsNullOrWhiteSpace(search))
-            query = query.Where(x => x.Name.Contains(search));
+            query = query.Where(x => EF.Functions.ILike(x.Name, $"%{search.Trim()}%"));
 
         var total = await query.CountAsync();
         var items = await query
