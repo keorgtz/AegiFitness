@@ -99,7 +99,7 @@ export default function DashboardPage() {
               <Button
                 variant={s.today.workout.completed ? "ghost" : "primary"}
                 block
-                onClick={() => navigate("/today")}
+                onClick={() => navigate("/training")}
               >
                 {s.today.workout.completed ? "Ver registro" : "Ir a entrenar"}
               </Button>

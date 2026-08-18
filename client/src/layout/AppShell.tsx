@@ -15,7 +15,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { to: "/", label: "Hoy", icon: "calendar_today" },
-  { to: "/today", label: "Entrenar", icon: "fitness_center" },
+  { to: "/training", label: "Entrenar", icon: "fitness_center" },
   { to: "/nutrition", label: "Nutrición", icon: "restaurant" },
   { to: "/progress", label: "Progreso", icon: "trending_up" },
   { to: "/achievements", label: "Logros", icon: "emoji_events" },
@@ -51,6 +51,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <NavLink
               key={item.to}
               to={item.to}
+              end={item.to === "/"}
               className={({ isActive }) =>
                 `sidebar__link ${isActive ? "sidebar__link--active" : ""}`
               }
@@ -114,6 +115,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <NavLink
             key={item.to}
             to={item.to}
+            end={item.to === "/"}
             className={({ isActive }) =>
               `nav-item ${isActive ? "nav-item--active" : ""}`
             }

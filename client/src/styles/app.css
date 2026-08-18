@@ -2082,6 +2082,33 @@
   gap: 16px;
 }
 
+.training-actions,
+.nutrition-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.nutrition-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.nutrition-toolbar .input {
+  width: auto;
+}
+
+@media (min-width: 640px) {
+  .training-actions,
+  .nutrition-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (min-width: 1024px) {
   .today-grid {
     grid-template-columns: 1fr 1fr;

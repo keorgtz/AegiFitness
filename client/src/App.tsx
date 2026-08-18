@@ -10,7 +10,6 @@ import RegisterPage from "./pages/RegisterPage";
 import PendingPage from "./pages/PendingPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import DashboardPage from "./pages/DashboardPage";
-import TodayPage from "./pages/TodayPage";
 import TrainingPage from "./pages/TrainingPage";
 import NutritionPage from "./pages/NutritionPage";
 import ProgressPage from "./pages/ProgressPage";
@@ -57,7 +56,7 @@ function AppContent() {
                   <AppShell>
                     <Routes>
                       <Route path="/" element={<DashboardPage />} />
-                      <Route path="/today" element={<TodayPage />} />
+                      <Route path="/today" element={<Navigate to="/training" replace />} />
                       <Route path="/training" element={<TrainingPage />} />
                       <Route path="/nutrition" element={<NutritionPage />} />
                       <Route path="/progress" element={<ProgressPage />} />
