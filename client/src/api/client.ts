@@ -37,10 +37,11 @@ function getHeaders(contentType = true): Record<string, string> {
 
 async function parseError(res: Response): Promise<ApiError> {
   try {
-    const body = (await res.json()) as { message?: string; errors?: Record<string, string[]> };
+    const body = (await res.json()) as { message?: string; detail?: string; title?: string; errors?: Record<string, string[]> | string[] };
+    const messages = body.errors ? Object.values(body.errors).flat().filter((value) => typeof value === "string") : [];
     return {
-      message: body.message ?? `Error ${res.status}`,
-      errors: body.errors,
+      message: body.message || messages.join(" ") || body.detail || body.title || `Error ${res.status}`,
+      errors: Array.isArray(body.errors) ? undefined : body.errors,
     };
   } catch {
     return { message: `Error ${res.status}: ${res.statusText}` };

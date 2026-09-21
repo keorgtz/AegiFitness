@@ -1,5 +1,5 @@
 import type { ReactNode, ButtonHTMLAttributes } from "react";
-import { useEffect } from "react";
+import { useEffect, useId } from "react";
 import { createPortal } from "react-dom";
 
 export { Stepper } from "./Stepper";
@@ -289,11 +289,15 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export function Input({ label, error, className = "", ...rest }: InputProps) {
+  const generatedId = useId();
+  const id = rest.id ?? generatedId;
+  const errorId = `${id}-error`;
+  const describedBy = [rest["aria-describedby"], error ? errorId : undefined].filter(Boolean).join(" ") || undefined;
   return (
     <div className="input-group">
-      {label && <label className="input-group__label">{label}</label>}
-      <input className={`input ${error ? "input--error" : ""} ${className}`} {...rest} />
-      {error && <div className="field-error">{error}</div>}
+      {label && <label className="input-group__label" htmlFor={id}>{label}</label>}
+      <input className={`input ${error ? "input--error" : ""} ${className}`} {...rest} id={id} aria-invalid={error ? true : rest["aria-invalid"]} aria-describedby={describedBy} />
+      {error && <div className="field-error" id={errorId}>{error}</div>}
     </div>
   );
 }

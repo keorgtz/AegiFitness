@@ -30,6 +30,17 @@ public class AdminController : ControllerBase
 
     private void InvalidateLicenseCache(Guid userId) => _cache.Remove($"license:{userId}");
 
+    [HttpPost("users")]
+    public async Task<ActionResult<MessageDto>> CreateUser(AdminUserCreateDto dto, [FromServices] UserRegistrationService registration)
+    {
+        var result = await registration.CreateAsync(dto.Account, dto.ActivateLicense);
+        if (result.User is null)
+            return BadRequest(new { message = string.Join(" ", result.Errors), errors = result.Errors });
+        return Ok(new MessageDto(dto.ActivateLicense
+            ? "Usuario creado con licencia activa de por vida."
+            : "Usuario creado con licencia pendiente."));
+    }
+
     [HttpGet("users")]
     public async Task<ActionResult<AdminUserDto[]>> Users([FromQuery] string filter = "all")
     {

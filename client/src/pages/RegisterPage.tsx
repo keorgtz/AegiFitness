@@ -4,6 +4,7 @@ import { useAuth } from "../auth/AuthContext";
 import { Button, Input } from "../components/ui";
 import { useFormErrors } from "../hooks/useAsync";
 import { useToastCtx } from "../hooks/useToastContext";
+import { PASSWORD_HELP, registrationErrors } from "../utils/registration";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -25,28 +26,10 @@ export default function RegisterPage() {
     const password = (form.elements.namedItem("password") as HTMLInputElement).value;
     const confirmPassword = (form.elements.namedItem("confirmPassword") as HTMLInputElement).value;
 
-    let valid = true;
-    if (username.length < 3) {
-      setError("username", "El usuario debe tener al menos 3 caracteres");
-      valid = false;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("email", "Ingresa un correo válido");
-      valid = false;
-    }
-    if (!displayName) {
-      setError("displayName", "Ingresa tu nombre");
-      valid = false;
-    }
-    if (password.length < 6) {
-      setError("password", "La contraseña debe tener al menos 6 caracteres");
-      valid = false;
-    }
-    if (password !== confirmPassword) {
-      setError("confirmPassword", "Las contraseñas no coinciden");
-      valid = false;
-    }
-    if (!valid) return;
+    if (loading) return;
+    const validation = registrationErrors({ username, email, displayName, password }, confirmPassword);
+    Object.entries(validation).forEach(([field, message]) => setError(field, message));
+    if (Object.keys(validation).length) return;
 
     setLoading(true);
     try {
@@ -102,7 +85,7 @@ export default function RegisterPage() {
             Completa tus datos para registrarte.
           </p>
 
-          {formError && <div className="form-error">{formError}</div>}
+          {formError && <div className="form-error" role="alert">{formError}</div>}
 
           <form onSubmit={handleSubmit} noValidate>
             <Input
@@ -111,6 +94,7 @@ export default function RegisterPage() {
               label="Usuario"
               placeholder="usuario123"
               autoComplete="username"
+              maxLength={32}
               error={errors.username}
             />
             <Input
@@ -127,10 +111,13 @@ export default function RegisterPage() {
               label="Nombre visible"
               placeholder="Tu nombre"
               autoComplete="name"
+              maxLength={64}
               error={errors.displayName}
             />
+            <p id="registration-password-help" className="account-form-help">{PASSWORD_HELP}</p>
             <Input
               name="password"
+              aria-describedby="registration-password-help"
               type="password"
               label="Contraseña"
               placeholder="••••••••"

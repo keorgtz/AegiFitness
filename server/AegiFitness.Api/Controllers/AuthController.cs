@@ -36,34 +36,11 @@ public class AuthController : ControllerBase
 
     [HttpPost("register")]
     [AllowAnonymous]
-    public async Task<ActionResult<MessageDto>> Register(RegisterDto dto)
+    public async Task<ActionResult<MessageDto>> Register(RegisterDto dto, [FromServices] UserRegistrationService registration)
     {
-        var user = new ApplicationUser
-        {
-            Id = Guid.NewGuid(),
-            UserName = dto.Username,
-            Email = dto.Email,
-            DisplayName = dto.DisplayName
-        };
-
-        var result = await _userManager.CreateAsync(user, dto.Password);
-        if (!result.Succeeded)
-            return BadRequest(new { errors = result.Errors.Select(e => e.Description) });
-
-        await _userManager.AddToRoleAsync(user, "Member");
-
-        _context.Licenses.Add(new License
-        {
-            Id = Guid.NewGuid(),
-            UserId = user.Id,
-            Status = LicenseStatus.Pending,
-            UpdatedAt = DateTime.UtcNow
-        });
-
-        _context.UserProfiles.Add(new UserProfile { UserId = user.Id, Goal = Goal.Recomposition });
-        _context.TrainingConfigs.Add(new TrainingConfig { UserId = user.Id });
-
-        await _context.SaveChangesAsync();
+        var result = await registration.CreateAsync(dto);
+        if (result.User is null)
+            return BadRequest(new { message = string.Join(" ", result.Errors), errors = result.Errors });
         return Ok(new MessageDto("Usuario registrado. Espera la activación de tu licencia."));
     }
 

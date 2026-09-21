@@ -4,14 +4,13 @@ import { initials } from "../utils/format";
 import { toggleTheme } from "../utils/theme";
 import { useTheme } from "../hooks/useTheme";
 import { RingProgress } from "../components/ui/charts";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 interface NavItem {
   to: string;
   label: string;
   icon: string;
   admin?: boolean;
-  desktopOnly?: boolean;
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -22,7 +21,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/progress", label: "Progreso", icon: "trending_up" },
   { to: "/insights", label: "Análisis", icon: "monitoring" },
   { to: "/achievements", label: "Logros", icon: "emoji_events" },
-  { to: "/export", label: "Exportar", icon: "download", desktopOnly: true },
+  { to: "/export", label: "Exportar", icon: "download" },
   { to: "/settings", label: "Ajustes", icon: "settings" },
   { to: "/admin", label: "Admin", icon: "admin_panel_settings", admin: true },
 ];
@@ -33,8 +32,21 @@ export function AppShell({ children }: { children: ReactNode }) {
   const location = useLocation();
   const theme = useTheme();
   const immersive = location.pathname === "/training/session";
+  const moreDialog = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => { moreDialog.current?.close(); }, [location.pathname]);
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const closeOnDesktop = () => { if (desktop.matches) moreDialog.current?.close(); };
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => desktop.removeEventListener("change", closeOnDesktop);
+  }, []);
 
   const navItems = NAV_ITEMS.filter((n) => !n.admin || user?.roles.includes("Admin"));
+  const primaryPaths = ["/", "/training", "/nutrition", "/progress"];
+  const primaryItems = navItems.filter((item) => primaryPaths.includes(item.to));
+  const moreItems = navItems.filter((item) => !primaryPaths.includes(item.to));
+  const moreActive = moreItems.some((item) => location.pathname === item.to || location.pathname.startsWith(`${item.to}/`));
 
   const xp = user?.gamification.xp ?? 0;
   const levelXp = user?.gamification.xpToNext ?? 100;
@@ -116,8 +128,8 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <main className="app-content">{children}</main>
 
-      <nav className="bottom-nav">
-        {navItems.filter((item) => !item.desktopOnly).map((item) => (
+      <nav className="bottom-nav" aria-label="Navegación principal">
+        {primaryItems.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
@@ -130,7 +142,30 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="nav-item__label">{item.label}</span>
           </NavLink>
         ))}
+        <button type="button" className={`nav-item ${moreActive ? "nav-item--active" : ""}`}
+          aria-haspopup="dialog" aria-controls="mobile-more-menu" onClick={() => moreDialog.current?.showModal()}>
+          <span className="icon" aria-hidden="true">more_horiz</span>
+          <span className="nav-item__label">Más</span>
+        </button>
       </nav>
+      <dialog ref={moreDialog} id="mobile-more-menu" className="mobile-more-menu" aria-labelledby="mobile-more-title"
+        onClick={(event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }}>
+        <div className="mobile-more-menu__content">
+          <div className="mobile-more-menu__header">
+            <h2 id="mobile-more-title">Más opciones</h2>
+            <button type="button" className="btn-icon" aria-label="Cerrar menú" onClick={() => moreDialog.current?.close()}>
+              <span className="icon" aria-hidden="true">close</span>
+            </button>
+          </div>
+          <nav className="mobile-more-menu__grid" aria-label="Más opciones">
+            {moreItems.map((item) => <NavLink key={item.to} to={item.to}
+              onClick={() => moreDialog.current?.close()}
+              className={({ isActive }) => `mobile-more-menu__link ${isActive ? "mobile-more-menu__link--active" : ""}`}>
+              <span className="icon" aria-hidden="true">{item.icon}</span><span>{item.label}</span>
+            </NavLink>)}
+          </nav>
+        </div>
+      </dialog>
     </div>
   );
 }

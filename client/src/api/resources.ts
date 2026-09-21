@@ -153,6 +153,8 @@ export const foodCatalogApi = {
 };
 
 export const adminApi = {
+  createUser: (req: { account: { username: string; email: string; displayName: string; password: string }; activateLicense: boolean }) =>
+    api.post<{ message: string }>("/admin/users", req),
   users: (filter: "pending" | "active" | "all") =>
     api.get<AdminUserDto[]>(`/admin/users?filter=${filter}`),
   updateUser: (id: string, req: UpdateAdminUserRequest) =>

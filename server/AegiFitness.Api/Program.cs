@@ -28,6 +28,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
 {
     options.Password.RequireDigit = true;
     options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 8;
     options.User.RequireUniqueEmail = true;
 })
@@ -75,6 +77,7 @@ builder.Services.AddScoped<WorkoutPlanGenerator>();
 builder.Services.AddScoped<MealPlanGenerator>();
 builder.Services.AddScoped<GamificationService>();
 builder.Services.AddScoped<MetricsService>();
+builder.Services.AddScoped<UserRegistrationService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

@@ -7,6 +7,7 @@ import { useAsync } from "../hooks/useAsync";
 import { useToastCtx } from "../hooks/useToastContext";
 import type { AdminUserDto, LicenseStatus } from "../types/api";
 import { licenseStatusName } from "../utils/format";
+import { PASSWORD_HELP, passwordError, registrationErrors } from "../utils/registration";
 
 export default function AdminPage() {
   const { user } = useAuth();
@@ -14,6 +15,7 @@ export default function AdminPage() {
   const [filter, setFilter] = useState<"pending" | "active" | "all">("pending");
   const [manageUser, setManageUser] = useState<AdminUserDto | null>(null);
   const [loading, setLoading] = useState(false);
+  const [creatingUser, setCreatingUser] = useState(false);
 
   const { data, loading: listLoading, error, run } = useAsync<{
     users: AdminUserDto[];
@@ -71,6 +73,7 @@ export default function AdminPage() {
           <span>Administración</span>
         </div>
         <h1 className="hero__title">Gestión de usuarios</h1>
+        <Button onClick={() => setCreatingUser(true)}>Crear usuario</Button>
       </div>
 
       <div className="admin-filters">
@@ -183,6 +186,11 @@ export default function AdminPage() {
         <EmptyState icon="search_off" title="Sin usuarios" description="No hay usuarios en este filtro." />
       )}
 
+      {creatingUser && <UserCreateModal onClose={() => setCreatingUser(false)} onCreated={() => {
+        setCreatingUser(false);
+        if (filter === "all") load();
+        else setFilter("all");
+      }} />}
       <UserManageModal
         user={manageUser}
         currentUserId={user?.id ?? ""}
@@ -264,8 +272,9 @@ function UserManageModal({
     );
 
   const savePassword = () => {
-    if (newPassword.length < 8) {
-      toast.add("La contraseña debe tener al menos 8 caracteres", "error");
+    const validation = passwordError(newPassword);
+    if (validation) {
+      toast.add(validation, "error");
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -318,6 +327,7 @@ function UserManageModal({
         <div className="admin-section__title">Contraseña</div>
         <p style={{ color: "var(--text-muted)", fontSize: "0.82rem", marginBottom: 12 }}>
           Restablecer la contraseña cierra las sesiones activas del usuario.
+          {" "}{PASSWORD_HELP}
         </p>
         <Input
           label="Nueva contraseña"
@@ -396,4 +406,58 @@ function UserManageModal({
       </div>
     </Modal>
   );
+}
+
+function UserCreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
+  const toast = useToastCtx();
+  const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [error, setError] = useState("");
+
+  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (saving) return;
+    const fields = new FormData(event.currentTarget);
+    const account = {
+      username: String(fields.get("username") ?? "").trim(),
+      email: String(fields.get("email") ?? "").trim(),
+      displayName: String(fields.get("displayName") ?? "").trim(),
+      password: String(fields.get("password") ?? ""),
+    };
+    const validation = registrationErrors(account, String(fields.get("confirmPassword") ?? ""));
+    setErrors(validation);
+    setError("");
+    if (Object.keys(validation).length) return;
+    setSaving(true);
+    try {
+      const result = await adminApi.createUser({ account, activateLicense: fields.get("activateLicense") === "on" });
+      toast.add(result.message, "success");
+      onCreated();
+    } catch (err) {
+      setError(typeof err === "object" && err !== null && "message" in err ? String(err.message) : "No se pudo crear el usuario. Intenta de nuevo.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return <Modal open onClose={() => { if (!saving) onClose(); }} title="Crear usuario">
+    <p className="account-form-help">Crea una cuenta de miembro. Comparte sus credenciales de forma privada; podrá cambiar su contraseña en Ajustes.</p>
+    {error && <div role="alert" className="form-error">{error}</div>}
+    <form onSubmit={submit} noValidate>
+      <fieldset className="account-form-fields" disabled={saving}>
+        <Input name="displayName" label="Nombre visible" maxLength={64} autoComplete="off" error={errors.displayName} autoFocus />
+        <Input name="username" label="Usuario" maxLength={32} autoComplete="off" error={errors.username} />
+        <Input name="email" label="Correo" type="email" autoComplete="off" error={errors.email} />
+        <p id="admin-password-help" className="account-form-help">{PASSWORD_HELP}</p>
+        <Input name="password" label="Contraseña" type="password" autoComplete="new-password" aria-describedby="admin-password-help" error={errors.password} />
+        <Input name="confirmPassword" label="Confirmar contraseña" type="password" autoComplete="new-password" error={errors.confirmPassword} />
+        <label className="checkbox-row mb-3"><input type="checkbox" name="activateLicense" />Activar licencia de por vida</label>
+        <p className="account-form-help">Si no la activas ahora, la cuenta quedará pendiente de aprobación. El usuario completará su perfil al ingresar.</p>
+        <div className="account-form-actions">
+          <Button variant="ghost" type="button" onClick={onClose}>Cancelar</Button>
+          <Button type="submit" loading={saving}>Crear usuario</Button>
+        </div>
+      </fieldset>
+    </form>
+  </Modal>;
 }

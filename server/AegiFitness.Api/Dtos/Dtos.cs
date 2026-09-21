@@ -4,14 +4,18 @@ using AegiFitness.Api.Domain;
 namespace AegiFitness.Api.Dtos;
 
 public record RegisterDto(
-    [Required, MinLength(3), MaxLength(32)] string Username,
-    [Required, EmailAddress] string Email,
-    [Required, MinLength(8)] string Password,
-    [Required, MaxLength(64)] string DisplayName);
+    [Required(ErrorMessage = "Ingresa un usuario."), MinLength(3, ErrorMessage = "El usuario debe tener al menos 3 caracteres."), MaxLength(32, ErrorMessage = "El usuario debe tener como máximo 32 caracteres.")] string Username,
+    [Required(ErrorMessage = "Ingresa un correo."), EmailAddress(ErrorMessage = "Ingresa un correo válido.")] string Email,
+    [Required(ErrorMessage = "Ingresa una contraseña."), MinLength(8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres.")] string Password,
+    [Required(ErrorMessage = "Ingresa un nombre visible."), MaxLength(64, ErrorMessage = "El nombre debe tener como máximo 64 caracteres.")] string DisplayName);
 
 public record LoginDto(
     [Required] string UsernameOrEmail,
     [Required] string Password);
+
+public record AdminUserCreateDto(
+    [Required] RegisterDto Account,
+    bool ActivateLicense = false);
 
 public record RefreshDto([Required] string RefreshToken);
 
