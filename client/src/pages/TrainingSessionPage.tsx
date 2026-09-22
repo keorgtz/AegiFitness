@@ -6,41 +6,43 @@ import { useAsync } from "../hooks/useAsync";
 import { useToastCtx } from "../hooks/useToastContext";
 import type { ExerciseDto, WorkoutSetRequest } from "../types/api";
 import { exerciseImageUrl, modalityName, muscleGroupName, today } from "../utils/format";
-
-interface SessionExercise {
-  exercise: ExerciseDto;
-  planDayId?: string;
-  isExtra: boolean;
-  restSeconds: number;
-  sets: WorkoutSetRequest[];
-}
-interface SavedSession { startedAt: string; current: number; notes: string; exercises: SessionExercise[] }
-
-const STORAGE_KEY = "aegi_active_training_v1";
+import { useAuth } from "../auth/AuthContext";
+import { entrySets, manualKey, readSession, sessionKey, type SavedSession } from "../utils/trainingDraft";
 const SETS_PER_PAGE = 5;
 const secondsLabel = (seconds: number) => `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
-const readSession = (): SavedSession | null => {
-  try {
-    const value = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null") as SavedSession | null;
-    return value?.exercises?.length ? { ...value, current: Math.min(value.current, value.exercises.length - 1) } : null;
-  } catch { return null; }
-};
 
 export default function TrainingSessionPage() {
+  const { user } = useAuth();
+  const storageKey = sessionKey(user!.id);
   const navigate = useNavigate();
   const toast = useToastCtx();
-  const [session, setSession] = useState<SavedSession | null>(readSession);
+  const [session, setSession] = useState<SavedSession | null>(() => readSession(user!.id));
+  const [storageError, setStorageError] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [rest, setRest] = useState(0);
   const [setPage, setSetPage] = useState(0);
   const [saving, setSaving] = useState(false);
   const [guide, setGuide] = useState<ExerciseDto | null>(null);
   const [notesOpen, setNotesOpen] = useState(false);
-  const { data: plan, loading, error, run } = useAsync<Awaited<ReturnType<typeof workoutPlanApi.current>>>();
-  const load = useCallback(() => void run(workoutPlanApi.current()), [run]);
+  const { data, loading, error, run } = useAsync<{ plan: Awaited<ReturnType<typeof workoutPlanApi.current>>; logs: Awaited<ReturnType<typeof workoutLogApi.get>> }>();
+  const plan = data?.plan;
+  const load = useCallback(() => void run(Promise.all([workoutPlanApi.current(), workoutLogApi.get(today(), today())]).then(([plan, logs]) => ({ plan, logs }))), [run]);
 
   useEffect(() => { if (!session) load(); }, [load, session]);
-  useEffect(() => { if (session) localStorage.setItem(STORAGE_KEY, JSON.stringify(session)); }, [session]);
+  useEffect(() => {
+    if (!session) return;
+    try { localStorage.setItem(storageKey, JSON.stringify(session)); setStorageError(false); }
+    catch { setStorageError(true); }
+  }, [session, storageKey]);
+  useEffect(() => {
+    if (session || !data?.logs.length) return;
+    const log = data.logs[0];
+    const exercises = log.entries.map((entry) => ({ exercise: entry.exercise, planDayId: log.planDayId, isExtra: entry.isExtra, restSeconds: 60, sets: entrySets(entry) })).filter((entry) => entry.sets.length > 0);
+    if (!exercises.length) return;
+    setSession({ date: log.date, startedAt: log.startedAt ?? new Date().toISOString(), current: 0, notes: log.notes ?? "",
+      exercises,
+    });
+  }, [data, session]);
   useEffect(() => { setSetPage(0); }, [session?.current]);
   useEffect(() => {
     if (!session) return;
@@ -64,9 +66,9 @@ export default function TrainingSessionPage() {
     const day = plan?.days.find((item) => item.dayOfWeek === new Date().getDay());
     if (!day?.items.length) return;
     setSession({
-      startedAt: new Date().toISOString(), current: 0, notes: "",
+      date: today(), startedAt: new Date().toISOString(), current: 0, notes: "",
       exercises: day.items.map((item) => ({
-        exercise: item.exercise, planDayId: day.id as unknown as string, isExtra: false, restSeconds: item.restSeconds,
+        exercise: item.exercise, planDayId: day.id, isExtra: false, restSeconds: item.restSeconds,
         sets: Array.from({ length: item.sets }, (_, index) => ({ setNumber: index + 1, plannedReps: Math.round((item.repsMin + item.repsMax) / 2), actualReps: Math.round((item.repsMin + item.repsMax) / 2), actualWeightKg: 0, rir: 2, completed: false })),
       })),
     });
@@ -87,27 +89,29 @@ export default function TrainingSessionPage() {
     exercises: current.exercises.map((exercise, index) => index === current.current ? { ...exercise, sets: [...exercise.sets, { setNumber: exercise.sets.length + 1, plannedReps: exercise.sets.at(-1)?.plannedReps ?? 10, actualReps: exercise.sets.at(-1)?.actualReps ?? 10, actualWeightKg: exercise.sets.at(-1)?.actualWeightKg ?? 0, rir: 2, completed: false }] } : exercise),
   }));
   const finish = async () => {
-    if (!session) return;
+    if (!session || saving) return;
     const completedSets = session.exercises.flatMap((x) => x.sets).filter((x) => x.completed).length;
     if (!completedSets) { toast.add("Completa al menos una serie antes de finalizar", "error"); return; }
     setSaving(true);
     try {
       const firstPlanDay = session.exercises.find((x) => x.planDayId)?.planDayId;
       const result = await workoutLogApi.log({
-        date: today(), planDayId: firstPlanDay as never, startedAt: session.startedAt, finishedAt: new Date().toISOString(), notes: session.notes || undefined,
+        date: session.date, planDayId: firstPlanDay, startedAt: session.startedAt, finishedAt: new Date().toISOString(), notes: session.notes || undefined,
         entries: session.exercises.map((item) => {
           const done = item.sets.filter((set) => set.completed);
           return { exerciseId: item.exercise.id, plannedSets: item.sets.length, plannedReps: item.sets[0]?.plannedReps ?? 0, actualSets: done.length, actualReps: done.length ? Math.round(done.reduce((sum, set) => sum + (set.actualReps ?? 0), 0) / done.length) : undefined, actualWeightKg: done.length ? Math.max(...done.map((set) => set.actualWeightKg ?? 0)) : undefined, completed: done.length === item.sets.length, isExtra: item.isExtra, sets: item.sets };
         }),
       });
-      localStorage.removeItem(STORAGE_KEY); setSession(null);
+      localStorage.removeItem(storageKey);
+      localStorage.removeItem(manualKey(user!.id, session.date));
       toast.add(`Sesión guardada${result.totalXp ? ` · +${result.totalXp} XP` : ""}`, "success"); navigate("/training");
-    } catch (err) { toast.add(err instanceof Error ? err.message : "No se pudo guardar la sesión", "error"); }
+    } catch (err) { toast.add(typeof err === "object" && err !== null && "message" in err ? String(err.message) : "No se pudo guardar la sesión", "error"); }
     finally { setSaving(false); }
   };
   const discard = () => {
     if (!window.confirm("¿Descartar la sesión activa? No se guardarán las series.")) return;
-    localStorage.removeItem(STORAGE_KEY); setSession(null); navigate("/training");
+    if (saving) return;
+    localStorage.removeItem(storageKey); navigate("/training");
   };
 
   if (!session) {
@@ -125,7 +129,7 @@ export default function TrainingSessionPage() {
   const visibleSets = exercise.sets.slice(setPage * SETS_PER_PAGE, (setPage + 1) * SETS_PER_PAGE);
   const image = exerciseImageUrl(exercise.exercise);
 
-  return <div className="training-session">
+  return <fieldset className="training-session session-save-lock" disabled={saving}>
     <header className="session-top">
       <button className="icon-action" onClick={() => navigate("/training")} aria-label="Minimizar sesión" title="Minimizar"><span className="icon">keyboard_arrow_down</span></button>
       <div><span className="session-top__eyebrow">Sesión en curso</span><strong>{secondsLabel(elapsed)}</strong></div>
@@ -134,7 +138,7 @@ export default function TrainingSessionPage() {
       <Button size="sm" onClick={() => void finish()} loading={saving}>Finalizar</Button>
     </header>
     <div className="session-progress" aria-label={`${done} de ${total} series`}><span style={{ width: `${total ? done / total * 100 : 0}%` }} /></div>
-    <div className="session-counter">Ejercicio {session.current + 1}/{session.exercises.length} · {done}/{total} series</div>
+    <div className="session-counter" role="status">{storageError ? "No se pudo conservar el borrador: guarda antes de salir." : `Ejercicio ${session.current + 1}/${session.exercises.length} · ${done}/${total} series · Borrador local`}</div>
     <section className="session-exercise">
       <div className="session-exercise__head">
         {image ? <img src={image} alt="" className="session-exercise__thumb" /> : <div className="session-exercise__thumb session-exercise__thumb--empty"><span className="icon">fitness_center</span></div>}
@@ -151,5 +155,5 @@ export default function TrainingSessionPage() {
     <nav className="session-nav"><Button variant="ghost" disabled={session.current === 0} onClick={() => setSession({ ...session, current: session.current - 1 })}>Anterior</Button><Button disabled={session.current === session.exercises.length - 1} onClick={() => setSession({ ...session, current: session.current + 1 })}>Siguiente</Button></nav>
     <ExerciseGuideModal exercise={guide} onClose={() => setGuide(null)} />
     <Modal open={notesOpen} onClose={() => setNotesOpen(false)} title="Notas de la sesión"><textarea className="textarea session-notes" autoFocus placeholder="Sensaciones, ajustes o recordatorios..." value={session.notes} onChange={(e) => setSession({ ...session, notes: e.target.value })} /><Button block onClick={() => setNotesOpen(false)}>Guardar notas</Button></Modal>
-  </div>;
+  </fieldset>;
 }

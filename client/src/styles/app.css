@@ -273,6 +273,15 @@
 .mobile-more-menu__link:focus-visible, .bottom-nav .nav-item:focus-visible { outline: 3px solid var(--primary); outline-offset: -3px; }
 body:has(.mobile-more-menu[open]) { overflow: hidden; }
 .account-form-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
+.app-update-notice { position: fixed; top: max(12px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); width: min(calc(100% - 24px), 560px); z-index: 2000; display: flex; align-items: center; gap: 16px; padding: 16px; border: 1px solid var(--hairline-strong); border-radius: var(--radius-md); background: var(--surface-1); color: var(--text); box-shadow: var(--shadow-3); }
+.app-update-notice p { margin: 4px 0 0; color: var(--text-muted); font-size: .85rem; line-height: 1.4; }
+.app-update-notice .btn { flex-shrink: 0; }
+@media (max-width: 380px) { .app-update-notice { flex-wrap: wrap; } }
+.manual-set-details { margin-top: 16px; min-width: 0; }
+.session-save-lock { border: 0; margin: 0; min-width: 0; }
+.manual-set-details summary { cursor: pointer; padding: 12px 0; min-height: 44px; font-weight: 600; }
+.manual-set-details .set-table { overflow: visible; max-height: none; grid-template-rows: none; grid-auto-rows: auto; }
+.manual-set-details .set-row input { min-width: 0; width: 100%; }
 .account-form-help { color: var(--text-muted); font-size: .85rem; line-height: 1.5; margin: 0 0 16px; }
 .account-form-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
 

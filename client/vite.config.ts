@@ -1,12 +1,25 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
+import { randomUUID } from "node:crypto";
+
+const buildVersion = randomUUID();
 
 export default defineConfig({
+  define: { __APP_VERSION__: JSON.stringify(buildVersion) },
   plugins: [
     react(),
+    {
+      name: "aegifitness-build-version",
+      generateBundle() {
+        this.emitFile({ type: "asset", fileName: "version.json", source: JSON.stringify({ version: buildVersion }) });
+        this.emitFile({ type: "asset", fileName: "sw-version.js", source:
+          `self.addEventListener('message', event => { if (event.data?.type === 'AEGI_VERSION') event.ports[0]?.postMessage(${JSON.stringify(buildVersion)}); });` });
+      },
+    },
     VitePWA({
       registerType: "autoUpdate",
+      injectRegister: false,
       includeAssets: ["AegiFit-Icon.png"],
       manifest: {
         name: "AegiFitness",
@@ -37,10 +50,14 @@ export default defineConfig({
         ],
       },
       workbox: {
+        cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
+        importScripts: ["/sw-version.js"],
         navigateFallbackDenylist: [/^\/api\//],
         // Las imágenes de ejercicios (745 WebP, ~12 MB) NO se precachean:
         // se cachean en runtime bajo demanda (offline real sin inflar el SW install)
-        globIgnores: ["**/exercises/**"],
+        globIgnores: ["**/exercises/**", "**/version.json", "**/sw-version.js"],
         runtimeCaching: [
           {
             urlPattern: /\/exercises\/flat\/.*\.webp$/,

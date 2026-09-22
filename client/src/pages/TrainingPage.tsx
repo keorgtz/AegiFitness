@@ -1,20 +1,26 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useAuth } from "../auth/AuthContext";
+import { entrySets, LEGACY_SESSION_KEY, manualKey, readDraft, readLegacySession, readSession, sessionKey } from "../utils/trainingDraft";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { exerciseCatalogApi, workoutLogApi, workoutPlanApi } from "../api/resources";
 import { Button, Chip, EmptyState, ErrorState, ExerciseGuideModal, Loading, Modal, SegmentedControl, Stepper } from "../components/ui";
 import { useAsync } from "../hooks/useAsync";
 import { useToastCtx } from "../hooks/useToastContext";
-import type { ExerciseDto, MuscleGroup, WorkoutLogDto, WorkoutLogEntryRequest, WorkoutPlanDayDto } from "../types/api";
+import type { ExerciseDto, MuscleGroup, WorkoutLogDto, WorkoutLogEntryRequest, WorkoutPlanDayDto, WorkoutSetRequest } from "../types/api";
 import { addDays, dayName, exerciseImageUrl, modalityName, muscleGroupName, today } from "../utils/format";
 
 type TrainingView = "today" | "plan" | "history";
-interface WorkoutEntry { exerciseId: number; plannedSets: number; plannedReps: number; actualSets: number; actualReps: number; actualWeightKg: number; completed: boolean; isExtra: boolean; exercise: ExerciseDto }
+interface WorkoutEntry { exerciseId: number; plannedSets: number; plannedReps: number; actualSets: number; actualReps: number; actualWeightKg: number; completed: boolean; isExtra: boolean; exercise: ExerciseDto; sets?: WorkoutSetRequest[] }
 const MUSCLE_VARIANT: Record<MuscleGroup, string> = { Chest: "info", Back: "primary", Legs: "success", Shoulders: "warning", Biceps: "danger", Triceps: "accent", Core: "accent" };
 const EXERCISE_TYPES = ["Gym", "Calisthenics", "Both"] as const;
 const MUSCLE_GROUPS: MuscleGroup[] = ["Chest", "Back", "Legs", "Shoulders", "Biceps", "Triceps", "Core"];
 const EXERCISE_PAGE_SIZE = 24;
 
 export default function TrainingPage() {
+  const { user } = useAuth();
+  const initialized = useRef(false);
+  const [draftReady, setDraftReady] = useState(false);
+  const [draftError, setDraftError] = useState(false);
   const toast = useToastCtx();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -27,7 +33,8 @@ export default function TrainingPage() {
   const [picker, setPicker] = useState<{ open: boolean; replaceIndex: number | null }>({ open: false, replaceIndex: null });
   const [saving, setSaving] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
-  const date = today();
+  const [date] = useState(today);
+  const draftKey = manualKey(user!.id, date);
   const { data, loading, error, run } = useAsync<{ plan: Awaited<ReturnType<typeof workoutPlanApi.current>>; history: Awaited<ReturnType<typeof workoutLogApi.get>> }>();
 
   const load = useCallback(() => {
@@ -37,8 +44,6 @@ export default function TrainingPage() {
   useEffect(() => {
     if (searchParams.get("quick") !== "exercise") return;
     setView("today");
-    setFreeSession(true);
-    setEntries([]);
     setPicker({ open: true, replaceIndex: null });
     setSearchParams({}, { replace: true });
   }, [searchParams, setSearchParams]);
@@ -46,20 +51,56 @@ export default function TrainingPage() {
 
   useEffect(() => {
     if (!data) return;
-    if (freeSession) {
-      setEntries([]);
+    if (initialized.current) return;
+    initialized.current = true;
+    const draft = readDraft<{ entries: WorkoutEntry[]; freeSession: boolean }>(draftKey);
+    setDraftReady(true);
+    const active = readSession(user!.id);
+    if (active?.date === date) {
+      setEntries(active.exercises.map((item) => ({ exerciseId: item.exercise.id, exercise: item.exercise,
+        plannedSets: item.sets.length, plannedReps: item.sets[0]?.plannedReps ?? 0,
+        actualSets: item.sets.length, actualReps: item.sets[0]?.actualReps ?? 0, actualWeightKg: item.sets[0]?.actualWeightKg ?? 0,
+        completed: item.sets.every((set) => set.completed), isExtra: item.isExtra, sets: item.sets,
+      })));
+      setFreeSession(!active.exercises.some((item) => item.planDayId));
+      return;
+    }
+    if (draft && Array.isArray(draft.entries)) {
+      setEntries(draft.entries);
+      setFreeSession(draft.freeSession);
       return;
     }
     const log = data.history.find((item) => item.date === date);
     if (log?.entries.length) {
-      setEntries(log.entries.map((entry) => ({ exerciseId: entry.exerciseId, plannedSets: entry.plannedSets, plannedReps: entry.plannedReps, actualSets: entry.actualSets ?? entry.plannedSets, actualReps: entry.actualReps ?? entry.plannedReps, actualWeightKg: entry.actualWeightKg ?? 0, completed: entry.completed, isExtra: entry.isExtra, exercise: entry.exercise })));
+      setEntries(log.entries.map((entry) => ({ exerciseId: entry.exerciseId, plannedSets: entry.plannedSets, plannedReps: entry.plannedReps, actualSets: entry.sets?.length ? entry.sets.length : entry.actualSets ?? entry.plannedSets, actualReps: entry.sets?.[0]?.actualReps ?? entry.actualReps ?? entry.plannedReps, actualWeightKg: entry.sets?.[0]?.actualWeightKg ?? entry.actualWeightKg ?? 0, completed: entry.completed, isExtra: entry.isExtra, exercise: entry.exercise, sets: entrySets(entry) })));
+      setFreeSession(!log.planDayId);
     } else {
       setEntries((todayPlan?.items ?? []).map((item) => ({ exerciseId: item.exerciseId, plannedSets: item.sets, plannedReps: Math.round((item.repsMin + item.repsMax) / 2), actualSets: item.sets, actualReps: Math.round((item.repsMin + item.repsMax) / 2), actualWeightKg: 0, completed: false, isExtra: false, exercise: item.exercise })));
     }
-  }, [data, date, freeSession, todayPlan]);
+  }, [data, date, draftKey, todayPlan, user]);
 
-  const updateEntry = (index: number, patch: Partial<WorkoutEntry>) => setEntries((current) => current.map((entry, i) => i === index ? { ...entry, ...patch } : entry));
+  useEffect(() => {
+    if (!draftReady || readSession(user!.id)) return;
+    try { localStorage.setItem(draftKey, JSON.stringify({ entries, freeSession })); setDraftError(false); }
+    catch { setDraftError(true); }
+  }, [draftReady, draftKey, entries, freeSession, user]);
+
+  const updateEntry = (index: number, patch: Partial<WorkoutEntry>) => setEntries((current) => current.map((entry, i) => {
+    if (i !== index) return entry;
+    const next = { ...entry, ...patch };
+    if (patch.exerciseId !== undefined) next.sets = undefined;
+    else if (!patch.sets) next.sets = Array.from({ length: next.actualSets }, (_, setIndex) => ({
+      ...entry.sets?.[setIndex], setNumber: setIndex + 1, plannedReps: next.plannedReps,
+      actualReps: patch.actualReps ?? entry.sets?.[setIndex]?.actualReps ?? next.actualReps,
+      actualWeightKg: patch.actualWeightKg ?? entry.sets?.[setIndex]?.actualWeightKg ?? next.actualWeightKg,
+      completed: patch.completed ?? entry.sets?.[setIndex]?.completed ?? next.completed,
+    }));
+    if (next.sets) next.completed = next.sets.length > 0 && next.sets.every((set) => set.completed);
+    return next;
+  }));
   const selectExercise = (exercise: ExerciseDto) => {
+    if (saving) return;
+    if (readSession(user!.id)) { toast.add("Finaliza o descarta la sesión pausada antes de cambiar los ejercicios.", "error"); return; }
     if (picker.replaceIndex !== null) {
       updateEntry(picker.replaceIndex, { exerciseId: exercise.id, exercise, actualWeightKg: 0, completed: false });
       toast.add(`Cambiado a ${exercise.name}`, "success");
@@ -69,30 +110,50 @@ export default function TrainingPage() {
     setPicker({ open: false, replaceIndex: null });
   };
 
+  const updateManualSet = (entryIndex: number, setIndex: number, patch: Partial<WorkoutSetRequest>) => {
+    const entry = entries[entryIndex];
+    const sets = (entry.sets ?? Array.from({ length: entry.actualSets }, (_, index) => ({
+      setNumber: index + 1, plannedReps: entry.plannedReps, actualReps: entry.actualReps,
+      actualWeightKg: entry.actualWeightKg, completed: entry.completed,
+    }))).map((set, index) => index === setIndex ? { ...set, ...patch } : set);
+    updateEntry(entryIndex, { sets, completed: sets.length > 0 && sets.every((set) => set.completed) });
+  };
+
   const saveWorkout = async () => {
+    if (saving || readSession(user!.id)) return;
     setSaving(true);
     try {
-      const result = await workoutLogApi.log({ date, planDayId: freeSession ? undefined : todayPlan?.id, entries: entries.map((entry) => ({ exerciseId: entry.exerciseId, plannedSets: entry.plannedSets, plannedReps: entry.plannedReps, actualSets: entry.completed ? entry.actualSets : undefined, actualReps: entry.completed ? entry.actualReps : undefined, actualWeightKg: entry.completed && entry.actualWeightKg > 0 ? entry.actualWeightKg : undefined, completed: entry.completed, isExtra: entry.isExtra })) satisfies WorkoutLogEntryRequest[] });
+      const previous = data?.history.find((item) => item.date === date);
+      const result = await workoutLogApi.log({ date, planDayId: freeSession ? undefined : previous?.planDayId ?? todayPlan?.id,
+        startedAt: previous?.startedAt, finishedAt: previous?.finishedAt, notes: previous?.notes,
+        entries: entries.map((entry) => ({ exerciseId: entry.exerciseId, plannedSets: entry.plannedSets, plannedReps: entry.plannedReps,
+          actualSets: entry.actualSets, actualReps: entry.actualReps, actualWeightKg: entry.actualWeightKg,
+          completed: entry.completed, isExtra: entry.isExtra, sets: entry.sets ?? Array.from({ length: entry.actualSets }, (_, index) => ({
+            setNumber: index + 1, plannedReps: entry.plannedReps, actualReps: entry.actualReps, actualWeightKg: entry.actualWeightKg, completed: entry.completed,
+          })) })) satisfies WorkoutLogEntryRequest[] });
       toast.add(result.totalXp ? `Entreno guardado · +${result.totalXp} XP` : "Entreno guardado", "success");
-      setFreeSession(false);
+      localStorage.removeItem(draftKey);
       load();
-    } catch (err) { toast.add(err instanceof Error ? err.message : "No se pudo guardar el entreno", "error"); }
+    } catch (err) { toast.add(typeof err === "object" && err !== null && "message" in err ? String(err.message) : "No se pudo guardar el entreno", "error"); }
     finally { setSaving(false); }
   };
 
   const startFocusedWorkout = () => {
+    if (saving) return;
+    if (readSession(user!.id)) { navigate("/training/session"); return; }
     if (!entries.length) return;
-    localStorage.setItem("aegi_active_training_v1", JSON.stringify({
-      startedAt: new Date().toISOString(), current: 0, notes: "",
+    const previous = data?.history.find((item) => item.date === date);
+    try { localStorage.setItem(sessionKey(user!.id), JSON.stringify({
+      date, startedAt: previous?.startedAt ?? new Date().toISOString(), current: 0, notes: previous?.notes ?? "",
       exercises: entries.map((entry, index) => ({
         exercise: entry.exercise, planDayId: freeSession ? undefined : todayPlan?.id,
         isExtra: entry.isExtra || freeSession, restSeconds: todayPlan?.items[index]?.restSeconds ?? 60,
-        sets: Array.from({ length: Math.max(1, entry.actualSets) }, (_, setIndex) => ({
+        sets: entry.sets?.length ? entry.sets : Array.from({ length: Math.max(1, entry.actualSets) }, (_, setIndex) => ({
           setNumber: setIndex + 1, plannedReps: entry.plannedReps, actualReps: entry.actualReps,
-          actualWeightKg: entry.actualWeightKg, rir: 2, completed: false,
+          actualWeightKg: entry.actualWeightKg, rir: 2, completed: entry.completed,
         })),
       })),
-    }));
+    })); } catch { toast.add("No se pudo conservar la sesión en este navegador. Libera espacio antes de continuar.", "error"); return; }
     navigate("/training/session");
   };
 
@@ -114,15 +175,26 @@ export default function TrainingPage() {
         <div className="hero__label"><span className="icon">fitness_center</span><span>Entrenar</span></div>
         <h1 className="hero__title">Tu entrenamiento, en un solo lugar</h1>
         <p className="hero__subtitle">Completa la sesión de hoy, consulta tu rutina y revisa tu historial.</p>
-        <div className="hero__actions"><Button onClick={() => navigate("/training/session")}><span className="icon">play_arrow</span>Iniciar entrenamiento</Button><Button variant="ghost" size="sm" onClick={() => navigate("/export?content=training")}><span className="icon">download</span>Exportar rutina</Button></div>
+        <div className="hero__actions"><Button onClick={startFocusedWorkout}><span className="icon">play_arrow</span>{readSession(user!.id) ? "Reanudar entrenamiento" : "Iniciar entrenamiento"}</Button><Button variant="ghost" size="sm" onClick={() => navigate("/export?content=training")}><span className="icon">download</span>Exportar rutina</Button></div>
       </div>
       <div className="mb-4"><SegmentedControl block value={view} onChange={setView} options={[{ value: "today", label: "Hoy" }, { value: "plan", label: "Rutina" }, { value: "history", label: "Historial" }]} /></div>
 
       {view === "today" && <section aria-labelledby="today-workout-title">
+        {!readSession(user!.id) && readLegacySession() && <div className="card mb-4"><p>Hay un borrador de la versión anterior en este navegador. Recupéralo únicamente si corresponde a tu entrenamiento.</p><Button variant="ghost" onClick={() => {
+          const legacy = readLegacySession();
+          if (!legacy) return;
+          try {
+            localStorage.setItem(sessionKey(user!.id), JSON.stringify(legacy));
+            localStorage.removeItem(LEGACY_SESSION_KEY);
+            navigate("/training/session");
+          } catch { toast.add("No se pudo recuperar el borrador. El original se conserva.", "error"); }
+        }}>Recuperar sesión anterior</Button></div>}
+        <p className="text-muted" role="status">{draftError ? "No se pudo guardar el borrador en este navegador. Guarda el entrenamiento antes de salir." : "Los cambios se conservan como borrador en este dispositivo. Pulsa Guardar entrenamiento para registrarlos en tu cuenta."}</p>
+        {readSession(user!.id) && <p className="text-muted">Tienes una sesión interactiva pausada. Reanúdala para continuar con sus series.</p>}
         <div className="section-title"><span id="today-workout-title">{dayName(new Date().getDay())}</span><span className="section-title__hint">{entries.length ? `${completed}/${entries.length} completados` : "Descanso"}</span></div>
         <div className="training-mode-row">
           <div className="label">{freeSession ? "Entrenamiento libre" : todayPlan ? `${modalityName(todayPlan.modality)} · ${todayPlan.focus}` : "Día de descanso"}</div>
-          {freeSession ? <Button variant="ghost" size="sm" onClick={() => setFreeSession(false)}>Volver a la rutina</Button> : <Button variant="ghost" size="sm" onClick={() => { setFreeSession(true); setEntries([]); setPicker({ open: true, replaceIndex: null }); }}>Entrenamiento libre</Button>}
+          {freeSession ? <Button variant="ghost" size="sm" onClick={() => setFreeSession(false)}>Volver a la rutina</Button> : <Button variant="ghost" size="sm" onClick={() => { setFreeSession(true); setPicker({ open: true, replaceIndex: null }); }}>Entrenamiento libre</Button>}
         </div>
         {!entries.length && <EmptyState icon="hotel" title="Hoy es día de descanso" description="Si vas a entrenar, puedes crear una sesión libre." action={<Button variant="ghost" onClick={() => setPicker({ open: true, replaceIndex: null })}>Añadir ejercicio</Button>} />}
         {entries.map((entry, index) => {
@@ -138,15 +210,31 @@ export default function TrainingPage() {
               </div>
             </div>
             <div className="exercise-card__plan"><span className="icon">exercise</span><span>Plan {entry.plannedSets}×{entry.plannedReps} · Descanso {planItem?.restSeconds ?? 60}s · {entry.exercise.equipment}</span></div>
+            <fieldset className="account-form-fields" disabled={saving || !!readSession(user!.id)}>
             <div className="exercise-card__row">
               <Stepper label="Series" value={entry.actualSets} onChange={(value) => updateEntry(index, { actualSets: value })} min={0} max={20} size="sm" />
               <Stepper label="Reps" value={entry.actualReps} onChange={(value) => updateEntry(index, { actualReps: value })} min={0} max={100} size="sm" />
               <Stepper label="Peso (kg)" value={entry.actualWeightKg} onChange={(value) => updateEntry(index, { actualWeightKg: value })} min={0} max={500} step={2.5} size="sm" />
               <button type="button" className={`check-btn ${entry.completed ? "check-btn--active" : ""}`} onClick={() => updateEntry(index, { completed: !entry.completed })} aria-label={entry.completed ? "Marcar pendiente" : "Marcar completado"}><span className={`icon ${entry.completed ? "fill" : ""}`}>check</span></button>
             </div>
+            <details className="manual-set-details">
+              <summary>Registrar por serie · {entry.sets?.filter((set) => set.completed).length ?? (entry.completed ? entry.actualSets : 0)}/{entry.actualSets} completadas</summary>
+              <p className="text-muted">Los controles generales aplican el mismo valor a todas las series. Aquí puedes ajustar cada una.</p>
+              <div className="set-table">
+                <div className="set-row set-row--head"><span>Serie</span><span>kg</span><span>Reps</span><span>RIR</span><span>Hecha</span></div>
+                {(entry.sets ?? Array.from({ length: entry.actualSets }, (_, i) => ({ setNumber: i + 1, plannedReps: entry.plannedReps, actualReps: entry.actualReps, actualWeightKg: entry.actualWeightKg, rir: undefined, completed: entry.completed }))).map((set, setIndex) => <div className={`set-row ${set.completed ? "set-row--done" : ""}`} key={set.setNumber}>
+                  <strong>{set.setNumber}</strong>
+                  <input aria-label={`${entry.exercise.name}, peso serie ${set.setNumber}`} type="number" min="0" step="0.5" value={set.actualWeightKg ?? 0} onChange={(event) => updateManualSet(index, setIndex, { actualWeightKg: Math.max(0, Number(event.target.value)) })} />
+                  <input aria-label={`${entry.exercise.name}, repeticiones serie ${set.setNumber}`} type="number" min="0" step="1" value={set.actualReps ?? 0} onChange={(event) => updateManualSet(index, setIndex, { actualReps: Math.max(0, Math.floor(Number(event.target.value))) })} />
+                  <input aria-label={`${entry.exercise.name}, RIR serie ${set.setNumber}`} type="number" min="0" max="10" value={set.rir ?? ""} onChange={(event) => updateManualSet(index, setIndex, { rir: event.target.value === "" ? undefined : Math.min(10, Math.max(0, Math.floor(Number(event.target.value)))) })} />
+                  <button type="button" className={`check-btn ${set.completed ? "check-btn--active" : ""}`} aria-label={`${set.completed ? "Desmarcar" : "Completar"} serie ${set.setNumber}`} aria-pressed={set.completed} onClick={() => updateManualSet(index, setIndex, { completed: !set.completed, completedAt: !set.completed ? new Date().toISOString() : undefined })}><span className="icon">check</span></button>
+                </div>)}
+              </div>
+            </details>
+            </fieldset>
           </div>;
         })}
-        {!!entries.length && <div className="training-actions"><Button variant="ghost" block onClick={() => setPicker({ open: true, replaceIndex: null })}>Añadir ejercicio extra</Button><Button variant="ghost" block loading={saving} onClick={() => void saveWorkout()}>Registro rápido</Button><Button block onClick={startFocusedWorkout}><span className="icon">play_arrow</span>Modo entrenamiento</Button></div>}
+        {!!entries.length && <div className="training-actions"><Button variant="ghost" block onClick={() => setPicker({ open: true, replaceIndex: null })}>Añadir ejercicio extra</Button><Button variant="ghost" block loading={saving} disabled={!!readSession(user!.id)} onClick={() => void saveWorkout()}>Guardar entrenamiento</Button><Button block onClick={startFocusedWorkout}><span className="icon">play_arrow</span>{readSession(user!.id) ? "Reanudar sesión" : "Modo entrenamiento"}</Button></div>}
       </section>}
 
       {view === "plan" && <section aria-labelledby="weekly-plan-title">

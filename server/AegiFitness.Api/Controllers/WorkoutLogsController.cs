@@ -41,7 +41,7 @@ public class WorkoutLogsController : ControllerBase
         if (to.HasValue) query = query.Where(x => x.Date <= to.Value);
 
         var logs = await query.OrderByDescending(x => x.Date).ToListAsync();
-        return Ok(logs.Select(Map).ToArray());
+        return Ok(logs.Select(log => Map(log)).ToArray());
     }
 
     [HttpPost]
@@ -49,20 +49,26 @@ public class WorkoutLogsController : ControllerBase
     {
         var userId = CurrentUserId();
         if (dto.Entries.Length == 0) return BadRequest(new { message = "La sesión debe incluir al menos un ejercicio." });
-        var startedAt = AsUtc(dto.StartedAt) ?? DateTime.UtcNow;
-        var finishedAt = AsUtc(dto.FinishedAt) ?? DateTime.UtcNow;
-        if (finishedAt < startedAt) return BadRequest(new { message = "La hora de finalización no puede ser anterior al inicio." });
+        if (dto.Entries.Any(entry => entry.Sets is { } sets &&
+            (sets.Any(set => set.SetNumber < 1 || set.ActualReps < 0 || set.ActualWeightKg < 0) || sets.Select(set => set.SetNumber).Distinct().Count() != sets.Length)))
+            return BadRequest(new { message = "Revisa las series: sus números deben ser únicos y las repeticiones y cargas no pueden ser negativas." });
+        await using var transaction = await _context.Database.BeginTransactionAsync();
         var existing = await _context.WorkoutLogs
             .Include(x => x.Entries)
+            .ThenInclude(x => x.Sets)
             .FirstOrDefaultAsync(x => x.UserId == userId && x.Date == dto.Date);
+
+        var startedAt = AsUtc(dto.StartedAt) ?? existing?.StartedAt ?? DateTime.UtcNow;
+        var finishedAt = AsUtc(dto.FinishedAt) ?? existing?.FinishedAt ?? DateTime.UtcNow;
+        if (finishedAt < startedAt) return BadRequest(new { message = "La hora de finalización no puede ser anterior al inicio." });
 
         if (existing is not null)
         {
             _context.WorkoutLogEntries.RemoveRange(existing.Entries);
-            _context.WorkoutLogs.Remove(existing);
+            existing.Entries.Clear();
         }
 
-        var log = new WorkoutLog
+        var log = existing ?? new WorkoutLog
         {
             Id = Guid.NewGuid(),
             UserId = userId,
@@ -72,6 +78,10 @@ public class WorkoutLogsController : ControllerBase
             FinishedAt = finishedAt,
             Notes = dto.Notes
         };
+        log.PlanDayId = dto.PlanDayId;
+        log.StartedAt = startedAt;
+        log.FinishedAt = finishedAt;
+        log.Notes = dto.Notes;
 
         int xp = 0;
         int completedCount = 0;
@@ -120,26 +130,33 @@ public class WorkoutLogsController : ControllerBase
                 logEntry.Completed = done.Length == logEntry.Sets.Count;
             }
             log.Entries.Add(logEntry);
+            if (existing is not null) _context.WorkoutLogEntries.Add(logEntry);
 
             if (logEntry.Completed)
             {
                 xp += 15;
                 completedCount++;
             }
-            if (entry.IsExtra)
+            if (entry.IsExtra && (logEntry.Completed || logEntry.Sets.Any(set => set.Completed)))
                 xp += 5;
         }
 
         if (totalCount > 0 && (decimal)completedCount / totalCount >= 0.8m)
             xp += 50;
 
-        _context.WorkoutLogs.Add(log);
+        if (existing is null) _context.WorkoutLogs.Add(log);
         await _context.SaveChangesAsync();
 
-        await _gamification.AddXpAsync(userId, xp, $"Entrenamiento {dto.Date:yyyy-MM-dd}", HttpContext.RequestAborted);
+        var reason = $"Entrenamiento {dto.Date:yyyy-MM-dd}";
+        var previousXp = await _context.XpEvents.Where(x => x.UserId == userId && x.Reason == reason)
+            .SumAsync(x => (int?)x.Points) ?? 0;
+        var xpDifference = xp - previousXp;
+        if (xpDifference != 0)
+            await _gamification.AddXpAsync(userId, xpDifference, reason, HttpContext.RequestAborted);
         await _gamification.EvaluateWorkoutLoggedAsync(userId, dto.Date, HttpContext.RequestAborted);
-        if (dto.Entries.Any(e => e.IsExtra))
+        if (log.Entries.Any(e => e.IsExtra && (e.Completed || e.Sets.Any(set => set.Completed))))
             await _gamification.EvaluateExtraAsync(userId, HttpContext.RequestAborted);
+        await transaction.CommitAsync();
         await _metrics.InvalidateAsync(userId, HttpContext.RequestAborted);
 
         // Recargar con ejercicios incluidos para devolver el contrato completo
@@ -151,7 +168,7 @@ public class WorkoutLogsController : ControllerBase
             .ThenInclude(e => e.Sets)
             .FirstAsync(x => x.Id == log.Id, HttpContext.RequestAborted);
 
-        return Ok(Map(saved, xp));
+        return Ok(Map(saved, Math.Max(0, xpDifference)));
     }
 
     private static ExerciseDto MapExercise(Exercise ex) => new(
