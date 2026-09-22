@@ -20,7 +20,7 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: false,
-      includeAssets: ["AegiFit-Icon.png"],
+      includeAssets: ["AegiFit-Icon.png", "aegifitness-ecg-*.png"],
       manifest: {
         name: "AegiFitness",
         short_name: "AegiFit",
@@ -32,20 +32,20 @@ export default defineConfig({
         start_url: "/",
         icons: [
           {
-            src: "/AegiFit-Icon.png",
+            src: "/aegifitness-ecg-192.png",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "/AegiFit-Icon.png",
+            src: "/aegifitness-ecg-512.png",
             sizes: "512x512",
             type: "image/png",
           },
           {
-            src: "/AegiFit-Icon.png",
+            src: "/aegifitness-ecg-maskable-512.png",
             sizes: "512x512",
             type: "image/png",
-            purpose: "any maskable",
+            purpose: "maskable",
           },
         ],
       },

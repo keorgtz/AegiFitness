@@ -1,3 +1,4 @@
+import brandLogo from "../assets/AegiFit-Icon.png";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { initials } from "../utils/format";
@@ -57,7 +58,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <aside className="sidebar">
         <div className="sidebar__brand">
           <div className="brand-mark">
-            <span className="icon">fitness_center</span>
+            <img src={brandLogo} alt="" width={56} height={56} />
           </div>
           <div className="brand-text">
             <strong>AegiFitness</strong>
@@ -84,7 +85,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <header className="app-header">
         <div className="app-header__brand">
           <div className="brand-mark">
-            <span className="icon">fitness_center</span>
+            <img src={brandLogo} alt="" width={56} height={56} />
           </div>
           <div className="brand-text">
             <strong>AegiFitness</strong>

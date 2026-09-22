@@ -1,3 +1,4 @@
+import brandLogo from "../assets/AegiFit-Icon.png";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
@@ -54,9 +55,7 @@ export default function LoginPage() {
       <div className="auth-layout__brand">
         <div>
           <div className="brand-mark" style={{ width: 56, height: 56, borderRadius: 16 }}>
-            <span className="icon" style={{ fontSize: 32 }}>
-              fitness_center
-            </span>
+            <img src={brandLogo} alt="" width={56} height={56} />
           </div>
           <h1 style={{ fontSize: "2.4rem", fontWeight: 800, marginTop: 24, marginBottom: 12 }}>
             AegiFitness
@@ -75,7 +74,7 @@ export default function LoginPage() {
         <div className="auth-card">
           <div className="auth-card__logo">
             <div className="brand-mark">
-              <span className="icon">fitness_center</span>
+              <img src={brandLogo} alt="" width={56} height={56} />
             </div>
             <div className="brand-text">
               <strong>AegiFitness</strong>

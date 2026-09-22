@@ -1,3 +1,4 @@
+import brandLogo from "../assets/AegiFit-Icon.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { profileApi, trainingConfigApi } from "../api/resources";
@@ -93,7 +94,7 @@ export default function OnboardingPage() {
         <div className="auth-card">
           <div className="auth-card__logo">
             <div className="brand-mark">
-              <span className="icon">fitness_center</span>
+              <img src={brandLogo} alt="" width={56} height={56} />
             </div>
             <div className="brand-text">
               <strong>AegiFitness</strong>
