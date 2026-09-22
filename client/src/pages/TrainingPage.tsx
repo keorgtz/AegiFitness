@@ -112,6 +112,7 @@ export default function TrainingPage() {
 
   const updateManualSet = (entryIndex: number, setIndex: number, patch: Partial<WorkoutSetRequest>) => {
     const entry = entries[entryIndex];
+    if (!entry) return;
     const sets = (entry.sets ?? Array.from({ length: entry.actualSets }, (_, index) => ({
       setNumber: index + 1, plannedReps: entry.plannedReps, actualReps: entry.actualReps,
       actualWeightKg: entry.actualWeightKg, completed: entry.completed,

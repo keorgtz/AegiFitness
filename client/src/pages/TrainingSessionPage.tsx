@@ -37,6 +37,7 @@ export default function TrainingSessionPage() {
   useEffect(() => {
     if (session || !data?.logs.length) return;
     const log = data.logs[0];
+    if (!log) return;
     const exercises = log.entries.map((entry) => ({ exercise: entry.exercise, planDayId: log.planDayId, isExtra: entry.isExtra, restSeconds: 60, sets: entrySets(entry) })).filter((entry) => entry.sets.length > 0);
     if (!exercises.length) return;
     setSession({ date: log.date, startedAt: log.startedAt ?? new Date().toISOString(), current: 0, notes: log.notes ?? "",
