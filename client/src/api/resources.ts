@@ -109,6 +109,7 @@ export const goalsApi = {
 };
 
 export const exerciseCatalogApi = {
+  recommendation: (id: number, dayOfWeek: number) => api.get<{ sets: number; repsMin: number; repsMax: number; restSeconds: number; notes?: string }>(`/exercises/${id}/recommendation?dayOfWeek=${dayOfWeek}`),
   search: (params: {
     type?: string;
     muscleGroup?: string;

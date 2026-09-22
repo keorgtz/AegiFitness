@@ -248,21 +248,7 @@ public class WorkoutPlanGenerator
         var items = new List<WorkoutPlanItem>();
         foreach (var ex in selected)
         {
-            var scheme = ExerciseScheme(ex, config, dayModality);
-            var (sets, repsMin, repsMax, rest, notes) = scheme switch
-            {
-                Scheme.Bodybuilding => ex.Difficulty >= 2
-                    ? (4, 8, 10, 120, null)
-                    : (ex.Difficulty == 1 ? 3 : 4, 12, 15, 60, null),
-                Scheme.Health => (3, 12, 15, 60, null),
-                Scheme.Combined => ex.Type == Modality.Gym
-                    ? (4, 8, 10, 120, null)
-                    : (3, 8, 15, 60, "AMRAP"),
-                Scheme.Classic => (4, 6, 12, 90, null),
-                Scheme.Military => (4, 15, 25, 45, "Circuito ×4"),
-                Scheme.CrossFit => (3, 10, 20, 60, PickCrossFitFormat(rng)),
-                _ => (3, 10, 12, 60, null)
-            };
+            var (sets, repsMin, repsMax, rest, notes) = Recommend(ex, config, dayModality, rng);
 
             items.Add(new WorkoutPlanItem
             {
@@ -279,6 +265,18 @@ public class WorkoutPlanGenerator
 
         return items;
     }
+
+    public static (int Sets, int RepsMin, int RepsMax, int RestSeconds, string? Notes) Recommend(Exercise ex, TrainingConfig config, Modality modality, Random rng)
+        => ExerciseScheme(ex, config, modality) switch
+        {
+            Scheme.Bodybuilding => ex.Difficulty >= 2 ? (4, 8, 10, 120, null) : (ex.Difficulty == 1 ? 3 : 4, 12, 15, 60, null),
+            Scheme.Health => (3, 12, 15, 60, null),
+            Scheme.Combined => ex.Type == Modality.Gym ? (4, 8, 10, 120, null) : (3, 8, 15, 60, "AMRAP"),
+            Scheme.Classic => (4, 6, 12, 90, null),
+            Scheme.Military => (4, 15, 25, 45, "Circuito ×4"),
+            Scheme.CrossFit => (3, 10, 20, 60, PickCrossFitFormat(rng)),
+            _ => (3, 10, 12, 60, null)
+        };
 
     private static string PickCrossFitFormat(Random rng)
     {

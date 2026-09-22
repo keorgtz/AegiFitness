@@ -10,7 +10,7 @@ import type { ExerciseDto, MuscleGroup, WorkoutLogDto, WorkoutLogEntryRequest, W
 import { addDays, dayName, exerciseImageUrl, modalityName, muscleGroupName, today } from "../utils/format";
 
 type TrainingView = "today" | "plan" | "history";
-interface WorkoutEntry { exerciseId: number; plannedSets: number; plannedReps: number; actualSets: number; actualReps: number; actualWeightKg: number; completed: boolean; isExtra: boolean; exercise: ExerciseDto; sets?: WorkoutSetRequest[] }
+interface WorkoutEntry { exerciseId: number; plannedSets: number; plannedReps: number; actualSets: number; actualReps: number; actualWeightKg: number; completed: boolean; isExtra: boolean; exercise: ExerciseDto; sets?: WorkoutSetRequest[]; restSeconds?: number; repsMin?: number; repsMax?: number; notes?: string }
 const MUSCLE_VARIANT: Record<MuscleGroup, string> = { Chest: "info", Back: "primary", Legs: "success", Shoulders: "warning", Biceps: "danger", Triceps: "accent", Core: "accent" };
 const EXERCISE_TYPES = ["Gym", "Calisthenics", "Both"] as const;
 const MUSCLE_GROUPS: MuscleGroup[] = ["Chest", "Back", "Legs", "Shoulders", "Biceps", "Triceps", "Core"];
@@ -30,7 +30,8 @@ export default function TrainingPage() {
   const [selectedDay, setSelectedDay] = useState<WorkoutPlanDayDto | null>(null);
   const [selectedLog, setSelectedLog] = useState<WorkoutLogDto | null>(null);
   const [guide, setGuide] = useState<ExerciseDto | null>(null);
-  const [picker, setPicker] = useState<{ open: boolean; replaceIndex: number | null }>({ open: false, replaceIndex: null });
+  const [picker, setPicker] = useState<{ open: boolean; replaceIndex: number | null; muscleGroup?: MuscleGroup }>({ open: false, replaceIndex: null });
+  const [selecting, setSelecting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
   const [date] = useState(today);
@@ -48,12 +49,13 @@ export default function TrainingPage() {
     setSearchParams({}, { replace: true });
   }, [searchParams, setSearchParams]);
   const todayPlan = useMemo(() => data?.plan.days.find((day) => day.dayOfWeek === new Date().getDay()) ?? null, [data]);
+  const muscleTargets = useMemo(() => MUSCLE_GROUPS.map((muscle) => ({ muscle, count: todayPlan?.items.filter((item) => item.exercise.muscleGroup === muscle).length ?? 0 })).filter((item) => item.count > 0), [todayPlan]);
 
   useEffect(() => {
     if (!data) return;
     if (initialized.current) return;
     initialized.current = true;
-    const draft = readDraft<{ entries: WorkoutEntry[]; freeSession: boolean }>(draftKey);
+    const draft = readDraft<{ entries: WorkoutEntry[]; freeSession: boolean; selectionVersion?: number }>(draftKey);
     setDraftReady(true);
     const active = readSession(user!.id);
     if (active?.date === date) {
@@ -66,7 +68,14 @@ export default function TrainingPage() {
       return;
     }
     if (draft && Array.isArray(draft.entries)) {
-      setEntries(draft.entries);
+      // Older versions prefilled untouched recommendations into the manual draft.
+      // Keep selected/edited work and every entry already stored on the server.
+      const savedIds = new Set(data.history.find((log) => log.date === date)?.entries.map((entry) => entry.exerciseId) ?? []);
+      setEntries(draft.selectionVersion === 1 ? draft.entries : draft.entries.filter((entry) => {
+        const item = todayPlan?.items.find((candidate) => candidate.exerciseId === entry.exerciseId);
+        return !item || savedIds.has(entry.exerciseId) || entry.isExtra || entry.completed || !!entry.sets?.length
+          || entry.actualWeightKg !== 0 || entry.actualSets !== item.sets || entry.actualReps !== Math.round((item.repsMin + item.repsMax) / 2);
+      }));
       setFreeSession(draft.freeSession);
       return;
     }
@@ -75,13 +84,13 @@ export default function TrainingPage() {
       setEntries(log.entries.map((entry) => ({ exerciseId: entry.exerciseId, plannedSets: entry.plannedSets, plannedReps: entry.plannedReps, actualSets: entry.sets?.length ? entry.sets.length : entry.actualSets ?? entry.plannedSets, actualReps: entry.sets?.[0]?.actualReps ?? entry.actualReps ?? entry.plannedReps, actualWeightKg: entry.sets?.[0]?.actualWeightKg ?? entry.actualWeightKg ?? 0, completed: entry.completed, isExtra: entry.isExtra, exercise: entry.exercise, sets: entrySets(entry) })));
       setFreeSession(!log.planDayId);
     } else {
-      setEntries((todayPlan?.items ?? []).map((item) => ({ exerciseId: item.exerciseId, plannedSets: item.sets, plannedReps: Math.round((item.repsMin + item.repsMax) / 2), actualSets: item.sets, actualReps: Math.round((item.repsMin + item.repsMax) / 2), actualWeightKg: 0, completed: false, isExtra: false, exercise: item.exercise })));
+      setEntries([]);
     }
   }, [data, date, draftKey, todayPlan, user]);
 
   useEffect(() => {
     if (!draftReady || readSession(user!.id)) return;
-    try { localStorage.setItem(draftKey, JSON.stringify({ entries, freeSession })); setDraftError(false); }
+    try { localStorage.setItem(draftKey, JSON.stringify({ entries, freeSession, selectionVersion: 1 })); setDraftError(false); }
     catch { setDraftError(true); }
   }, [draftReady, draftKey, entries, freeSession, user]);
 
@@ -98,16 +107,30 @@ export default function TrainingPage() {
     if (next.sets) next.completed = next.sets.length > 0 && next.sets.every((set) => set.completed);
     return next;
   }));
-  const selectExercise = (exercise: ExerciseDto) => {
-    if (saving) return;
+  const selectExercise = async (exercise: ExerciseDto) => {
+    if (saving || selecting) return;
     if (readSession(user!.id)) { toast.add("Finaliza o descarta la sesión pausada antes de cambiar los ejercicios.", "error"); return; }
-    if (picker.replaceIndex !== null) {
-      updateEntry(picker.replaceIndex, { exerciseId: exercise.id, exercise, actualWeightKg: 0, completed: false });
-      toast.add(`Cambiado a ${exercise.name}`, "success");
-    } else {
-      setEntries((current) => [...current, { exerciseId: exercise.id, plannedSets: 3, plannedReps: 10, actualSets: 3, actualReps: 10, actualWeightKg: 0, completed: false, isExtra: true, exercise }]);
+    if (entries.some((entry, index) => entry.exerciseId === exercise.id && index !== picker.replaceIndex)) {
+      toast.add("Este ejercicio ya está en tu registro. Puedes añadirle más series.", "info"); return;
     }
-    setPicker({ open: false, replaceIndex: null });
+    const replaced = picker.replaceIndex === null ? undefined : entries[picker.replaceIndex];
+    if (replaced && (replaced.completed || replaced.sets?.some((set) => set.completed)) && !window.confirm("Cambiar este ejercicio reemplazará sus series registradas. ¿Continuar?")) return;
+    setSelecting(true);
+    try {
+      const prescription = await exerciseCatalogApi.recommendation(exercise.id, new Date(`${date}T12:00:00`).getDay());
+      const target = muscleTargets.find((item) => item.muscle === exercise.muscleGroup)?.count ?? 0;
+      const assigned = entries.filter((entry, index) => index !== picker.replaceIndex && entry.exercise.muscleGroup === exercise.muscleGroup).length;
+      const reps = Math.round((prescription.repsMin + prescription.repsMax) / 2);
+      const entry: WorkoutEntry = { exerciseId: exercise.id, exercise, plannedSets: prescription.sets, plannedReps: reps,
+        actualSets: prescription.sets, actualReps: reps, actualWeightKg: 0, completed: false,
+        isExtra: freeSession || assigned >= target, restSeconds: prescription.restSeconds,
+        repsMin: prescription.repsMin, repsMax: prescription.repsMax, notes: prescription.notes };
+      setEntries((current) => picker.replaceIndex === null ? [...current, entry] : current.map((item, index) => index === picker.replaceIndex ? entry : item));
+      setPicker({ open: false, replaceIndex: null });
+      toast.add(`${exercise.name}: ${prescription.sets} series de ${prescription.repsMin}–${prescription.repsMax} reps`, "success");
+    } catch (error) {
+      toast.add(typeof error === "object" && error !== null && "message" in error ? String(error.message) : "No se pudo obtener la recomendación. Intenta de nuevo.", "error");
+    } finally { setSelecting(false); }
   };
 
   const updateManualSet = (entryIndex: number, setIndex: number, patch: Partial<WorkoutSetRequest>) => {
@@ -142,13 +165,25 @@ export default function TrainingPage() {
   const startFocusedWorkout = () => {
     if (saving) return;
     if (readSession(user!.id)) { navigate("/training/session"); return; }
-    if (!entries.length) return;
+    const guidedEntries = [...entries];
+    if (!freeSession) {
+      for (const { muscle, count } of muscleTargets) {
+        let needed = Math.max(0, count - guidedEntries.filter((entry) => entry.exercise.muscleGroup === muscle).length);
+        for (const item of todayPlan?.items ?? []) {
+          if (!needed || item.exercise.muscleGroup !== muscle || guidedEntries.some((entry) => entry.exerciseId === item.exerciseId)) continue;
+          const reps = Math.round((item.repsMin + item.repsMax) / 2);
+          guidedEntries.push({ exerciseId: item.exerciseId, exercise: item.exercise, plannedSets: item.sets, plannedReps: reps, actualSets: item.sets, actualReps: reps, actualWeightKg: 0, completed: false, isExtra: false, restSeconds: item.restSeconds });
+          needed--;
+        }
+      }
+    }
+    if (!guidedEntries.length) { navigate("/training/session"); return; }
     const previous = data?.history.find((item) => item.date === date);
     try { localStorage.setItem(sessionKey(user!.id), JSON.stringify({
       date, startedAt: previous?.startedAt ?? new Date().toISOString(), current: 0, notes: previous?.notes ?? "",
-      exercises: entries.map((entry, index) => ({
+      exercises: guidedEntries.map((entry) => ({
         exercise: entry.exercise, planDayId: freeSession ? undefined : todayPlan?.id,
-        isExtra: entry.isExtra || freeSession, restSeconds: todayPlan?.items[index]?.restSeconds ?? 60,
+        isExtra: entry.isExtra || freeSession, restSeconds: entry.restSeconds ?? todayPlan?.items.find((item) => item.exerciseId === entry.exerciseId)?.restSeconds ?? 60,
         sets: entry.sets?.length ? entry.sets : Array.from({ length: Math.max(1, entry.actualSets) }, (_, setIndex) => ({
           setNumber: setIndex + 1, plannedReps: entry.plannedReps, actualReps: entry.actualReps,
           actualWeightKg: entry.actualWeightKg, rir: 2, completed: entry.completed,
@@ -175,7 +210,7 @@ export default function TrainingPage() {
       <div className="hero">
         <div className="hero__label"><span className="icon">fitness_center</span><span>Entrenar</span></div>
         <h1 className="hero__title">Tu entrenamiento, en un solo lugar</h1>
-        <p className="hero__subtitle">Completa la sesión de hoy, consulta tu rutina y revisa tu historial.</p>
+        <p className="hero__subtitle">Elige cómo trabajar cada grupo muscular o sigue la rutina recomendada en el modo interactivo.</p>
         <div className="hero__actions"><Button onClick={startFocusedWorkout}><span className="icon">play_arrow</span>{readSession(user!.id) ? "Reanudar entrenamiento" : "Iniciar entrenamiento"}</Button><Button variant="ghost" size="sm" onClick={() => navigate("/export?content=training")}><span className="icon">download</span>Exportar rutina</Button></div>
       </div>
       <div className="mb-4"><SegmentedControl block value={view} onChange={setView} options={[{ value: "today", label: "Hoy" }, { value: "plan", label: "Rutina" }, { value: "history", label: "Historial" }]} /></div>
@@ -192,25 +227,45 @@ export default function TrainingPage() {
         }}>Recuperar sesión anterior</Button></div>}
         <p className="text-muted" role="status">{draftError ? "No se pudo guardar el borrador en este navegador. Guarda el entrenamiento antes de salir." : "Los cambios se conservan como borrador en este dispositivo. Pulsa Guardar entrenamiento para registrarlos en tu cuenta."}</p>
         {readSession(user!.id) && <p className="text-muted">Tienes una sesión interactiva pausada. Reanúdala para continuar con sus series.</p>}
-        <div className="section-title"><span id="today-workout-title">{dayName(new Date().getDay())}</span><span className="section-title__hint">{entries.length ? `${completed}/${entries.length} completados` : "Descanso"}</span></div>
+        <div className="section-title"><span id="today-workout-title">{dayName(new Date(`${date}T12:00:00`).getDay())}</span><span className="section-title__hint">{completed} ejercicios completados</span></div>
         <div className="training-mode-row">
           <div className="label">{freeSession ? "Entrenamiento libre" : todayPlan ? `${modalityName(todayPlan.modality)} · ${todayPlan.focus}` : "Día de descanso"}</div>
           {freeSession ? <Button variant="ghost" size="sm" onClick={() => setFreeSession(false)}>Volver a la rutina</Button> : <Button variant="ghost" size="sm" onClick={() => { setFreeSession(true); setPicker({ open: true, replaceIndex: null }); }}>Entrenamiento libre</Button>}
         </div>
-        {!entries.length && <EmptyState icon="hotel" title="Hoy es día de descanso" description="Si vas a entrenar, puedes crear una sesión libre." action={<Button variant="ghost" onClick={() => setPicker({ open: true, replaceIndex: null })}>Añadir ejercicio</Button>} />}
-        {entries.map((entry, index) => {
+        {!freeSession && muscleTargets.length > 0 && <div className="training-muscle-targets">
+          {muscleTargets.map(({ muscle, count }) => {
+            const chosen = entries.filter((entry) => entry.exercise.muscleGroup === muscle);
+            const done = chosen.filter((entry) => entry.completed).length;
+            const remaining = Math.max(0, count - done);
+            const toChoose = Math.max(0, count - chosen.length);
+            return <article className="card training-muscle-target" key={muscle}>
+              <span className={`muscle-tag muscle-tag--${MUSCLE_VARIANT[muscle]}`}>{muscleGroupName(muscle)}</span>
+              <h2>{remaining ? `${remaining} ${remaining === 1 ? "ejercicio restante" : "ejercicios restantes"}` : "Objetivo completado"}</h2>
+              <p>{Math.min(done, count)}/{count} completados · {chosen.filter((entry) => !entry.completed).length} en tu registro · {toChoose} por elegir</p>
+              <progress value={Math.min(done, count)} max={count} aria-label={`Progreso de ${muscleGroupName(muscle)}`} />
+              <Button variant={toChoose ? "primary" : "ghost"} disabled={saving || selecting || !!readSession(user!.id)} onClick={() => setPicker({ open: true, replaceIndex: null, muscleGroup: muscle })}>{toChoose ? "Elegir ejercicio" : "Añadir otro ejercicio"}</Button>
+            </article>;
+          })}
+        </div>}
+        {!entries.length && (freeSession || !muscleTargets.length) && <EmptyState icon="fitness_center" title={freeSession ? "Elige tu primer ejercicio" : "Hoy es día de descanso"} description="Puedes elegir cualquier ejercicio y recibir sus series y repeticiones recomendadas." action={<Button variant="ghost" onClick={() => setPicker({ open: true, replaceIndex: null })}>Añadir ejercicio</Button>} />}
+        {!!entries.length && !readSession(user!.id) && <div className="section-title"><span>Tu registro manual</span><span className="section-title__hint">Ejercicios elegidos y sesiones guardadas</span></div>}
+        {!readSession(user!.id) && entries.map((entry, index) => {
           const variant = MUSCLE_VARIANT[entry.exercise.muscleGroup];
-          const planItem = todayPlan?.items[index];
+          const planItem = todayPlan?.items.find((item) => item.exerciseId === entry.exerciseId);
           return <div key={`${entry.exerciseId}-${index}`} className={`exercise-card ${entry.completed ? "exercise-card--done" : ""}`}>
             <div className="exercise-card__head">
               <span className={`exercise-card__index exercise-card__index--${variant}`}>{index + 1}</span>
               <div className="exercise-card__heading"><span className="exercise-card__name">{entry.exercise.name}</span><div className="exercise-card__tags"><span className={`muscle-tag muscle-tag--${variant}`}>{muscleGroupName(entry.exercise.muscleGroup)}</span>{entry.isExtra && <Chip small>Extra</Chip>}</div></div>
               <div className="exercise-card__actions">
-                <button type="button" className="icon-action" onClick={() => setPicker({ open: true, replaceIndex: index })} aria-label={`Cambiar ${entry.exercise.name}`} title="Cambiar ejercicio"><span className="icon">swap_horiz</span></button>
+                <button type="button" className="icon-action" disabled={saving || !!readSession(user!.id)} onClick={() => setPicker({ open: true, replaceIndex: index, muscleGroup: entry.exercise.muscleGroup })} aria-label={`Cambiar ${entry.exercise.name}`} title="Cambiar ejercicio"><span className="icon">swap_horiz</span></button>
+                <button type="button" className="icon-action" disabled={saving || !!readSession(user!.id)} onClick={() => {
+                  if ((entry.completed || entry.sets?.some((set) => set.completed)) && !window.confirm("¿Quitar este ejercicio y sus series del registro? El cambio se aplicará al guardar.")) return;
+                  setEntries((current) => current.filter((_, i) => i !== index));
+                }} aria-label={`Quitar ${entry.exercise.name}`}><span className="icon">close</span></button>
                 <button type="button" className="icon-action" onClick={() => setGuide(entry.exercise)} aria-label={`Guía de ${entry.exercise.name}`} title="Ver guía"><span className="icon">info</span></button>
               </div>
             </div>
-            <div className="exercise-card__plan"><span className="icon">exercise</span><span>Plan {entry.plannedSets}×{entry.plannedReps} · Descanso {planItem?.restSeconds ?? 60}s · {entry.exercise.equipment}</span></div>
+            <div className="exercise-card__plan"><span className="icon">exercise</span><span>Recomendado: {entry.plannedSets} series × {entry.repsMin && entry.repsMax ? `${entry.repsMin}–${entry.repsMax}` : entry.plannedReps} reps · Descanso {entry.restSeconds ?? planItem?.restSeconds ?? 60}s · {entry.exercise.equipment}{entry.notes ? ` · ${entry.notes}` : ""}</span></div>
             <fieldset className="account-form-fields" disabled={saving || !!readSession(user!.id)}>
             <div className="exercise-card__row">
               <Stepper label="Series" value={entry.actualSets} onChange={(value) => updateEntry(index, { actualSets: value })} min={0} max={20} size="sm" />
@@ -248,10 +303,10 @@ export default function TrainingPage() {
         {!data.history.length ? <EmptyState icon="history" title="Sin entrenos registrados" description="Tu primera sesión aparecerá aquí." /> : data.history.map((log) => <button type="button" key={log.id} className="list-item list-item--button" onClick={() => setSelectedLog(log)}><div className="list-item__main"><div className="list-item__title">{log.date}</div><div className="list-item__meta">{log.entries.reduce((sum, entry) => sum + (entry.sets?.filter((set) => set.completed).length || entry.actualSets || 0), 0)} series · {log.entries.length} ejercicios</div></div><span className="icon">chevron_right</span></button>)}
       </section>}
 
-      <ExercisePickerModal open={picker.open} title={picker.replaceIndex === null ? "Añadir ejercicio" : "Cambiar ejercicio"} onClose={() => setPicker({ open: false, replaceIndex: null })} onSelect={selectExercise} />
+      {picker.open && <ExercisePickerModal title={picker.muscleGroup ? `Elegir: ${muscleGroupName(picker.muscleGroup)}` : "Elegir ejercicio"} initialType={todayPlan?.modality === "Gym" || todayPlan?.modality === "Calisthenics" ? todayPlan.modality : ""} initialMuscle={picker.muscleGroup ?? ""} selecting={selecting} onClose={() => { if (!selecting) setPicker({ open: false, replaceIndex: null }); }} onSelect={(exercise) => void selectExercise(exercise)} />}
       <ExerciseGuideModal exercise={guide} onClose={() => setGuide(null)} />
       <Modal open={!!selectedDay} onClose={() => setSelectedDay(null)} title={selectedDay ? dayName(selectedDay.dayOfWeek) : "Rutina"}>
-        {selectedDay && (selectedDay.items.length ? selectedDay.items.map((item) => <div key={item.id} className="list-item"><div className="list-item__main"><div className="list-item__title">{item.exercise.name}</div><div className="list-item__meta">{item.sets} series · {item.repsMin}-{item.repsMax} reps · {item.restSeconds}s</div></div><Button variant="ghost" size="sm" onClick={() => setGuide(item.exercise)}>Guía</Button></div>) : <EmptyState icon="hotel" title="Día de descanso" />)}
+        {selectedDay && (selectedDay.items.length ? MUSCLE_GROUPS.map((muscle) => ({ muscle, count: selectedDay.items.filter((item) => item.exercise.muscleGroup === muscle).length })).filter((group) => group.count > 0).map((group) => <div key={group.muscle} className="list-item"><div className="list-item__main"><div className="list-item__title">{muscleGroupName(group.muscle)}</div><div className="list-item__meta">{group.count} ejercicios · {modalityName(selectedDay.modality)}</div></div></div>) : <EmptyState icon="hotel" title="Día de descanso" />)}
       </Modal>
       <Modal open={!!selectedLog} onClose={() => setSelectedLog(null)} title={selectedLog ? `Entrenamiento · ${selectedLog.date}` : "Entrenamiento"} wide>
         {selectedLog && <div className="workout-detail"><div className="workout-detail__summary"><span><strong>{selectedLog.entries.length}</strong> ejercicios</span><span><strong>{selectedLog.entries.reduce((sum, entry) => sum + (entry.sets?.filter((set) => set.completed).length || entry.actualSets || 0), 0)}</strong> series</span><span><strong>{selectedLog.startedAt && selectedLog.finishedAt ? Math.max(1, Math.round((new Date(selectedLog.finishedAt).getTime() - new Date(selectedLog.startedAt).getTime()) / 60000)) : "—"}</strong> min</span></div>{selectedLog.entries.map((entry) => <section key={entry.id} className="workout-detail__exercise"><h3>{entry.exercise.name}</h3>{entry.sets?.length ? <div className="workout-detail__sets"><div><span>Serie</span><span>Peso</span><span>Reps</span><span>RIR</span></div>{entry.sets.map((set) => <div key={set.setNumber} className={set.completed ? "is-done" : ""}><strong>{set.setNumber}</strong><span>{set.actualWeightKg ? `${set.actualWeightKg} kg` : "—"}</span><span>{set.actualReps ?? "—"}</span><span>{set.rir ?? "—"}</span></div>)}</div> : <p className="text-muted">{entry.actualSets ?? 0} series · {entry.actualReps ?? 0} reps · {entry.actualWeightKg ?? 0} kg</p>}</section>)}{selectedLog.notes && <p className="workout-detail__notes">{selectedLog.notes}</p>}</div>}
@@ -260,10 +315,13 @@ export default function TrainingPage() {
   );
 }
 
-function ExercisePickerModal({ open, title, onClose, onSelect }: { open: boolean; title: string; onClose: () => void; onSelect: (exercise: ExerciseDto) => void }) {
+function ExercisePickerModal({ title, initialType, initialMuscle, selecting, onClose, onSelect }: { title: string; initialType: string; initialMuscle: string; selecting: boolean; onClose: () => void; onSelect: (exercise: ExerciseDto) => void }) {
   const [search, setSearch] = useState("");
-  const [type, setType] = useState("");
-  const [muscleGroup, setMuscleGroup] = useState("");
+  const [type, setType] = useState(initialType);
+  const [muscleGroup, setMuscleGroup] = useState(initialMuscle);
+  const [equipment, setEquipment] = useState("");
+  const [error, setError] = useState("");
+  const [retry, setRetry] = useState(0);
   const [items, setItems] = useState<ExerciseDto[]>([]);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -271,33 +329,35 @@ function ExercisePickerModal({ open, title, onClose, onSelect }: { open: boolean
   const totalPages = Math.max(1, Math.ceil(totalCount / EXERCISE_PAGE_SIZE));
 
   useEffect(() => {
-    if (open) return;
-    setSearch("");
-    setType("");
-    setMuscleGroup("");
-    setPage(1);
-  }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
     let active = true;
     setLoading(true);
-    exerciseCatalogApi.search({ search, type, muscleGroup, page, pageSize: EXERCISE_PAGE_SIZE })
+    setError("");
+    exerciseCatalogApi.search({ search, type, muscleGroup, equipment, page, pageSize: EXERCISE_PAGE_SIZE })
       .then((result) => {
         if (!active) return;
         setItems(result.items);
         setTotalCount(result.totalCount);
       })
+      .catch(() => { if (active) setError("No se pudo cargar el catálogo. Intenta de nuevo."); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
-  }, [open, search, type, muscleGroup, page]);
+  }, [search, type, muscleGroup, equipment, page, retry]);
 
-  return <Modal open={open} onClose={onClose} title={title} wide>
+  const equipmentOptions = type === "Calisthenics"
+    ? [["Sin equipo", "En casa · sin equipo"], ["Barra", "Barra / dominadas"], ["Paralela", "Paralelas"], ["Anilla", "Anillas"], ["Banda", "Bandas"]]
+    : [["Mancuerna", "Mancuernas"], ["Máquina", "Máquinas"], ["Barra", "Barras"], ["Polea", "Poleas"], ["Banco", "Banco"], ["Banda", "Bandas"], ["Sin equipo", "Sin equipo"]];
+
+  return <Modal open onClose={onClose} title={title} wide>
+    <p className="text-muted">{initialMuscle ? `Ejercicios de ${muscleGroupName(initialMuscle as MuscleGroup)}. ` : "Elige cualquier ejercicio. "}Al seleccionarlo recibirás las series, repeticiones y descanso de acuerdo con tu configuración.</p>
+    {selecting && <p role="status">Calculando tu recomendación…</p>}
+    <fieldset className="account-form-fields" disabled={selecting}>
     <div className="catalog-picker__filters">
-      <select className="select" value={type} onChange={(event) => { setType(event.target.value); setPage(1); }} aria-label="Filtrar por tipo de entrenamiento"><option value="">Todos los tipos</option>{EXERCISE_TYPES.map((item) => <option key={item} value={item}>{modalityName(item)}</option>)}</select>
-      <select className="select" value={muscleGroup} onChange={(event) => { setMuscleGroup(event.target.value); setPage(1); }} aria-label="Filtrar por grupo muscular"><option value="">Todo el cuerpo</option>{MUSCLE_GROUPS.map((item) => <option key={item} value={item}>{muscleGroupName(item)}</option>)}</select>
+      <select className="select" value={type} onChange={(event) => { setType(event.target.value); setEquipment(""); setPage(1); }} aria-label="Filtrar por tipo de entrenamiento"><option value="">Todos los tipos</option>{EXERCISE_TYPES.map((item) => <option key={item} value={item}>{modalityName(item)}</option>)}</select>
+      {!initialMuscle && <select className="select" value={muscleGroup} onChange={(event) => { setMuscleGroup(event.target.value); setPage(1); }} aria-label="Filtrar por grupo muscular"><option value="">Todo el cuerpo</option>{MUSCLE_GROUPS.map((item) => <option key={item} value={item}>{muscleGroupName(item)}</option>)}</select>}
+      <select className="select" value={equipment} onChange={(event) => { setEquipment(event.target.value); setPage(1); }} aria-label="Equipo disponible"><option value="">Cualquier equipo</option>{equipmentOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>
     </div>
     <div className="catalog-picker__search"><span className="icon">search</span><input className="input" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Buscar cualquier ejercicio..." autoFocus /></div>
-    {loading ? <Loading message="Buscando ejercicios" /> : !items.length ? <EmptyState icon="search_off" title="Sin resultados" description="Prueba quitando los filtros o cambiando la búsqueda." /> : <><div className="catalog-picker__grid">{items.map((exercise) => { const image = exerciseImageUrl(exercise); return <button key={exercise.id} type="button" className="catalog-picker__item" onClick={() => onSelect(exercise)}>{image && <img src={image} alt="" className="catalog-picker__thumb" />}<div><div className="catalog-picker__item-title">{exercise.name}</div><div className="catalog-picker__item-meta">{modalityName(exercise.type)} · {muscleGroupName(exercise.muscleGroup)} · {exercise.equipment}</div></div></button>; })}</div><div className="catalog-picker__pagination"><Button variant="ghost" size="sm" disabled={page <= 1} onClick={() => setPage((current) => current - 1)}>Anterior</Button><span className="text-muted">{totalCount} ejercicios · {page}/{totalPages}</span><Button variant="ghost" size="sm" disabled={page >= totalPages} onClick={() => setPage((current) => current + 1)}>Siguiente</Button></div></>}
+    {loading ? <Loading message="Buscando ejercicios" /> : error ? <ErrorState message={error} onRetry={() => setRetry((value) => value + 1)} /> : !items.length ? <EmptyState icon="search_off" title="Sin resultados" description="Prueba otro equipo o modalidad. Se conserva el grupo muscular elegido." action={<Button variant="ghost" onClick={() => { setEquipment(""); setType(""); setSearch(""); setPage(1); }}>Quitar filtros de equipo y modalidad</Button>} /> : <><div className="catalog-picker__grid">{items.map((exercise) => { const image = exerciseImageUrl(exercise); return <button key={exercise.id} type="button" className="catalog-picker__item" onClick={() => onSelect(exercise)}>{image && <img src={image} alt="" className="catalog-picker__thumb" />}<div><div className="catalog-picker__item-title">{exercise.name}</div><div className="catalog-picker__item-meta">{modalityName(exercise.type)} · {muscleGroupName(exercise.muscleGroup)} · {exercise.equipment}</div></div></button>; })}</div><div className="catalog-picker__pagination"><Button variant="ghost" size="sm" disabled={page <= 1} onClick={() => setPage((current) => current - 1)}>Anterior</Button><span className="text-muted">{totalCount} ejercicios · {page}/{totalPages}</span><Button variant="ghost" size="sm" disabled={page >= totalPages} onClick={() => setPage((current) => current + 1)}>Siguiente</Button></div></>}
+    </fieldset>
   </Modal>;
 }

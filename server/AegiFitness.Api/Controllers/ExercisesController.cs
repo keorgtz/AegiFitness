@@ -33,14 +33,14 @@ public class ExercisesController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
-        var cacheKey = $"exercises:{type}:{muscleGroup}:{objective}:{difficulty}:{equipment}:{search}:{page}:{pageSize}";
+        var cacheKey = $"exercises:v2:{type}:{muscleGroup}:{objective}:{difficulty}:{equipment}:{search}:{page}:{pageSize}";
         var cached = await _cache.GetAsync<ExerciseListDto>(cacheKey);
         if (cached is not null) return Ok(cached);
 
         var query = _context.Exercises.AsNoTracking().AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(type) && Enum.TryParse<Modality>(type, out var modality))
-            query = query.Where(x => x.Type == modality);
+            query = query.Where(x => x.Type == modality || (modality != Modality.Both && x.Type == Modality.Both));
 
         if (!string.IsNullOrWhiteSpace(muscleGroup) && Enum.TryParse<MuscleGroup>(muscleGroup, out var muscle))
             query = query.Where(x => x.MuscleGroup == muscle);
@@ -77,6 +77,21 @@ public class ExercisesController : ControllerBase
         var exercise = await _context.Exercises.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         if (exercise is null) return NotFound();
         return Ok(Map(exercise));
+    }
+
+    [HttpGet("{id:int}/recommendation")]
+    public async Task<IActionResult> Recommendation(int id, [FromQuery] int dayOfWeek)
+    {
+        if (dayOfWeek is < 0 or > 6) return BadRequest(new { message = "El día debe estar entre 0 y 6." });
+        var userId = Guid.Parse(User.FindFirst("sub")?.Value ?? Guid.Empty.ToString());
+        var exercise = await _context.Exercises.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        if (exercise is null) return NotFound();
+        var config = await _context.TrainingConfigs.AsNoTracking().Include(x => x.Days).FirstOrDefaultAsync(x => x.UserId == userId);
+        if (config is null) return NotFound(new { message = "Completa tu configuración de entrenamiento." });
+        var modality = config.Days.FirstOrDefault(x => x.DayOfWeek == dayOfWeek)?.Modality ?? exercise.Type;
+        if (exercise.Type != Modality.Both) modality = exercise.Type;
+        var recommendation = WorkoutPlanGenerator.Recommend(exercise, config, modality, Random.Shared);
+        return Ok(new { recommendation.Sets, recommendation.RepsMin, recommendation.RepsMax, recommendation.RestSeconds, recommendation.Notes });
     }
 
     private static ExerciseDto Map(Exercise e) => new(
