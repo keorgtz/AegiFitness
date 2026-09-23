@@ -124,6 +124,8 @@ export default function TrainingSessionPage() {
   }
 
   const exercise = session.exercises[session.current]!;
+  const blockCount = session.exercises.filter((item) => item.exercise.id === exercise.exercise.id).length;
+  const blockNumber = session.exercises.slice(0, session.current + 1).filter((item) => item.exercise.id === exercise.exercise.id).length;
   const done = session.exercises.flatMap((x) => x.sets).filter((x) => x.completed).length;
   const total = session.exercises.flatMap((x) => x.sets).length;
   const totalSetPages = Math.ceil(exercise.sets.length / SETS_PER_PAGE);
@@ -143,7 +145,7 @@ export default function TrainingSessionPage() {
     <section className="session-exercise">
       <div className="session-exercise__head">
         {image ? <img src={image} alt="" className="session-exercise__thumb" /> : <div className="session-exercise__thumb session-exercise__thumb--empty"><span className="icon">fitness_center</span></div>}
-        <div className="session-exercise__identity"><span className="session-exercise__now">Ahora</span><h1>{exercise.exercise.name}</h1><p>{muscleGroupName(exercise.exercise.muscleGroup)} · {modalityName(exercise.exercise.type)} · {exercise.exercise.equipment}</p></div>
+        <div className="session-exercise__identity"><span className="session-exercise__now">{blockCount > 1 ? `Ahora · Bloque ${blockNumber} de ${blockCount}` : "Ahora"}</span><h1>{exercise.exercise.name}</h1><p>{muscleGroupName(exercise.exercise.muscleGroup)} · {modalityName(exercise.exercise.type)} · {exercise.exercise.equipment}</p></div>
         <button className="icon-action session-exercise__info" onClick={() => setGuide(exercise.exercise)} aria-label={`Ver cómo hacer ${exercise.exercise.name}`} title="Ver técnica e información"><span className="icon">info</span></button>
       </div>
       <div className="set-table">

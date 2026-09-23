@@ -107,25 +107,23 @@ export default function TrainingPage() {
     if (next.sets) next.completed = next.sets.length > 0 && next.sets.every((set) => set.completed);
     return next;
   }));
-  const selectExercise = async (exercise: ExerciseDto) => {
+  const selectExercise = async (exercise: ExerciseDto, replaceIndex: number | null = picker.replaceIndex) => {
     if (saving || selecting) return;
     if (readSession(user!.id)) { toast.add("Finaliza o descarta la sesión pausada antes de cambiar los ejercicios.", "error"); return; }
-    if (entries.some((entry, index) => entry.exerciseId === exercise.id && index !== picker.replaceIndex)) {
-      toast.add("Este ejercicio ya está en tu registro. Puedes añadirle más series.", "info"); return;
-    }
-    const replaced = picker.replaceIndex === null ? undefined : entries[picker.replaceIndex];
+    // Repeated exercises are independent workout blocks, not extra sets on an existing entry.
+    const replaced = replaceIndex === null ? undefined : entries[replaceIndex];
     if (replaced && (replaced.completed || replaced.sets?.some((set) => set.completed)) && !window.confirm("Cambiar este ejercicio reemplazará sus series registradas. ¿Continuar?")) return;
     setSelecting(true);
     try {
       const prescription = await exerciseCatalogApi.recommendation(exercise.id, new Date(`${date}T12:00:00`).getDay());
       const target = muscleTargets.find((item) => item.muscle === exercise.muscleGroup)?.count ?? 0;
-      const assigned = entries.filter((entry, index) => index !== picker.replaceIndex && entry.exercise.muscleGroup === exercise.muscleGroup).length;
+      const assigned = entries.filter((entry, index) => index !== replaceIndex && entry.exercise.muscleGroup === exercise.muscleGroup).length;
       const reps = Math.round((prescription.repsMin + prescription.repsMax) / 2);
       const entry: WorkoutEntry = { exerciseId: exercise.id, exercise, plannedSets: prescription.sets, plannedReps: reps,
         actualSets: prescription.sets, actualReps: reps, actualWeightKg: 0, completed: false,
         isExtra: freeSession || assigned >= target, restSeconds: prescription.restSeconds,
         repsMin: prescription.repsMin, repsMax: prescription.repsMax, notes: prescription.notes };
-      setEntries((current) => picker.replaceIndex === null ? [...current, entry] : current.map((item, index) => index === picker.replaceIndex ? entry : item));
+      setEntries((current) => replaceIndex === null ? [...current, entry] : current.map((item, index) => index === replaceIndex ? entry : item));
       setPicker({ open: false, replaceIndex: null });
       toast.add(`${exercise.name}: ${prescription.sets} series de ${prescription.repsMin}–${prescription.repsMax} reps`, "success");
     } catch (error) {
@@ -144,7 +142,7 @@ export default function TrainingPage() {
   };
 
   const saveWorkout = async () => {
-    if (saving || readSession(user!.id)) return;
+    if (saving || selecting || readSession(user!.id)) return;
     setSaving(true);
     try {
       const previous = data?.history.find((item) => item.date === date);
@@ -163,7 +161,7 @@ export default function TrainingPage() {
   };
 
   const startFocusedWorkout = () => {
-    if (saving) return;
+    if (saving || selecting) return;
     if (readSession(user!.id)) { navigate("/training/session"); return; }
     const guidedEntries = [...entries];
     if (!freeSession) {
@@ -248,17 +246,19 @@ export default function TrainingPage() {
           })}
         </div>}
         {!entries.length && (freeSession || !muscleTargets.length) && <EmptyState icon="fitness_center" title={freeSession ? "Elige tu primer ejercicio" : "Hoy es día de descanso"} description="Puedes elegir cualquier ejercicio y recibir sus series y repeticiones recomendadas." action={<Button variant="ghost" onClick={() => setPicker({ open: true, replaceIndex: null })}>Añadir ejercicio</Button>} />}
-        {!!entries.length && !readSession(user!.id) && <div className="section-title"><span>Tu registro manual</span><span className="section-title__hint">Ejercicios elegidos y sesiones guardadas</span></div>}
+        {!!entries.length && !readSession(user!.id) && <div className="section-title"><span>Tu registro manual</span><span className="section-title__hint">Puedes repetir ejercicios: cada bloque tiene sus propias series.</span></div>}
         {!readSession(user!.id) && entries.map((entry, index) => {
           const variant = MUSCLE_VARIANT[entry.exercise.muscleGroup];
           const planItem = todayPlan?.items.find((item) => item.exerciseId === entry.exerciseId);
+          const blockCount = entries.filter((item) => item.exerciseId === entry.exerciseId).length;
+          const blockNumber = entries.slice(0, index + 1).filter((item) => item.exerciseId === entry.exerciseId).length;
           return <div key={`${entry.exerciseId}-${index}`} className={`exercise-card ${entry.completed ? "exercise-card--done" : ""}`}>
             <div className="exercise-card__head">
               <span className={`exercise-card__index exercise-card__index--${variant}`}>{index + 1}</span>
-              <div className="exercise-card__heading"><span className="exercise-card__name">{entry.exercise.name}</span><div className="exercise-card__tags"><span className={`muscle-tag muscle-tag--${variant}`}>{muscleGroupName(entry.exercise.muscleGroup)}</span>{entry.isExtra && <Chip small>Extra</Chip>}</div></div>
+              <div className="exercise-card__heading"><span className="exercise-card__name">{entry.exercise.name}</span><div className="exercise-card__tags"><span className={`muscle-tag muscle-tag--${variant}`}>{muscleGroupName(entry.exercise.muscleGroup)}</span>{blockCount > 1 && <Chip small>Bloque {blockNumber} de {blockCount}</Chip>}{entry.isExtra && <Chip small>Extra</Chip>}</div></div>
               <div className="exercise-card__actions">
-                <button type="button" className="icon-action" disabled={saving || !!readSession(user!.id)} onClick={() => setPicker({ open: true, replaceIndex: index, muscleGroup: entry.exercise.muscleGroup })} aria-label={`Cambiar ${entry.exercise.name}`} title="Cambiar ejercicio"><span className="icon">swap_horiz</span></button>
-                <button type="button" className="icon-action" disabled={saving || !!readSession(user!.id)} onClick={() => {
+                <button type="button" className="icon-action" disabled={saving || selecting || !!readSession(user!.id)} onClick={() => setPicker({ open: true, replaceIndex: index, muscleGroup: entry.exercise.muscleGroup })} aria-label={`Cambiar ${entry.exercise.name}`} title="Cambiar ejercicio"><span className="icon">swap_horiz</span></button>
+                <button type="button" className="icon-action" disabled={saving || selecting || !!readSession(user!.id)} onClick={() => {
                   if ((entry.completed || entry.sets?.some((set) => set.completed)) && !window.confirm("¿Quitar este ejercicio y sus series del registro? El cambio se aplicará al guardar.")) return;
                   setEntries((current) => current.filter((_, i) => i !== index));
                 }} aria-label={`Quitar ${entry.exercise.name}`}><span className="icon">close</span></button>
@@ -288,6 +288,7 @@ export default function TrainingPage() {
               </div>
             </details>
             </fieldset>
+            <Button variant="ghost" size="sm" disabled={saving || selecting || !!readSession(user!.id)} onClick={() => void selectExercise(entry.exercise, null)} aria-label={`Añadir otro bloque de ${entry.exercise.name}`}><span className="icon">repeat</span>Repetir ejercicio</Button>
           </div>;
         })}
         {!!entries.length && <div className="training-actions"><Button variant="ghost" block onClick={() => setPicker({ open: true, replaceIndex: null })}>Añadir ejercicio extra</Button><Button variant="ghost" block loading={saving} disabled={!!readSession(user!.id)} onClick={() => void saveWorkout()}>Guardar entrenamiento</Button><Button block onClick={startFocusedWorkout}><span className="icon">play_arrow</span>{readSession(user!.id) ? "Reanudar sesión" : "Modo entrenamiento"}</Button></div>}
@@ -348,7 +349,7 @@ function ExercisePickerModal({ title, initialType, initialMuscle, selecting, onC
     : [["Mancuerna", "Mancuernas"], ["Máquina", "Máquinas"], ["Barra", "Barras"], ["Polea", "Poleas"], ["Banco", "Banco"], ["Banda", "Bandas"], ["Sin equipo", "Sin equipo"]];
 
   return <Modal open onClose={onClose} title={title} wide>
-    <p className="text-muted">{initialMuscle ? `Ejercicios de ${muscleGroupName(initialMuscle as MuscleGroup)}. ` : "Elige cualquier ejercicio. "}Al seleccionarlo recibirás las series, repeticiones y descanso de acuerdo con tu configuración.</p>
+    <p className="text-muted">{initialMuscle ? `Ejercicios de ${muscleGroupName(initialMuscle as MuscleGroup)}. ` : "Elige cualquier ejercicio. "}Al seleccionarlo recibirás las series, repeticiones y descanso de acuerdo con tu configuración. Puedes elegir el mismo ejercicio varias veces; cada bloque se registra por separado.</p>
     {selecting && <p role="status">Calculando tu recomendación…</p>}
     <fieldset className="account-form-fields" disabled={selecting}>
     <div className="catalog-picker__filters">
